@@ -110,6 +110,16 @@ const API = {
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Login failed');
     return data;
+  },
+  async loginGoogle(credential) {
+    const r = await fetch(`${API_BASE}/auth-google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Google Login failed');
+    return data;
   }
 };
 

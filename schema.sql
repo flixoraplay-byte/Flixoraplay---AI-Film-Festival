@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS users (
   avatar_url   TEXT,
   bio          TEXT DEFAULT '',
   total_points INTEGER DEFAULT 0,
+  google_id    TEXT,
   createdAt    TEXT NOT NULL
 );
 
