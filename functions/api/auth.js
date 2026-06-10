@@ -2,10 +2,13 @@
 // POST /api/auth  — register or login
 // body: { action: 'register' | 'login', email, password, username? }
 
+import bcrypt from 'bcryptjs';
+import jwt from '@tsndr/cloudflare-worker-jwt';
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
 export async function onRequestOptions() {
@@ -50,12 +53,22 @@ export async function onRequestPost({ request, env }) {
       const id = 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
       const now = new Date().toISOString();
 
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(password, saltRounds);
+      const role = 'creator';
+
       await env.DB.prepare(
-        `INSERT INTO users (id, username, email, createdAt) VALUES (?,?,?,?)`
-      ).bind(id, username, email, now).run();
+        `INSERT INTO users (id, username, email, password_hash, role, createdAt) VALUES (?,?,?,?,?,?)`
+      ).bind(id, username, email, passwordHash, role, now).run();
+
+      const token = await jwt.sign(
+        { id, username, email, role, exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) },
+        env.JWT_SECRET || 'secret'
+      );
 
       return Response.json({
-        id, username, email, createdAt: now
+        token,
+        user: { id, username, email, role, createdAt: now }
       }, { status: 201, headers: corsHeaders });
 
     } else if (action === 'login') {
@@ -68,12 +81,30 @@ export async function onRequestPost({ request, env }) {
         return Response.json({ error: 'No account found with this email. Please register first.' }, { status: 404, headers: corsHeaders });
       }
 
-      // In V3, password is not stored — any password works for existing accounts
+      if (!user.password_hash) {
+        // For backwards compatibility with old mock users, allow any password but warn
+        console.warn('User has no password_hash. Legacy login allowed.');
+      } else {
+        const isValid = await bcrypt.compare(password, user.password_hash);
+        if (!isValid) {
+          return Response.json({ error: 'Invalid password.' }, { status: 401, headers: corsHeaders });
+        }
+      }
+
+      const token = await jwt.sign(
+        { id: user.id, username: user.username, email: user.email, role: user.role, exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) },
+        env.JWT_SECRET || 'secret'
+      );
+
       return Response.json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        createdAt: user.createdAt
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+          createdAt: user.createdAt
+        }
       }, { headers: corsHeaders });
 
     } else {

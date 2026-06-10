@@ -4,20 +4,32 @@
 const API_BASE = '/api';
 
 const API = {
+  getHeaders() {
+    const headers = { 'Content-Type': 'application/json' };
+    const token = getToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+  },
   async getCompetitions() {
-    const r = await fetch(`${API_BASE}/competitions`);
+    const r = await fetch(`${API_BASE}/competitions`, {
+      headers: this.getHeaders()
+    });
     if (!r.ok) throw new Error('Failed to load competitions');
     return r.json();
   },
   async getCompetition(id) {
-    const r = await fetch(`${API_BASE}/competitions/${id}`);
+    const r = await fetch(`${API_BASE}/competitions/${id}`, {
+      headers: this.getHeaders()
+    });
     if (!r.ok) throw new Error('Competition not found');
     return r.json();
   },
   async createCompetition(data) {
     const r = await fetch(`${API_BASE}/competitions`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
       body: JSON.stringify(data)
     });
     if (!r.ok) throw new Error('Failed to create competition');
@@ -26,7 +38,7 @@ const API = {
   async updateCompetition(id, data) {
     const r = await fetch(`${API_BASE}/competitions/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
       body: JSON.stringify(data)
     });
     if (!r.ok) throw new Error('Failed to update competition');
@@ -35,7 +47,7 @@ const API = {
   async updateEntry(id, data) {
     const r = await fetch(`${API_BASE}/entries/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
       body: JSON.stringify(data)
     });
     if (!r.ok) throw new Error('Failed to update entry');
@@ -45,14 +57,16 @@ const API = {
     const url = competitionId
       ? `${API_BASE}/entries?competitionId=${competitionId}`
       : `${API_BASE}/entries`;
-    const r = await fetch(url);
+    const r = await fetch(url, {
+      headers: this.getHeaders()
+    });
     if (!r.ok) throw new Error('Failed to load entries');
     return r.json();
   },
   async submitEntry(data) {
     const r = await fetch(`${API_BASE}/entries`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
       body: JSON.stringify(data)
     });
     if (!r.ok) throw new Error('Failed to submit entry');
@@ -63,7 +77,7 @@ const API = {
     const voterId = getVoterId();
     const r = await fetch(`${API_BASE}/votes`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
       body: JSON.stringify({ entryId, voterId })
     });
     if (r.status === 409) throw new Error('Already voted');
@@ -71,7 +85,9 @@ const API = {
     return r.json();
   },
   async getLeaderboard() {
-    const r = await fetch(`${API_BASE}/leaderboard`);
+    const r = await fetch(`${API_BASE}/leaderboard`, {
+      headers: this.getHeaders()
+    });
     if (!r.ok) throw new Error('Failed to load leaderboard');
     return r.json();
   },
@@ -188,14 +204,24 @@ function setActiveNav() {
 }
 
 // ── Session helpers ───────────────────────────────────────
+function getToken() {
+  return localStorage.getItem('flixora_token');
+}
 function getSession() {
   return Store.get('session', null);
 }
-function setSession(user) {
+function setSession(data) {
+  // If the payload includes a token, store it separately
+  if (data.token) {
+    localStorage.setItem('flixora_token', data.token);
+  }
+  // Extract user info if nested, else use data itself
+  const user = data.user || data;
   Store.set('session', user);
 }
 function clearSession() {
   localStorage.removeItem('flixora_session');
+  localStorage.removeItem('flixora_token');
 }
 function signOut() {
   clearSession();
