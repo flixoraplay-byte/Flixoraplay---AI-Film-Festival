@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Judge Panel — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .judge-row td { vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+    <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header page-top">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="browse.html">Browse</a>
+        <span>›</span>
+        <a href="#" id="bread-comp">Competition</a>
+        <span>›</span>
+        <span>Judge Panel</span>
+      </div>
+      <div class="header-row">
+        <div>
+          <h1 id="judge-title">Judge Panel</h1>
+          <p id="judge-subtitle" class="text-muted"></p>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-secondary btn-sm" onclick="saveScores()">
+            <svg data-lucide="save"></svg> Save Scores
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="announceWinners()">
+            <svg data-lucide="flag"></svg> Announce Winners
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+
+      <!-- Summary stats -->
+      <div class="stats-row" id="judge-stats" style="margin-bottom:28px;grid-template-columns:repeat(4,1fr);"></div>
+
+      <div class="alert alert-info" id="judge-alert" style="display:none;"></div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn" data-tab="scoring"><svg data-lucide="list-checks"></svg> Score Entries</button>
+        <button class="tab-btn" data-tab="ranked"><svg data-lucide="bar-chart-2"></svg> Ranked View</button>
+        <button class="tab-btn" data-tab="winners"><svg data-lucide="trophy"></svg> Set Winners</button>
+      </div>
+
+      <!-- Scoring Tab -->
+      <div class="tab-panel" data-tab="scoring">
+        <div style="margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="j-search" placeholder="Search entries..." style="max-width:260px;" oninput="renderScoringTable()" />
+          <select id="j-sort" style="max-width:180px;" onchange="renderScoringTable()">
+            <option value="newest">Newest First</option>
+            <option value="score-high">Score: High to Low</option>
+            <option value="score-low">Score: Low to High</option>
+            <option value="unscored">Unscored First</option>
+          </select>
+          <button class="btn btn-sm btn-secondary" onclick="autoRank()">Auto-Rank by Score</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Video</th>
+                <th>Creator</th>
+                <th>AI Tools</th>
+                <th>Score (0–100)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="scoring-tbody">
+              <tr><td colspan="6" class="text-center text-muted" style="padding:24px;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Ranked Tab -->
+      <div class="tab-panel" data-tab="ranked">
+        <div class="card">
+          <div class="card-header">Ranked Entries (sorted by score)</div>
+          <div id="ranked-list"></div>
+        </div>
+      </div>
+
+      <!-- Set Winners Tab -->
+      <div class="tab-panel" data-tab="winners">
+        <div class="alert alert-warning"><svg data-lucide="alert-triangle"></svg> <span>Setting winners is permanent and publicly visible on the competition page.</span></div>
+        <div class="card">
+          <div class="card-header"><svg data-lucide="trophy"></svg> Assign Winners</div>
+          <div class="card-body" id="winners-form">
+            <div class="form-group">
+              <label><svg data-lucide="medal" style="width:13px;height:13px;display:inline;vertical-align:middle;color:var(--gold-light);"></svg> 1st Place</label>
+              <select id="w-first"><option value="">— Not assigned —</option></select>
+            </div>
+            <div class="form-group">
+              <label><svg data-lucide="award" style="width:13px;height:13px;display:inline;vertical-align:middle;color:#cbd5e1;"></svg> 2nd Place</label>
+              <select id="w-second"><option value="">— Not assigned —</option></select>
+            </div>
+            <div class="form-group">
+              <label><svg data-lucide="star" style="width:13px;height:13px;display:inline;vertical-align:middle;color:#fbbf24;"></svg> 3rd Place</label>
+              <select id="w-third"><option value="">— Not assigned —</option></select>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:10px;">
+              <button class="btn btn-primary" onclick="saveWinners()"><svg data-lucide="save"></svg> Save Winners</button>
+              <button class="btn btn-secondary" onclick="autofillWinners()"><svg data-lucide="zap"></svg> Autofill by Score</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <div class="card-header"><svg data-lucide="settings"></svg> Competition Status</div>
+          <div class="card-body">
+            <p style="margin-bottom:14px;font-size:0.85rem;color:var(--text-3);">Mark this competition as:</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="setStatus('open')"><svg data-lucide="circle-dot"></svg> Open</button>
+              <button class="btn btn-gold btn-sm" onclick="setStatus('judging')"><svg data-lucide="scale"></svg> Judging</button>
+              <button class="btn btn-danger btn-sm" onclick="setStatus('closed')"><svg data-lucide="lock"></svg> Closed</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const compId = getParam('id');
+    let competition = null;
+    let entries = [];
+    let scoreEdits = {};
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      if (!compId) { navigate('browse.html'); return; }
+      await loadData();
+    });
+
+    async function loadData() {
+      try {
+        competition = await API.getCompetition(compId);
+        entries = await API.getEntries(compId);
+      } catch (err) {
+        showToast('Failed to load data: ' + err.message, 'error');
+        return;
+      }
+
+      document.title = 'Judge: ' + competition.title + ' — FlixoraPlay';
+      document.getElementById('judge-title').textContent = 'Judge: ' + competition.title;
+      document.getElementById('judge-subtitle').textContent = (competition.theme || '') + ' · ' + entries.length + ' entries';
+      document.getElementById('bread-comp').textContent = competition.title;
+      document.getElementById('bread-comp').setAttribute('href', `competition.html?id=${compId}`);
+
+      const scored   = entries.filter(e => e.score !== null && e.score > 0).length;
+      const avgScore = scored ? Math.round(entries.filter(e => e.score !== null && e.score > 0).reduce((s,e) => s + e.score, 0) / scored) : '—';
+      document.getElementById('judge-stats').innerHTML = `
+        <div class="stat-box"><div class="num">${entries.length}</div><div class="lbl">Total Entries</div></div>
+        <div class="stat-box"><div class="num">${scored}</div><div class="lbl">Scored</div></div>
+        <div class="stat-box"><div class="num">${entries.length - scored}</div><div class="lbl">Unscored</div></div>
+        <div class="stat-box"><div class="num">${avgScore}</div><div class="lbl">Avg Score</div></div>`;
+
+      if (competition.status === 'closed') {
+        const a = document.getElementById('judge-alert');
+        a.textContent = 'This competition is closed. Winners have been announced.';
+        a.className = 'alert alert-warning';
+        a.style.display = 'block';
+      }
+
+      renderScoringTable();
+      renderRankedList();
+      renderWinnersForm();
+    }
+
+    function renderScoringTable() {
+      const search = (document.getElementById('j-search').value || '').toLowerCase();
+      const sort   = document.getElementById('j-sort').value;
+      let list = [...entries];
+
+      if (search) list = list.filter(e => e.title.toLowerCase().includes(search) || e.creatorName.toLowerCase().includes(search));
+
+      if (sort === 'score-high') list.sort((a,b) => (b.score||0) - (a.score||0));
+      else if (sort === 'score-low') list.sort((a,b) => (a.score||0) - (b.score||0));
+      else if (sort === 'unscored') list.sort((a) => a.score === null ? -1 : 1);
+      else list.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+      const tbody = document.getElementById('scoring-tbody');
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted" style="padding:24px;">No entries yet.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = '';
+      list.forEach((entry, i) => {
+        const tools = Array.isArray(entry.tools) ? entry.tools : [];
+        const currentScore = scoreEdits[entry.id] !== undefined ? scoreEdits[entry.id] : (entry.score !== null ? entry.score : '');
+        tbody.innerHTML += `
+          <tr class="judge-row">
+            <td style="color:#888;font-size:0.8rem;">${i+1}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="judge-thumb"><svg data-lucide="film"></svg></div>
+                <div>
+                  <div style="font-weight:bold;font-size:0.875rem;">${entry.title}</div>
+                  <div style="font-size:0.75rem;color:#888;">${formatDate(entry.submittedAt)}</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-size:0.875rem;">${entry.creatorName}</td>
+            <td><div style="display:flex;gap:4px;flex-wrap:wrap;">${tools.map(t=>`<span class="tool-tag">${t}</span>`).join('')}</div></td>
+            <td>
+              <div class="score-controls">
+                <button onclick="adjustScore('${entry.id}', -5)">−</button>
+                <input class="score-input" type="number" id="score-${entry.id}" min="0" max="100" value="${currentScore}"
+                  onchange="scoreEdits['${entry.id}'] = this.value ? parseInt(this.value) : null" />
+                <button onclick="adjustScore('${entry.id}', 5)">+</button>
+              </div>
+            </td>
+            <td>
+              <a href="${entry.videoUrl}" target="_blank" class="btn btn-sm btn-outline"><svg data-lucide="play"></svg> Watch</a>
+            </td>
+          </tr>`;
+      });
+    }
+
+    function adjustScore(entryId, delta) {
+      const input = document.getElementById('score-' + entryId);
+      let val = parseInt(input.value) || 0;
+      val = Math.min(100, Math.max(0, val + delta));
+      input.value = val;
+      scoreEdits[entryId] = val;
+    }
+
+    async function saveScores() {
+      let changed = 0;
+      const promises = [];
+      for (const [entryId, score] of Object.entries(scoreEdits)) {
+        if (score !== undefined) {
+          promises.push(API.updateEntry(entryId, { score }));
+          changed++;
+        }
+      }
+      try {
+        await Promise.all(promises);
+        scoreEdits = {};
+        showToast(`Scores saved for ${changed} entries.`, 'success');
+        await loadData();
+      } catch (err) {
+        showToast('Failed to save: ' + err.message, 'error');
+      }
+    }
+
+    async function autoRank() {
+      const sorted = [...entries].sort((a,b) => (b.score||0) - (a.score||0));
+      const promises = sorted.map((e, i) => API.updateEntry(e.id, { rank: i + 1 }));
+      try {
+        await Promise.all(promises);
+        showToast('Entries auto-ranked by score.', 'success');
+        await loadData();
+      } catch (err) { showToast('Failed to rank: ' + err.message, 'error'); }
+    }
+
+    function renderRankedList() {
+      const sorted = [...entries].sort((a,b) => (b.score||0) - (a.score||0));
+      const container = document.getElementById('ranked-list');
+      if (sorted.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="list"></svg></div><p>No entries to rank.</p></div>`;
+        lucide.createIcons(); return;
+      }
+      container.innerHTML = '';
+      sorted.forEach((e, i) => {
+        const rank = i + 1;
+        const icon = rank===1?'medal':rank===2?'award':rank===3?'star':'hash';
+        const cls  = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
+        container.innerHTML += `
+          <div style="display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--glass-border);">
+            <div class="ranking-pos ${cls}"><svg data-lucide="${icon}"></svg></div>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:0.9rem;color:var(--text);">${e.title}</div>
+              <div style="font-size:0.78rem;color:var(--text-3);">by ${e.creatorName} &middot; <span style="display:inline-flex;align-items:center;gap:3px;"><svg data-lucide="thumbs-up" style="width:11px;height:11px;"></svg>${e.votes||0} votes</span></div>
+            </div>
+            <div style="font-size:1.2rem;font-weight:800;color:var(--purple-light);">${e.score !== null ? e.score : '—'}</div>
+            <a href="${e.videoUrl}" target="_blank" class="btn btn-sm btn-outline"><svg data-lucide="play"></svg> Watch</a>
+          </div>`;
+      });
+      lucide.createIcons();
+    }
+
+    function renderWinnersForm() {
+      const sorted = [...entries].sort((a,b) => (b.score||0) - (a.score||0));
+      const options = sorted.map(e => `<option value="${e.id}">${e.title} (${e.creatorName}) — Score: ${e.score || 'unset'}</option>`).join('');
+      ['w-first','w-second','w-third'].forEach(id => {
+        const el = document.getElementById(id);
+        el.innerHTML = `<option value="">— Not assigned —</option>` + options;
+      });
+      // Pre-select current winners based on rank
+      const w1 = entries.find(e => e.rank === 1);
+      const w2 = entries.find(e => e.rank === 2);
+      const w3 = entries.find(e => e.rank === 3);
+      if (w1) document.getElementById('w-first').value = w1.id;
+      if (w2) document.getElementById('w-second').value = w2.id;
+      if (w3) document.getElementById('w-third').value = w3.id;
+    }
+
+    async function saveWinners() {
+      const first  = document.getElementById('w-first').value;
+      const second = document.getElementById('w-second').value;
+      const third  = document.getElementById('w-third').value;
+
+      const selected = [first, second, third].filter(Boolean);
+      if (new Set(selected).size !== selected.length) {
+        showToast('Each winner must be a different entry.', 'error'); return;
+      }
+
+      // Update ranks via API
+      const rankings = {};
+      if (first)  rankings[first]  = 1;
+      if (second) rankings[second] = 2;
+      if (third)  rankings[third]  = 3;
+
+      try {
+        await API.updateCompetition(compId, { rankings });
+        showToast('Winners saved successfully!', 'success');
+        await loadData();
+      } catch (err) { showToast('Failed to save winners: ' + err.message, 'error'); }
+    }
+
+    function autofillWinners() {
+      const sorted = [...entries].filter(e => e.score !== null && e.score > 0).sort((a,b) => b.score - a.score);
+      if (sorted[0]) document.getElementById('w-first').value  = sorted[0].id;
+      if (sorted[1]) document.getElementById('w-second').value = sorted[1].id;
+      if (sorted[2]) document.getElementById('w-third').value  = sorted[2].id;
+      showToast('Autofilled top 3 by score.', 'info');
+    }
+
+    async function announceWinners() {
+      if (!confirm('Announce winners and close submissions? This will be visible on the public page.')) return;
+      await saveWinners();
+      await setStatus('closed');
+    }
+
+    async function setStatus(status) {
+      try {
+        await API.updateCompetition(compId, { status });
+        const labels = { open:'Open', judging:'Judging', closed:'Closed (winners announced)' };
+        showToast(`Status set to: ${labels[status]}`, 'success');
+        await loadData();
+      } catch (err) { showToast('Failed: ' + err.message, 'error'); }
+    }
+  </script>
+</body>
+</html>

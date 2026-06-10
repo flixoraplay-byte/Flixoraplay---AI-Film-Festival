@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Competition — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+    <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="container">
+      <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> Create Competition</div>
+      <h1>Create a Competition</h1>
+      <p>Set up an AI video competition for creators worldwide.</p>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+      <div style="max-width:720px;margin:0 auto;">
+
+        <div class="alert alert-info">
+          After creating your competition, you'll get a link to share with creators. Use the <strong>Judge Panel</strong> to score entries and announce winners.
+        </div>
+
+        <div class="card">
+          <div class="card-header"><svg data-lucide="clapperboard"></svg> Competition Details</div>
+          <div class="card-body">
+            <form id="comp-form" onsubmit="return false;">
+
+              <!-- Basic Info -->
+              <div class="form-group">
+                <label for="c-title">Competition Title <span class="req">*</span></label>
+                <input type="text" id="c-title" placeholder="e.g. Sci-Fi Dreams 2025" />
+              </div>
+
+              <div class="form-group">
+                <label for="c-theme">Theme / Brief <span class="req">*</span></label>
+                <input type="text" id="c-theme" placeholder="e.g. Sci-fi short under 60 seconds" />
+                <div class="form-hint">Tell creators exactly what you want them to make.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="c-desc">Full Description <span class="req">*</span></label>
+                <textarea id="c-desc" rows="4" placeholder="Describe the competition — context, goals, what makes a great entry..."></textarea>
+              </div>
+
+              <hr class="divider" />
+
+              <!-- Settings -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="c-deadline">Submission Deadline <span class="req">*</span></label>
+                  <input type="date" id="c-deadline" />
+                </div>
+                <div class="form-group">
+                  <label for="c-judging">Judging Type <span class="req">*</span></label>
+                  <select id="c-judging">
+                    <option value="manual">Manual (Host judges)</option>
+                    <option value="public" disabled>Public Voting (V2)</option>
+                    <option value="hybrid" disabled>Hybrid (V2)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="c-prize">Prize (optional)</label>
+                  <input type="text" id="c-prize" placeholder="e.g. $500 or Featured on channel" />
+                  <div class="form-hint">Leave blank if no monetary prize.</div>
+                </div>
+                <div class="form-group">
+                  <label for="c-host">Your Name / Studio <span class="req">*</span></label>
+                  <input type="text" id="c-host" placeholder="e.g. Neon Studios" />
+                </div>
+              </div>
+
+              <!-- Max Video Duration -->
+              <div class="form-group">
+                <label for="c-duration">Max Video Duration (seconds) <span class="req">*</span></label>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                  <input type="number" id="c-duration" value="15" min="5" max="600" style="max-width:120px;" />
+                  <div style="display:flex;gap:8px;">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(15)">15s</button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(30)">30s</button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(60)">60s</button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(90)">90s</button>
+                  </div>
+                </div>
+                <div class="form-hint">Default is 15 seconds. Entries exceeding this will be disqualified.</div>
+              </div>
+
+              <hr class="divider" />
+
+              <!-- Rules -->
+              <div class="form-group">
+                <label for="c-rules">Rules &amp; Guidelines (optional)</label>
+                <textarea id="c-rules" rows="3" placeholder="e.g. AI-generated only, no copyrighted music, original work only..."></textarea>
+              </div>
+
+              <!-- Max entries -->
+              <div class="form-group">
+                <label for="c-max">Max Entries (optional)</label>
+                <input type="number" id="c-max" placeholder="Leave blank for unlimited" min="1" style="max-width:200px;" />
+              </div>
+
+              <div style="margin-top:24px;display:flex;gap:12px;">
+              <button class="btn btn-primary" onclick="createCompetition()">
+                <svg data-lucide="plus-circle"></svg> Create Competition
+              </button>
+                <a href="browse.html" class="btn btn-secondary">Cancel</a>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div style="margin-top:28px;">
+          <div class="section-title">Preview</div>
+          <div class="comp-card">
+            <div class="comp-card-thumb">
+              <svg data-lucide="film" style="width:52px;height:52px;"></svg>
+            </div>
+            <div class="comp-card-body">
+              <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;">
+                <span class="badge badge-green"><svg data-lucide="circle-dot" style="width:9px;height:9px;"></svg> Open</span>
+                <span id="prev-prize-badge" style="display:none;" class="badge badge-gold"></span>
+                <span id="prev-duration-badge" class="badge badge-blue"><svg data-lucide="clock" style="width:9px;height:9px;"></svg> Max 15s</span>
+              </div>
+              <div class="comp-card-title" id="prev-title">Your Competition Title</div>
+              <div class="comp-card-desc" id="prev-desc">Your description will appear here...</div>
+              <div style="font-size:0.75rem;color:var(--text-4);display:flex;align-items:center;gap:5px;" id="prev-theme">
+                <svg data-lucide="target" style="width:11px;height:11px;"></svg> Theme: —
+              </div>
+            </div>
+            <div class="comp-card-footer">
+              <span class="text-muted text-small" id="prev-host">by —</span>
+              <span class="text-small text-muted" id="prev-deadline">Deadline: —</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+    // Live preview
+    ['c-title','c-desc','c-theme','c-host','c-deadline','c-prize','c-duration'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updatePreview);
+    });
+
+    function setDuration(secs) {
+      document.getElementById('c-duration').value = secs;
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const title    = document.getElementById('c-title').value || 'Your Competition Title';
+      const desc     = document.getElementById('c-desc').value || 'Your description will appear here...';
+      const theme    = document.getElementById('c-theme').value || '—';
+      const host     = document.getElementById('c-host').value || '—';
+      const deadline = document.getElementById('c-deadline').value;
+      const prize    = document.getElementById('c-prize').value;
+      const duration = document.getElementById('c-duration').value || '15';
+
+      document.getElementById('prev-title').textContent = title;
+      document.getElementById('prev-desc').textContent  = desc;
+      document.getElementById('prev-theme').innerHTML = '<svg data-lucide="target" style="width:11px;height:11px;display:inline;vertical-align:middle;"></svg> ' + theme;
+      lucide.createIcons();
+      document.getElementById('prev-host').textContent  = 'by ' + host;
+      document.getElementById('prev-deadline').textContent = 'Deadline: ' + (deadline ? formatDate(deadline) : '—');
+      document.getElementById('prev-duration-badge').innerHTML = '<svg data-lucide="clock" style="width:9px;height:9px;"></svg> Max ' + duration + 's';
+      lucide.createIcons();
+      const pb = document.getElementById('prev-prize-badge');
+      if (prize) { pb.innerHTML = '<svg data-lucide="dollar-sign" style="width:9px;height:9px;"></svg> ' + prize; pb.style.display = 'inline-flex'; lucide.createIcons(); }
+      else        { pb.style.display = 'none'; }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      const session = getSession();
+      if (!session) {
+        showToast('Please sign in to host a competition.', 'info');
+        setTimeout(() => navigate('login.html'), 1500);
+        return;
+      }
+      document.getElementById('c-host').value = session.username || session.name || '';
+      document.getElementById('c-host').readOnly = true;
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('c-deadline').min = today;
+    });
+
+    function updatePrizeDisplay() {
+      const j = document.getElementById('c-judging').value;
+      const pb = document.getElementById('prize-box');
+      if (j === 'manual') { pb.style.display = 'block'; }
+      else        { pb.style.display = 'none'; }
+    }
+
+    async function createCompetition() {
+      const session = getSession();
+      if (!session) {
+        showToast('You must be signed in.', 'error');
+        return;
+      }
+
+      const title    = document.getElementById('c-title').value.trim();
+      const theme    = document.getElementById('c-theme').value.trim();
+      const desc     = document.getElementById('c-desc').value.trim();
+      const deadline = document.getElementById('c-deadline').value;
+      const judging  = document.getElementById('c-judging').value;
+      const prize    = document.getElementById('c-prize').value.trim();
+      const duration = parseInt(document.getElementById('c-duration').value) || 15;
+
+      if (!title || !theme || !desc || !deadline) {
+        showToast('Please fill in all required fields.', 'error');
+        return;
+      }
+      if (new Date(deadline) < new Date()) {
+        showToast('Deadline must be in the future.', 'error');
+        return;
+      }
+
+      try {
+        const comp = await API.createCompetition({
+          title, theme, description: desc,
+          deadline, judging,
+          prize: prize || null,
+          maxDuration: duration,
+          hostId: session.id,
+          hostName: document.getElementById('c-host').value.trim() || session.username || session.name
+        });
+        showToast('Competition created! Redirecting...', 'success');
+        setTimeout(() => navigate(`competition.html?id=${comp.id}`), 1200);
+      } catch (err) {
+        showToast('Failed to create: ' + err.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

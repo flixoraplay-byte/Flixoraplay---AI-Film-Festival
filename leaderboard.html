@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+    <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link active"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header page-top">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg data-lucide="trophy" style="width:22px;height:22px;color:var(--gold-light);"></svg>
+        <h1>Leaderboard</h1>
+      </div>
+      <p>Top creators ranked by competition wins and scores.</p>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+      <div class="grid-2" style="align-items:start;gap:28px;">
+
+        <!-- CREATORS LEADERBOARD -->
+        <div>
+          <div class="section-title">Top Creators</div>
+          <div class="card">
+            <div class="card-header" style="display:flex;justify-content:space-between;">
+              <span>Creator Rankings</span>
+              <select id="lb-period" style="font-size:0.8rem;padding:3px 8px;width:auto;" onchange="renderCreatorLB()">
+                <option value="all">All Time</option>
+                <option value="month">This Month</option>
+              </select>
+            </div>
+            <div id="creator-lb"></div>
+          </div>
+        </div>
+
+        <!-- TOP ENTRIES -->
+        <div>
+          <div class="section-title">Top Entries</div>
+          <div class="card">
+            <div class="card-header">Highest Scored Videos</div>
+            <div id="top-entries-list"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RECENT COMPETITIONS -->
+      <div style="margin-top:32px;">
+        <div class="section-title">Recently Judged Competitions</div>
+        <div class="grid-auto" id="judged-comps"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let allEntries = [];
+    let allCompetitions = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      try {
+        [allEntries, allCompetitions] = await Promise.all([API.getEntries(), API.getCompetitions()]);
+      } catch (err) { console.error('API error:', err); }
+      renderCreatorLB();
+      renderTopEntries();
+      renderJudgedComps();
+    });
+
+    async function renderCreatorLB() {
+      let leaderboard = [];
+      try { leaderboard = await API.getLeaderboard(); } catch {}
+      const container = document.getElementById('creator-lb');
+      if (leaderboard.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="users"></svg></div><p>No creators yet.</p></div>`;
+        lucide.createIcons(); return;
+      }
+      container.innerHTML = '';
+      leaderboard.forEach((c, i) => {
+        const rank = i + 1;
+        const medalIcon = rank===1?'medal':rank===2?'award':rank===3?'star':'hash';
+        const rankCls = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
+        container.innerHTML += `
+          <div class="ranking-row">
+            <div class="ranking-pos ${rankCls}"><svg data-lucide="${medalIcon}"></svg></div>
+            <div class="ranking-info">
+              <div class="ranking-name">${c.creatorName}</div>
+              <div class="ranking-sub">${c.wins} gold &middot; ${c.p2} silver &middot; ${c.p3} bronze</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="ranking-pts">${c.pts}</div>
+              <div class="ranking-pts-l">pts</div>
+            </div>
+          </div>`;
+      });
+      lucide.createIcons();
+    }
+
+    function renderTopEntries() {
+      const sorted = allEntries.filter(e => e.score !== null && e.score > 0).sort((a,b) => b.score - a.score).slice(0, 10);
+      const container = document.getElementById('top-entries-list');
+      if (sorted.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="video"></svg></div><p>No scored entries yet.</p></div>`;
+        lucide.createIcons(); return;
+      }
+      container.innerHTML = '';
+      sorted.forEach((entry, i) => {
+        const comp = allCompetitions.find(c => c.id === entry.competitionId);
+        const icon = i===0?'medal':i===1?'award':i===2?'star':'hash';
+        const cls  = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+        container.innerHTML += `
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--glass-border);">
+            <div class="ranking-pos ${cls}"><svg data-lucide="${icon}"></svg></div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);">${entry.title}</div>
+              <div style="font-size:0.75rem;color:var(--text-3);">by ${entry.creatorName} &middot; <a href="competition.html?id=${entry.competitionId}">${comp ? comp.title : '&mdash;'}</a></div>
+            </div>
+            <div style="font-weight:800;color:var(--purple-light);font-size:1.1rem;">${entry.score}</div>
+          </div>`;
+      });
+      lucide.createIcons();
+    }
+
+    function renderJudgedComps() {
+      const judged = allCompetitions.filter(c => c.status === 'judging' || c.status === 'closed');
+      const container = document.getElementById('judged-comps');
+      if (judged.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="inbox"></svg></div><p>No judged competitions yet.</p></div>`;
+        lucide.createIcons(); return;
+      }
+      container.innerHTML = '';
+      judged.forEach(comp => {
+        const entries = allEntries.filter(e => e.competitionId === comp.id);
+        const statusBadge = comp.status === 'closed'
+          ? `<span class="badge badge-neutral"><svg data-lucide="lock" style="width:9px;height:9px;"></svg> Closed</span>`
+          : `<span class="badge badge-gold"><svg data-lucide="scale" style="width:9px;height:9px;"></svg> Judging</span>`;
+        const winner = entries.find(e => e.rank === 1);
+        container.innerHTML += `
+          <div class="comp-card">
+            <div class="comp-card-thumb"><svg data-lucide="film" style="width:52px;height:52px;"></svg></div>
+            <div class="comp-card-body">
+              <div style="margin-bottom:8px;">${statusBadge}</div>
+              <div class="comp-card-title">${comp.title}</div>
+              ${winner ? `<div style="font-size:0.82rem;color:var(--text-3);margin-bottom:6px;display:flex;gap:5px;align-items:center;"><svg data-lucide="trophy" style="width:12px;height:12px;color:var(--gold-light);"></svg> <strong>${winner.title}</strong> by ${winner.creatorName}</div>` : ''}
+              <div class="text-muted text-sm">${entries.length} entries &middot; by ${comp.hostName}</div>
+            </div>
+            <div class="comp-card-footer">
+              <span class="text-muted" style="font-size:0.78rem;">${formatDate(comp.deadline)}</span>
+              <a href="competition.html?id=${comp.id}" class="btn btn-sm btn-outline"><svg data-lucide="arrow-right"></svg> View</a>
+            </div>
+          </div>`;
+      });
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

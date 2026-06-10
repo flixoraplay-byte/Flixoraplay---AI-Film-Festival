@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .auth-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: calc(var(--nav-h) + 32px) 16px 60px;
+    }
+    .auth-box { width: 100%; max-width: 480px; }
+    .auth-logo-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: var(--purple-dim);
+      border: 1px solid rgba(139,92,246,0.25);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      color: var(--purple-light);
+    }
+    .auth-logo-icon svg { width: 26px; height: 26px; }
+    .capability-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 22px; }
+    .capability-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      transition: all var(--t);
+    }
+    .capability-card:hover { background: var(--glass-2); border-color: var(--glass-border-2); }
+    .capability-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 8px;
+    }
+    .capability-icon svg { width: 18px; height: 18px; }
+    .capability-icon.host    { background: var(--purple-dim); color: var(--purple-light); }
+    .capability-icon.compete { background: var(--green-dim);  color: var(--green-light); }
+    .capability-icon.rank    { background: var(--gold-dim);   color: var(--gold-light); }
+    .capability-title { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .capability-desc  { font-size: 0.7rem; color: var(--text-3); line-height: 1.35; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">
+        <svg data-lucide="home"></svg> Home
+      </a>
+      <a href="browse.html" class="nav-link">
+        <svg data-lucide="compass"></svg> Browse
+      </a>
+      <a href="leaderboard.html" class="nav-link">
+        <svg data-lucide="bar-chart-2"></svg> Leaderboard
+      </a>
+      <a href="about.html" class="nav-link">
+        <svg data-lucide="info"></svg> About
+      </a>
+    </div>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline btn-sm">
+        <svg data-lucide="log-in"></svg> Sign In
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-box">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div class="auth-logo-icon">
+        <svg data-lucide="user-plus"></svg>
+      </div>
+      <h1 style="font-size:1.5rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:6px;">Create your account</h1>
+      <p class="text-muted" style="font-size:0.875rem;">One account. Host, compete, and vote — all in one place.</p>
+    </div>
+
+    <!-- Capabilities -->
+    <div class="capability-grid">
+      <div class="capability-card">
+        <div class="capability-icon host"><svg data-lucide="megaphone"></svg></div>
+        <div class="capability-title">Host</div>
+        <div class="capability-desc">Create competitions &amp; judge entries</div>
+      </div>
+      <div class="capability-card">
+        <div class="capability-icon compete"><svg data-lucide="clapperboard"></svg></div>
+        <div class="capability-title">Compete</div>
+        <div class="capability-desc">Submit AI videos &amp; win prizes</div>
+      </div>
+      <div class="capability-card">
+        <div class="capability-icon rank"><svg data-lucide="bar-chart-2"></svg></div>
+        <div class="capability-title">Rank Up</div>
+        <div class="capability-desc">Build your global ranking</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body" style="padding:28px;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="r-fname">First Name <span class="req">*</span></label>
+            <input type="text" id="r-fname" placeholder="First name" />
+          </div>
+          <div class="form-group">
+            <label for="r-lname">Last Name</label>
+            <input type="text" id="r-lname" placeholder="Last name" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="r-display">
+            <svg data-lucide="user" style="width:13px;height:13px;display:inline;vertical-align:middle;margin-right:4px;"></svg>
+            Display Name <span class="req">*</span>
+          </label>
+          <input type="text" id="r-display" placeholder="How you'll appear on the platform" />
+          <div class="form-hint">This is your public creator name visible on leaderboards and entries.</div>
+        </div>
+        <div class="form-group">
+          <label for="r-email">
+            <svg data-lucide="mail" style="width:13px;height:13px;display:inline;vertical-align:middle;margin-right:4px;"></svg>
+            Email <span class="req">*</span>
+          </label>
+          <input type="email" id="r-email" placeholder="you@example.com" />
+        </div>
+        <div class="form-group" style="margin-bottom:24px;">
+          <label for="r-password">
+            <svg data-lucide="lock" style="width:13px;height:13px;display:inline;vertical-align:middle;margin-right:4px;"></svg>
+            Password <span class="req">*</span>
+          </label>
+          <input type="password" id="r-password" placeholder="Minimum 6 characters" />
+        </div>
+
+        <button class="btn btn-primary w-full" onclick="handleRegister()" style="justify-content:center;">
+          <svg data-lucide="user-plus"></svg> Create Free Account
+        </button>
+
+        <div class="divider" style="margin:22px 0;"></div>
+        <p style="text-align:center;font-size:0.875rem;color:var(--text-3);">
+          Already have an account?
+          <a href="login.html" style="color:var(--purple-light);font-weight:600;">Sign in</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="alert alert-info" style="margin-top:16px;">
+      <svg data-lucide="info"></svg>
+      <div><strong>Note:</strong> Since this is a demo, password verification is turned off for login. You still need an account to host/compete.</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="js/app.js"></script>
+<script>
+  lucide.createIcons();
+
+  async function handleRegister() {
+    const fname    = document.getElementById('r-fname').value.trim();
+    const display  = document.getElementById('r-display').value.trim();
+    const email    = document.getElementById('r-email').value.trim();
+    const password = document.getElementById('r-password').value.trim();
+
+    if (!fname || !display || !email || !password) {
+      showToast('Please fill in all required fields.', 'error'); return;
+    }
+    if (!email.includes('@')) { showToast('Invalid email address.', 'error'); return; }
+    if (password.length < 6)  { showToast('Password must be at least 6 characters.', 'error'); return; }
+
+    try {
+      const user = await API.register(email, password, display);
+      setSession(user);
+      showToast('Account created! Welcome, ' + display, 'success');
+      setTimeout(() => navigate('browse.html'), 1000);
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleRegister();
+  });
+</script>
+</body>
+</html>

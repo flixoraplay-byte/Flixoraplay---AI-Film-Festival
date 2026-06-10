@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Competition — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link active"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header" id="comp-header">
+    <div class="container">
+      <div class="breadcrumb"><a href="browse.html">Browse</a> <span>›</span> <span id="header-title">Loading...</span></div>
+      <div class="header-row">
+        <div>
+          <h1 id="comp-title">Loading...</h1>
+          <p id="comp-theme" class="text-muted text-small"></p>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <a href="#" id="submit-btn" class="btn btn-primary">Submit Your Video</a>
+          <a href="#" id="judge-btn" class="btn btn-outline" style="display:none;"><svg data-lucide="gavel"></svg> Judge Entries</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+      <div class="layout-sidebar">
+
+        <!-- MAIN CONTENT -->
+        <div style="grid-column:2;grid-row:1;">
+
+          <!-- Tabs: Entries / About / Winners -->
+          <div class="tabs">
+            <button class="tab-btn" data-tab="entries"><svg data-lucide="film"></svg> Video Entries</button>
+            <button class="tab-btn" data-tab="about"><svg data-lucide="list"></svg> Details</button>
+            <button class="tab-btn" data-tab="winners"><svg data-lucide="trophy"></svg> Winners</button>
+          </div>
+          <div class="alert alert-info" style="font-size:0.82rem;margin-bottom:16px;">
+            <svg data-lucide="eye"></svg>
+            <span><strong>Viewers:</strong> Watch the entries below and vote for your favorites. Public votes are visible to the judge.</span>
+          </div>
+
+          <!-- Entries Tab -->
+          <div class="tab-panel" data-tab="entries">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <strong id="entry-count">0 entries</strong>
+              <select id="entry-sort" style="max-width:180px;width:auto;">
+                <option value="newest">Newest First</option>
+                <option value="score">Highest Score</option>
+                <option value="votes">Most Votes</option>
+              </select>
+            </div>
+            <div class="grid-auto" id="entries-grid">
+              <div class="empty-state"><div class="icon"><svg data-lucide="loader"></svg></div><p>Loading...</p></div>
+            </div>
+          </div>
+
+          <!-- About Tab -->
+          <div class="tab-panel" data-tab="about">
+            <div class="card">
+              <div class="card-body">
+                <h3 style="font-size:1rem;margin-bottom:12px;">Competition Details</h3>
+                <p id="comp-description" style="color:#555;margin-bottom:16px;"></p>
+                <hr class="divider" />
+                <table style="width:auto;">
+                  <tbody id="comp-details-table"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Winners Tab -->
+          <div class="tab-panel" data-tab="winners">
+            <div id="winners-section"></div>
+          </div>
+
+        </div>
+
+        <!-- SIDEBAR -->
+        <div style="grid-column:1;grid-row:1;" class="sidebar-panel">
+          <div class="sidebar-header">Competition Info</div>
+          <div class="sidebar-body" id="sidebar-info"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Entry Modal -->
+  <div class="modal-overlay hidden" id="submit-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <span>Submit Your Video Entry</span>
+        <button class="modal-close" onclick="closeModal()"><svg data-lucide="x"></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info">Make sure your video is AI-generated. Submission = you agree to the competition rules.</div>
+        <div class="form-group">
+          <label for="e-title">Video Title <span class="req">*</span></label>
+          <input type="text" id="e-title" placeholder="e.g. The Last Frontier" />
+        </div>
+        <div class="form-group">
+          <label for="e-desc">Description <span class="req">*</span></label>
+          <textarea id="e-desc" placeholder="Describe your video — concept, process, inspiration..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="e-url">Video URL <span class="req">*</span></label>
+          <input type="url" id="e-url" placeholder="https://youtube.com/watch?v=..." />
+          <div class="form-hint">YouTube or Vimeo link. Direct file upload coming in V2.</div>
+        </div>
+        <div class="form-group">
+          <label for="e-creator">Your Name <span class="req">*</span></label>
+          <input type="text" id="e-creator" placeholder="Your display name" />
+        </div>
+        <div class="form-group">
+          <label for="e-tools">AI Tools Used</label>
+          <input type="text" id="e-tools" placeholder="e.g. Runway ML, Midjourney, Sora" />
+          <div class="form-hint">Comma-separated list of AI tools you used.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitEntry()">Submit Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const compId = getParam('id');
+    let competition = null;
+    let compEntries = [];
+
+    document.getElementById('entry-sort').addEventListener('change', () => renderEntriesUI());
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      if (!compId) { window.location.href = 'browse.html'; return; }
+
+      try { competition = await API.getCompetition(compId); }
+      catch { document.getElementById('comp-title').textContent = 'Competition not found'; return; }
+
+      document.title = competition.title + ' — FlixoraPlay';
+      document.getElementById('comp-title').textContent = competition.title;
+      document.getElementById('header-title').textContent = competition.title;
+      document.getElementById('comp-theme').innerHTML = '<svg data-lucide="target" style="width:13px;height:13px;display:inline;vertical-align:middle;"></svg> ' + (competition.theme || '');
+      lucide.createIcons();
+      document.getElementById('comp-description').textContent = competition.description;
+
+      const submitBtn = document.getElementById('submit-btn');
+      const judgeBtn  = document.getElementById('judge-btn');
+      submitBtn.setAttribute('href', '#');
+      submitBtn.setAttribute('onclick', 'openModal(); return false;');
+      if (competition.status !== 'open') {
+        submitBtn.textContent = 'Submissions Closed';
+        submitBtn.classList.add('btn-secondary');
+        submitBtn.classList.remove('btn-primary');
+        submitBtn.setAttribute('onclick', '');
+      }
+      judgeBtn.style.display = 'inline-block';
+      judgeBtn.setAttribute('href', `judge.html?id=${compId}`);
+
+      const days = daysRemaining(competition.deadline);
+      const statusLabel = { open: '<svg data-lucide="circle-dot" style="width:12px;height:12px;display:inline;vertical-align:middle;color:var(--green-light);"></svg> Open', judging: '<svg data-lucide="scale" style="width:12px;height:12px;display:inline;vertical-align:middle;color:var(--gold-light);"></svg> Judging', closed: '<svg data-lucide="lock" style="width:12px;height:12px;display:inline;vertical-align:middle;color:var(--text-3);"></svg> Closed' }[competition.status] || competition.status;
+      document.getElementById('sidebar-info').innerHTML = `
+        <div class="sidebar-info-row"><span class="label">Status</span><span class="value">${statusLabel}</span></div>
+        <div class="sidebar-info-row"><span class="label">Hosted by</span><span class="value">${competition.hostName}</span></div>
+        <div class="sidebar-info-row"><span class="label">Deadline</span><span class="value">${formatDate(competition.deadline)}</span></div>
+        <div class="sidebar-info-row"><span class="label">Days Left</span><span class="value">${days > 0 ? days : 'Ended'}</span></div>
+        <div class="sidebar-info-row"><span class="label">Max Duration</span><span class="value">${competition.maxDuration || 15}s</span></div>
+        <div class="sidebar-info-row"><span class="label">Prize</span><span class="value">${competition.prize || 'No prize'}</span></div>
+        <div class="sidebar-info-row"><span class="label">Judging</span><span class="value">Manual</span></div>
+        <div style="margin-top:14px;"><a href="judge.html?id=${compId}" class="btn btn-outline w-full" style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg data-lucide="gavel" style="width:13px;height:13px;"></svg> Open Judge Panel</a></div>`;
+      lucide.createIcons();
+
+      document.getElementById('comp-details-table').innerHTML = `
+        <tr><td style="color:var(--text-3);padding:6px 16px 6px 0;">Theme</td><td><strong>${competition.theme || ''}</strong></td></tr>
+        <tr><td style="color:var(--text-3);padding:6px 16px 6px 0;">Deadline</td><td><strong>${formatDate(competition.deadline)}</strong></td></tr>
+        <tr><td style="color:var(--text-3);padding:6px 16px 6px 0;">Max Duration</td><td><strong>${competition.maxDuration || 15} seconds</strong></td></tr>
+        <tr><td style="color:var(--text-3);padding:6px 16px 6px 0;">Prize</td><td><strong>${competition.prize || 'No prize'}</strong></td></tr>
+        <tr><td style="color:#888;padding:6px 16px 6px 0;">Judging</td><td><strong>Manual (Host-selected winners)</strong></td></tr>
+        <tr><td style="color:#888;padding:6px 16px 6px 0;">Created</td><td><strong>${formatDate(competition.createdAt)}</strong></td></tr>`;
+
+      await loadEntries();
+    });
+
+    async function loadEntries() {
+      try { compEntries = await API.getEntries(compId); } catch { compEntries = []; }
+      renderEntriesUI();
+      renderWinners();
+    }
+
+    function renderEntriesUI() {
+      let entries = [...compEntries];
+      const sort = document.getElementById('entry-sort').value;
+      if (sort === 'score') entries.sort((a,b) => (b.score||0) - (a.score||0));
+      else if (sort === 'votes') entries.sort((a,b) => (b.votes||0) - (a.votes||0));
+      else entries.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+      document.getElementById('entry-count').textContent = entries.length + ' entr' + (entries.length !== 1 ? 'ies' : 'y');
+      const grid = document.getElementById('entries-grid');
+      if (entries.length === 0) {
+        grid.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="video"></svg></div><h3>No entries yet</h3><p>Be the first to submit!</p><button class="btn btn-primary btn-sm" onclick="openModal()"><svg data-lucide="upload"></svg> Submit Entry</button></div>`;
+        lucide.createIcons(); return;
+      }
+      grid.innerHTML = '';
+      const votedEntries = Store.get('voted_entries', []);
+      entries.forEach(entry => {
+        const tools = Array.isArray(entry.tools) ? entry.tools : [];
+        const rankClass = entry.rank === 1 ? 'rank-1' : entry.rank === 2 ? 'rank-2' : entry.rank === 3 ? 'rank-3' : '';
+        const rankIcon = entry.rank === 1 ? 'medal' : entry.rank === 2 ? 'award' : entry.rank === 3 ? 'star' : '';
+        const alreadyVoted = votedEntries.includes(entry.id);
+        grid.innerHTML += `
+          <div class="entry-card">
+            <div class="entry-thumb">
+              ${entry.rank ? `<div class="rank-badge ${rankClass}"><svg data-lucide="${rankIcon}"></svg></div>` : ''}
+              <svg data-lucide="film"></svg>
+            </div>
+            <div class="entry-body">
+              <div class="entry-title">${entry.title}</div>
+              <div class="entry-creator"><svg data-lucide="user" style="width:11px;height:11px;"></svg>${entry.creatorName} &nbsp;&middot;&nbsp; ${formatDate(entry.submittedAt)}</div>
+              <div class="entry-tools">${tools.map(t => `<span class="tool-tag">${t}</span>`).join('')}</div>
+              ${entry.description ? `<p style="font-size:0.8rem;color:var(--text-3);margin-top:6px;line-height:1.5;">${entry.description}</p>` : ''}
+            </div>
+            <div class="entry-footer">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <button class="vote-btn ${alreadyVoted ? 'voted' : ''}" onclick="castVote('${entry.id}', this)">
+                  ${alreadyVoted ? '<svg data-lucide="check"></svg> Voted' : '<svg data-lucide="thumbs-up"></svg> Vote'}
+                  <span id="vc-${entry.id}">${entry.votes || 0}</span>
+                </button>
+                ${entry.score ? `<span style="font-size:0.78rem;color:var(--text-3);">Score: <strong style="color:var(--purple)">${entry.score}</strong></span>` : ''}
+              </div>
+              <a href="${entry.videoUrl}" target="_blank" class="btn btn-sm btn-outline"><svg data-lucide="play"></svg> Watch</a>
+            </div>
+          </div>`;
+      });
+      lucide.createIcons();
+    }
+
+    function renderWinners() {
+      const sec = document.getElementById('winners-section');
+      const winners = compEntries.filter(e => e.rank && e.rank <= 3).sort((a,b) => a.rank - b.rank);
+      if (winners.length === 0) {
+        sec.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="trophy"></svg></div><h3>Winners not announced yet</h3><p>Check back after judging is complete.</p></div>`;
+        lucide.createIcons(); return;
+      }
+      const medals = { 1: { icon:'medal', cls:'rank-1', label:'1st Place' }, 2: { icon:'award', cls:'rank-2', label:'2nd Place' }, 3: { icon:'star', cls:'rank-3', label:'3rd Place' } };
+      sec.innerHTML = `<div class="alert alert-success"><svg data-lucide="check-circle"></svg> <span>Winners have been officially announced!</span></div>`;
+      winners.forEach(entry => {
+        const m = medals[entry.rank]; if (!m) return;
+        const tools = Array.isArray(entry.tools) ? entry.tools : [];
+        sec.innerHTML += `
+          <div class="card" style="margin-bottom:14px;">
+            <div class="card-body" style="display:flex;align-items:center;gap:16px;">
+              <div class="ranking-pos ${m.cls}" style="width:40px;height:40px;flex-shrink:0;"><svg data-lucide="${m.icon}"></svg></div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:0.95rem;color:var(--text);">${entry.title}</div>
+                <div style="font-size:0.78rem;color:var(--text-3);margin-bottom:4px;">${m.label} &middot; by ${entry.creatorName}</div>
+                <div class="entry-tools">${tools.map(t => `<span class="tool-tag">${t}</span>`).join('')}</div>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-size:1.2rem;font-weight:800;color:var(--purple-light);">${entry.score || '—'}</div>
+                <div style="font-size:0.68rem;color:var(--text-4);margin-bottom:8px;">score</div>
+                <a href="${entry.videoUrl}" target="_blank" class="btn btn-sm btn-primary"><svg data-lucide="play"></svg> Watch</a>
+              </div>
+            </div>
+          </div>`;
+      });
+      lucide.createIcons();
+    }
+
+    function openModal() {
+      const session = getSession();
+      if (!session) {
+        showToast('Please sign in to submit an entry.', 'info');
+        setTimeout(() => navigate('login.html'), 1500);
+        return;
+      }
+      document.getElementById('e-creator').value = session.username || session.name || '';
+      document.getElementById('e-creator').readOnly = true;
+      document.getElementById('submit-modal').classList.remove('hidden');
+    }
+    function closeModal() { document.getElementById('submit-modal').classList.add('hidden'); }
+
+    async function castVote(entryId, btn) {
+      const votedEntries = Store.get('voted_entries', []);
+      if (votedEntries.includes(entryId)) { showToast('You already voted for this entry.', 'info'); return; }
+      try {
+        const result = await API.vote(entryId);
+        votedEntries.push(entryId); Store.set('voted_entries', votedEntries);
+        const cntEl = document.getElementById('vc-' + entryId);
+        if (cntEl) cntEl.textContent = result.votes;
+        btn.classList.add('voted');
+        btn.innerHTML = `<svg data-lucide="check" style="width:14px;height:14px;"></svg> Voted <span id="vc-${entryId}">${result.votes}</span>`;
+        lucide.createIcons();
+        showToast('Vote cast! Your vote counts.', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    async function submitEntry() {
+      const session = getSession();
+      if (!session) {
+        showToast('You must be signed in.', 'error');
+        return;
+      }
+
+      const title = document.getElementById('e-title').value.trim();
+      const desc = document.getElementById('e-desc').value.trim();
+      const url = document.getElementById('e-url').value.trim();
+      const toolsRaw = document.getElementById('e-tools').value.trim();
+
+      if (!title || !desc || !url) { showToast('Please fill in all required fields.', 'error'); return; }
+      if (!url.startsWith('http')) { showToast('Please enter a valid video URL.', 'error'); return; }
+      const tools = toolsRaw ? toolsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+      try {
+        await API.submitEntry({
+          competitionId: compId,
+          title, description: desc, videoUrl: url,
+          creatorId: session.id,
+          creatorName: session.username || session.name,
+          tools
+        });
+        closeModal();
+        showToast('Entry submitted successfully!', 'success');
+        ['e-title','e-desc','e-url','e-tools'].forEach(id => document.getElementById(id).value = '');
+        await loadEntries();
+      } catch (err) { showToast('Failed to submit: ' + err.message, 'error'); }
+    }
+
+    document.getElementById('submit-modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+  </script>
+</body>
+</html>

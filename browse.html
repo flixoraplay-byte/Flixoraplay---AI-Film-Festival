@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Competitions — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+    <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link active"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="container">
+      <h1>Browse Competitions</h1>
+      <p>Find AI video competitions to join or follow.</p>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+
+      <!-- Filters -->
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:24px;flex-wrap:wrap;">
+        <input type="text" id="search-input" placeholder="Search competitions..." style="max-width:280px;" />
+        <select id="status-filter" style="max-width:180px;">
+          <option value="all">All Status</option>
+          <option value="open">Open</option>
+          <option value="judging">Judging</option>
+          <option value="closed">Closed</option>
+        </select>
+        <select id="sort-select" style="max-width:200px;">
+          <option value="newest">Newest First</option>
+          <option value="deadline">Deadline Soon</option>
+          <option value="prize">Has Prize</option>
+        </select>
+        <span id="result-count" class="text-muted text-small"></span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs" id="browse-tabs">
+        <button class="tab-btn active" data-tab="all"     onclick="filterTab('all')"><svg data-lucide="layout-grid"></svg> All</button>
+        <button class="tab-btn"        data-tab="open"    onclick="filterTab('open')"><svg data-lucide="circle-dot"></svg> Open</button>
+        <button class="tab-btn"        data-tab="judging" onclick="filterTab('judging')"><svg data-lucide="scale"></svg> Judging</button>
+        <button class="tab-btn"        data-tab="closed"  onclick="filterTab('closed')"><svg data-lucide="lock"></svg> Closed</button>
+      </div>
+
+      <!-- Grid -->
+      <div class="grid-auto" id="comp-grid">
+        <div class="empty-state"><div class="icon"><svg data-lucide="loader"></svg></div><p>Loading...</p></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let allCompetitions = [];
+    let allEntries = [];
+    let currentTab = 'all';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+
+      try {
+        [allCompetitions, allEntries] = await Promise.all([
+          API.getCompetitions(),
+          API.getEntries()
+        ]);
+      } catch (err) {
+        console.error('API error:', err);
+        document.getElementById('comp-grid').innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="wifi-off"></svg></div><h3>Could not load data</h3><p>${err.message}</p></div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      renderCompetitions();
+
+      document.getElementById('search-input').addEventListener('input', renderCompetitions);
+      document.getElementById('status-filter').addEventListener('change', renderCompetitions);
+      document.getElementById('sort-select').addEventListener('change', renderCompetitions);
+
+      // Check URL param for pre-filter
+      const filterParam = getParam('filter');
+      if (filterParam) {
+        filterTab(filterParam);
+        const btn = document.querySelector(`[data-tab="${filterParam}"]`);
+        if (btn) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+      }
+    });
+
+    function filterTab(tab) {
+      currentTab = tab;
+      renderCompetitions();
+    }
+
+    function renderCompetitions() {
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const sort   = document.getElementById('sort-select').value;
+
+      let comps = [...allCompetitions];
+
+      // Tab filter
+      if (currentTab !== 'all') comps = comps.filter(c => c.status === currentTab);
+
+      // Search
+      if (search) comps = comps.filter(c =>
+        c.title.toLowerCase().includes(search) ||
+        c.description.toLowerCase().includes(search) ||
+        (c.theme || '').toLowerCase().includes(search)
+      );
+
+      // Sort
+      if (sort === 'deadline') comps.sort((a,b) => new Date(a.deadline) - new Date(b.deadline));
+      else if (sort === 'prize') comps = comps.filter(c => c.prize).concat(comps.filter(c => !c.prize));
+      else comps.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      document.getElementById('result-count').textContent = `${comps.length} competition${comps.length !== 1 ? 's' : ''}`;
+
+      const grid = document.getElementById('comp-grid');
+      if (comps.length === 0) {
+        grid.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="inbox"></svg></div><h3>No competitions found</h3><p>Try adjusting your filters.</p></div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      grid.innerHTML = '';
+      comps.forEach(comp => {
+        const days  = daysRemaining(comp.deadline);
+        const pct   = deadlinePercent(comp.createdAt, comp.deadline);
+        const statusBadge = {
+          open:    `<span class="badge badge-green"><svg data-lucide="circle-dot" style="width:9px;height:9px;"></svg> Open</span>`,
+          judging: `<span class="badge badge-gold"><svg data-lucide="scale" style="width:9px;height:9px;"></svg> Judging</span>`,
+          closed:  `<span class="badge badge-neutral"><svg data-lucide="lock" style="width:9px;height:9px;"></svg> Closed</span>`,
+        }[comp.status] || '';
+        const entries = allEntries.filter(e => e.competitionId === comp.id);
+
+        grid.innerHTML += `
+          <div class="comp-card">
+            <div class="comp-card-thumb">
+              <svg data-lucide="film" style="width:52px;height:52px;"></svg>
+            </div>
+            <div class="comp-card-body">
+              <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;">
+                ${statusBadge}
+                ${comp.prize ? `<span class="badge badge-gold"><svg data-lucide="dollar-sign" style="width:9px;height:9px;"></svg> ${comp.prize}</span>` : ''}
+                ${comp.maxDuration ? `<span class="badge badge-blue"><svg data-lucide="clock" style="width:9px;height:9px;"></svg> ${comp.maxDuration}s</span>` : ''}
+                ${comp.judging === 'manual' ? '<span class="badge badge-blue"><svg data-lucide="scale" style="width:9px;height:9px;"></svg> Manual</span>' : ''}
+              </div>
+              <div class="comp-card-title">${comp.title}</div>
+              <div class="comp-card-desc">${comp.description}</div>
+              <div style="font-size:0.75rem;color:var(--text-4);margin-bottom:8px;display:flex;align-items:center;gap:5px;">
+                <svg data-lucide="target" style="width:11px;height:11px;"></svg> ${comp.theme || ''}
+              </div>
+              ${comp.status === 'open' ? `
+              <div class="deadline-wrap">
+                <div class="deadline-bar"><div class="deadline-fill" style="width:${pct}%"></div></div>
+                <div class="deadline-label"><svg data-lucide="calendar"></svg> ${days > 0 ? days + ' days left' : 'Deadline passed'} &middot; ${formatDate(comp.deadline)}</div>
+              </div>` : ''}
+            </div>
+            <div class="comp-card-footer">
+              <span style="display:flex;align-items:center;gap:5px;color:var(--text-3);font-size:0.78rem;">
+                <svg data-lucide="user" style="width:11px;height:11px;"></svg>${comp.hostName} &middot; ${entries.length} entr${entries.length!==1?'ies':'y'}
+              </span>
+              <a href="competition.html?id=${comp.id}" class="btn btn-sm btn-primary"><svg data-lucide="arrow-right"></svg> View</a>
+            </div>
+          </div>`;
+        lucide.createIcons();
+      });
+    }
+  </script>
+</body>
+</html>

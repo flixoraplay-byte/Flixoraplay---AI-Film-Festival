@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+    <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link active"><svg data-lucide="info"></svg> About</a>      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header page-top">
+    <div class="container">
+      <h1>About FlixoraPlay</h1>
+      <p>The AI Film Festival Platform — coming soon.</p>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+      <div style="max-width:760px;margin:0 auto;">
+
+        <!-- Placeholder content area -->
+        <div class="empty-state" style="padding:80px 20px;border:1.5px dashed var(--glass-border-2);border-radius:var(--radius-lg);background:var(--glass);backdrop-filter:blur(12px);">
+          <div class="icon"><svg data-lucide="film"></svg></div>
+          <h3>About Section</h3>
+          <p>This page is reserved for platform information.<br/>Content will be added in an upcoming version.</p>
+        </div>
+
+        <!-- Placeholder sections structure (empty) -->
+        <div style="margin-top:40px;display:flex;flex-direction:column;gap:28px;">
+
+          <div class="card">
+            <div class="card-header">Our Mission</div>
+            <div class="card-body" style="color:#bbb;font-style:italic;">
+              Content coming soon...
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">The Team</div>
+            <div class="card-body" style="color:#bbb;font-style:italic;">
+              Content coming soon...
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Contact &amp; Press</div>
+            <div class="card-body" style="color:#bbb;font-style:italic;">
+              Content coming soon...
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span style="color:var(--purple-light);">Play</span></div>
+        <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform &nbsp;&middot;&nbsp; Version 3</p>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
+        <a href="browse.html">Browse</a>
+        <a href="create-competition.html">Host</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="about.html">About</a>
+        <a href="login.html">Sign In</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', () => lucide.createIcons());</script>
+</body>
+</html>
