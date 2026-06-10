@@ -12,8 +12,14 @@ const API = {
     }
     return headers;
   },
-  async getCompetitions() {
-    const r = await fetch(`${API_BASE}/competitions`, {
+  async getCompetitions(filters = {}) {
+    const params = new URLSearchParams();
+    if (filters.search) params.append('search', filters.search);
+    if (filters.category) params.append('category', filters.category);
+    if (filters.sort) params.append('sort', filters.sort);
+
+    const url = params.toString() ? `${API_BASE}/competitions?${params.toString()}` : `${API_BASE}/competitions`;
+    const r = await fetch(url, {
       headers: this.getHeaders()
     });
     if (!r.ok) throw new Error('Failed to load competitions');

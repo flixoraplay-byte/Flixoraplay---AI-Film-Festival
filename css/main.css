@@ -1200,3 +1200,59 @@ tbody tr:last-child td { border-bottom: none; }
   }
 }
 
+/* ── Task 5: Category Pills & Search Bar ─────────────── */
+.category-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  scrollbar-width: none; /* Firefox */
+}
+.category-pills::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+.category-pill {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text-2);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all var(--t);
+  white-space: nowrap;
+}
+.category-pill:hover {
+  background: var(--glass-2);
+  color: var(--text);
+  border-color: var(--glass-border-2);
+}
+.category-pill.active {
+  background: var(--purple-dim);
+  color: var(--purple-light);
+  border-color: rgba(139,92,246,0.4);
+  box-shadow: 0 0 12px rgba(139,92,246,0.15);
+}
+
+.search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 250px;
+}
+.search-wrapper input {
+  width: 100%;
+  padding-left: 40px;
+}
+.search-icon-inside {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  pointer-events: none;
+  width: 16px;
+  height: 16px;
+}
+
+
