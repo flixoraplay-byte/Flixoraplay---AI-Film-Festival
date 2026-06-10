@@ -17,6 +17,7 @@ const API = {
     if (filters.search) params.append('search', filters.search);
     if (filters.category) params.append('category', filters.category);
     if (filters.sort) params.append('sort', filters.sort);
+    if (filters.is_brand_brief !== undefined) params.append('is_brand_brief', filters.is_brand_brief);
 
     const url = params.toString() ? `${API_BASE}/competitions?${params.toString()}` : `${API_BASE}/competitions`;
     const r = await fetch(url, {
@@ -165,6 +166,23 @@ const API = {
       headers: this.getHeaders()
     });
     if (!r.ok) throw new Error('Failed to load payment history');
+    return r.json();
+  },
+  async registerBrand(companyName, website, industry, logoUrl) {
+    const r = await fetch(`${API_BASE}/brands`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify({ companyName, website, industry, logoUrl })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Brand registration failed');
+    return data;
+  },
+  async getBrand(id) {
+    const r = await fetch(`${API_BASE}/brands/${id}`, {
+      headers: this.getHeaders()
+    });
+    if (!r.ok) throw new Error('Brand not found');
     return r.json();
   }
 };
@@ -447,6 +465,18 @@ function toggleInlinePlayer(entryId, url) {
 
 // ── Init on load ──────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Inject AdArena navigation link dynamically on all pages
+  const navLinksContainer = document.querySelector('.nav-links');
+  if (navLinksContainer && !navLinksContainer.querySelector('a[href="adarena.html"]')) {
+    const browseLink = navLinksContainer.querySelector('a[href="browse.html"]');
+    const adarenaHTML = `<a href="adarena.html" class="nav-link"><svg data-lucide="briefcase"></svg> AdArena</a>`;
+    if (browseLink) {
+      browseLink.insertAdjacentHTML('afterend', adarenaHTML);
+    } else {
+      navLinksContainer.insertAdjacentHTML('beforeend', adarenaHTML);
+    }
+  }
+
   setActiveNav();
   initTabs();
   updateNavForAuth();

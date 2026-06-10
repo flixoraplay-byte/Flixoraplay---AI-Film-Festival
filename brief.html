@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brand Brief Details — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Brief Header -->
+  <div class="page-header page-top" id="brief-header">
+    <div class="container">
+      <div class="breadcrumb"><a href="adarena.html">AdArena</a> <span>›</span> <span id="header-title">Brief Details</span></div>
+      <div class="header-row">
+        <div>
+          <span class="badge badge-purple" style="margin-bottom:8px;" id="brief-category">Category</span>
+          <h1 id="brief-title">Loading Brand Brief...</h1>
+          <p id="brief-brand" class="text-muted text-small" style="display:flex; align-items:center; gap:6px;"></p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button id="submit-btn" class="btn btn-primary" onclick="openSubmitModal()">Submit Ad Entry</button>
+          <button id="judge-btn" class="btn btn-gold" style="display:none;" onclick="openWinnerModal()"><svg data-lucide="award"></svg> Award Prizes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+      <div class="layout-sidebar">
+        
+        <!-- Main Panel -->
+        <div style="grid-column:2; grid-row:1;">
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="brief-info"><svg data-lucide="list"></svg> Campaign Details</button>
+            <button class="tab-btn" data-tab="submissions"><svg data-lucide="film"></svg> Submissions (<span id="submission-count">0</span>)</button>
+            <button class="tab-btn" data-tab="winners"><svg data-lucide="trophy"></svg> Winners</button>
+          </div>
+
+          <!-- Campaign Details -->
+          <div class="tab-panel active" data-tab="brief-info">
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-body">
+                <h3>Brief Requirements</h3>
+                <p id="brief-desc" style="white-space:pre-wrap; line-height:1.6; color:var(--text-3); margin-bottom:24px;"></p>
+                
+                <hr class="divider" />
+                <h3 style="margin-top:20px;">Usage Rights Notice</h3>
+                <div class="alert alert-info">
+                  <svg data-lucide="shield-check"></svg>
+                  <span>By submitting to this brief, you agree that the chosen winner grants the brand partner full, royalty-free commercial usage rights for marketing and promotional distribution.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submissions -->
+          <div class="tab-panel" data-tab="submissions">
+            <div class="grid-auto" id="submissions-grid">
+              <div class="empty-state"><div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div><p>Loading entries...</p></div>
+            </div>
+          </div>
+
+          <!-- Winners -->
+          <div class="tab-panel" data-tab="winners">
+            <div id="winners-section"></div>
+          </div>
+        </div>
+
+        <!-- Sidebar Info -->
+        <div style="grid-column:1; grid-row:1;" class="sidebar-panel">
+          <div class="sidebar-header">Campaign Info</div>
+          <div class="sidebar-body" id="sidebar-info">
+            <div class="sidebar-info-row"><span class="label">Status</span><span class="value" id="brief-status">Pending</span></div>
+            <div class="sidebar-info-row"><span class="label">Prize Pool</span><span class="value" id="brief-prize" style="color:var(--purple-light); font-weight:700;">$0</span></div>
+            <div class="sidebar-info-row"><span class="label">Max Duration</span><span class="value" id="brief-duration">15s</span></div>
+            <div class="sidebar-info-row"><span class="label">Deadline</span><span class="value" id="brief-deadline">-</span></div>
+            <div class="sidebar-info-row"><span class="label">Prizes Backed</span><span class="value" id="brief-funded">-</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Modal -->
+  <div class="modal-overlay hidden" id="submit-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <span>Submit Campaign Ad Video</span>
+        <button class="modal-close" onclick="closeModal('submit-modal')"><svg data-lucide="x"></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="e-title">Ad / Video Title <span class="req">*</span></label>
+          <input type="text" id="e-title" placeholder="e.g. Lumina Serum Refresh" />
+        </div>
+        <div class="form-group">
+          <label for="e-desc">Description / Creative Concept <span class="req">*</span></label>
+          <textarea id="e-desc" placeholder="Explain how you crafted this commercial ad and the AI tools used..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="e-url">Video URL <span class="req">*</span></label>
+          <input type="url" id="e-url" placeholder="https://youtube.com/watch?v=..." />
+        </div>
+        <div class="form-group">
+          <label for="e-tools">AI Tools Used (comma-separated)</label>
+          <input type="text" id="e-tools" placeholder="e.g. Runway Gen-2, Midjourney, ElevenLabs" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('submit-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitAdEntry()">Submit Ad</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Award Winner Modal -->
+  <div class="modal-overlay hidden" id="winner-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <span>Select Campaign Winner</span>
+        <button class="modal-close" onclick="closeModal('winner-modal')"><svg data-lucide="x"></svg></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted" style="font-size:0.82rem; margin-bottom:16px;">
+          Choose the winner of your campaign brief. The prize money will be paid out instantly from escrow.
+        </p>
+        <div class="form-group">
+          <label for="winner-select">1st Place Winner (Full Prize) <span class="req">*</span></label>
+          <select id="winner-select">
+            <option value="">Choose an entry...</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('winner-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="awardWinners()">Publish & Disburse Funds</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer" style="margin-top:100px;">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span>Play</span></div>
+        <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
+        <a href="browse.html">Browse</a>
+        <a href="create-competition.html">Host</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="about.html">About</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const compId = getParam('id');
+    let brief = null;
+    let submissions = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!compId) {
+        navigate('adarena.html');
+        return;
+      }
+
+      await loadBriefDetails();
+    });
+
+    async function loadBriefDetails() {
+      try {
+        brief = await API.getCompetition(compId);
+        if (!brief || !brief.is_brand_brief) {
+          showToast('Brand brief not found', 'error');
+          setTimeout(() => navigate('adarena.html'), 1500);
+          return;
+        }
+
+        document.title = `${brief.title} — FlixoraPlay`;
+        document.getElementById('header-title').textContent = brief.title;
+        document.getElementById('brief-title').textContent = brief.title;
+        document.getElementById('brief-brand').innerHTML = `<svg data-lucide="building" style="width:13px;height:13px;"></svg> <span>${brief.hostName}</span>`;
+        document.getElementById('brief-category').textContent = brief.theme || 'Commercial';
+        document.getElementById('brief-desc').textContent = brief.description;
+
+        // Sidebar Info
+        const statusMap = {
+          open: '<span class="badge badge-purple" style="font-size:0.72rem;">Open</span>',
+          judging: '<span class="badge badge-gold" style="font-size:0.72rem;">Judging</span>',
+          closed: '<span class="badge badge-neutral" style="font-size:0.72rem;">Concluded</span>'
+        };
+        document.getElementById('brief-status').innerHTML = statusMap[brief.status] || brief.status;
+        document.getElementById('brief-prize').textContent = brief.prize || '$0';
+        document.getElementById('brief-duration').textContent = `${brief.maxDuration}s`;
+        document.getElementById('brief-deadline').textContent = formatDate(brief.deadline);
+        document.getElementById('brief-funded').innerHTML = brief.prize_funded 
+          ? `<span class="text-white font-bold" style="color:var(--green-light) !important;">✓ Funded Escrow</span>`
+          : `<span class="text-muted">Unfunded</span>`;
+
+        // Check if user is the brand host
+        const session = getSession();
+        if (session && session.id === brief.hostId && brief.status === 'open') {
+          document.getElementById('judge-btn').style.display = 'inline-flex';
+        }
+
+        if (brief.status !== 'open') {
+          const submitBtn = document.getElementById('submit-btn');
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Submissions Closed';
+          submitBtn.className = 'btn btn-secondary';
+        }
+
+        await loadSubmissions();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function loadSubmissions() {
+      const grid = document.getElementById('submissions-grid');
+      try {
+        submissions = await API.getEntries(compId);
+        document.getElementById('submission-count').textContent = submissions.length;
+
+        // Populate winner dropdown
+        const winnerSelect = document.getElementById('winner-select');
+        winnerSelect.innerHTML = '<option value="">Choose an entry...</option>' + 
+          submissions.map(e => `<option value="${e.id}">${e.title} (by ${e.creatorName})</option>`).join('');
+
+        renderSubmissionsUI();
+        renderWinners();
+      } catch (err) {
+        grid.innerHTML = `<div class="empty-state"><p>Could not load entries.</p></div>`;
+      }
+    }
+
+    function renderSubmissionsUI() {
+      const grid = document.getElementById('submissions-grid');
+      if (submissions.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="padding: 40px 0;">
+            <div class="icon"><svg data-lucide="video-off"></svg></div>
+            <h3>No ad submissions yet</h3>
+            <p>Be the first to submit your commercial concept!</p>
+          </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      const votedEntries = Store.get('voted_entries', []);
+      grid.innerHTML = submissions.map(entry => {
+        const tools = Array.isArray(entry.tools) ? entry.tools : [];
+        const alreadyVoted = votedEntries.includes(entry.id);
+        const thumbUrl = getVideoThumbnail(entry.videoUrl);
+
+        return `
+          <div class="entry-card" id="entry-card-${entry.id}" style="margin:0;">
+            <div class="entry-thumb" onclick="toggleInlinePlayer('${entry.id}', '${entry.videoUrl}')">
+              <img src="${thumbUrl}" alt="${entry.title}" onerror="this.style.display='none';" />
+              <div class="play-overlay"><svg data-lucide="play"></svg></div>
+            </div>
+            <div class="entry-body">
+              <div class="entry-title">${entry.title}</div>
+              <div class="entry-creator"><svg data-lucide="user" style="width:11px;height:11px;"></svg> ${entry.creatorName} &nbsp;&middot;&nbsp; ${formatDate(entry.submittedAt)}</div>
+              <div class="entry-tools" style="margin-top:8px;">${tools.map(t => `<span class="tool-tag">${t}</span>`).join('')}</div>
+              ${entry.description ? `<p style="font-size:0.8rem;color:var(--text-3);margin-top:6px;line-height:1.4;">${entry.description}</p>` : ''}
+            </div>
+            <div class="entry-footer">
+              <button class="vote-btn ${alreadyVoted ? 'voted' : ''}" onclick="castVote('${entry.id}', this)">
+                ${alreadyVoted ? '<svg data-lucide="check"></svg> Voted' : '<svg data-lucide="thumbs-up"></svg> Vote'}
+                <span id="vc-${entry.id}">${entry.votes || 0}</span>
+              </button>
+              <button onclick="toggleInlinePlayer('${entry.id}', '${entry.videoUrl}')" class="btn btn-sm btn-primary">Watch</button>
+            </div>
+          </div>`;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderWinners() {
+      const sec = document.getElementById('winners-section');
+      const winners = submissions.filter(e => e.rank === 1);
+      if (winners.length === 0) {
+        sec.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="trophy"></svg></div><h3>Winners not selected yet</h3><p>Check back after judging is complete.</p></div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      sec.innerHTML = `<div class="alert alert-success" style="margin-bottom:16px;"><svg data-lucide="check-circle"></svg> <span>This campaign concluded! Payouts have been distributed.</span></div>`;
+      winners.forEach(entry => {
+        sec.innerHTML += `
+          <div class="card" style="margin-bottom:14px;">
+            <div class="card-body" style="display:flex;align-items:center;gap:16px;">
+              <div class="ranking-pos rank-1" style="width:40px;height:40px;flex-shrink:0;"><svg data-lucide="medal"></svg></div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:0.95rem;color:var(--text);">${entry.title}</div>
+                <div style="font-size:0.78rem;color:var(--text-3);margin-bottom:4px;">Grand Winner &middot; by ${entry.creatorName}</div>
+              </div>
+              <div>
+                <a href="${entry.videoUrl}" target="_blank" class="btn btn-sm btn-primary">Watch Ad</a>
+              </div>
+            </div>
+          </div>`;
+      });
+      lucide.createIcons();
+    }
+
+    function openSubmitModal() {
+      const session = getSession();
+      if (!session) {
+        showToast('Please sign in to submit.', 'error');
+        setTimeout(() => navigate('login.html'), 1500);
+        return;
+      }
+      document.getElementById('submit-modal').classList.remove('hidden');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function openWinnerModal() {
+      document.getElementById('winner-modal').classList.remove('hidden');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    async function submitAdEntry() {
+      const title = document.getElementById('e-title').value.trim();
+      const desc = document.getElementById('e-desc').value.trim();
+      const url = document.getElementById('e-url').value.trim();
+      const toolsRaw = document.getElementById('e-tools').value.trim();
+
+      if (!title || !desc || !url) {
+        showToast('Please fill in all required fields.', 'error');
+        return;
+      }
+
+      const tools = toolsRaw ? toolsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+      const session = getSession();
+
+      try {
+        await API.submitEntry({
+          competitionId: compId,
+          title,
+          description: desc,
+          videoUrl: url,
+          creatorId: session.id,
+          creatorName: session.username || session.name,
+          tools
+        });
+
+        showToast('Ad entry submitted successfully!', 'success');
+        closeModal('submit-modal');
+        ['e-title', 'e-desc', 'e-url', 'e-tools'].forEach(id => document.getElementById(id).value = '');
+        await loadBriefDetails();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function awardWinners() {
+      const entryId = document.getElementById('winner-select').value;
+      if (!entryId) {
+        showToast('Please select a winner.', 'error');
+        return;
+      }
+
+      const winnerEntry = submissions.find(e => e.id === entryId);
+
+      try {
+        // 1. Update entry rank in competition
+        const rankings = {};
+        rankings[entryId] = 1;
+
+        // Call single competition PUT to save rankings and set status to results
+        const r = await fetch(`/api/competitions/${compId}`, {
+          method: 'PUT',
+          headers: API.getHeaders(),
+          body: JSON.stringify({
+            status: 'results',
+            rankings
+          })
+        });
+
+        if (!r.ok) throw new Error('Failed to update competition ranks');
+
+        // 2. Perform payout call (Task 7 integration)
+        const payRes = await fetch(`/api/payments/payout`, {
+          method: 'POST',
+          headers: API.getHeaders(),
+          body: JSON.stringify({
+            competitionId: compId,
+            winnerId: winnerEntry.creatorId,
+            amountCents: brief.prize_pool_cents
+          })
+        });
+        
+        const payData = await payRes.json();
+        if (!payRes.ok) throw new Error(payData.error || 'Escrow disburse failed');
+
+        showToast('Winner announced and escrow paid out successfully!', 'success');
+        closeModal('winner-modal');
+        await loadBriefDetails();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function castVote(entryId, btn) {
+      const votedEntries = Store.get('voted_entries', []);
+      if (votedEntries.includes(entryId)) {
+        showToast('You already voted for this entry.', 'info');
+        return;
+      }
+      try {
+        const result = await API.vote(entryId);
+        votedEntries.push(entryId);
+        Store.set('voted_entries', votedEntries);
+        const cntEl = document.getElementById('vc-' + entryId);
+        if (cntEl) cntEl.textContent = result.votes;
+        btn.classList.add('voted');
+        btn.innerHTML = `<svg data-lucide="check" style="width:14px;height:14px;"></svg> Voted <span id="vc-${entryId}">${result.votes}</span>`;
+        lucide.createIcons();
+        showToast('Vote cast! Your input counts.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

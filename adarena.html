@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brand AdArena — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero" style="min-height: auto; padding: 60px 0 40px 0; background: radial-gradient(circle at top, var(--purple-dim) 0%, transparent 60%);">
+    <div class="container text-center">
+      <span class="badge badge-purple" style="margin-bottom:12px;">Brand Partnerships</span>
+      <h1 style="font-size:2.8rem; margin-bottom:12px;">Brand AdArena</h1>
+      <p style="max-width:600px; margin:0 auto 24px auto; color:var(--text-3);">
+        Create commercial videos for real companies. Backed by fully-funded prize pools.
+      </p>
+      <div style="display:flex; justify-content:center; gap:12px;">
+        <a href="create-brief.html" class="btn btn-primary"><svg data-lucide="plus-circle"></svg> Post a Brief</a>
+        <a href="#briefs-section" class="btn btn-outline">Explore Briefs</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body" id="briefs-section" style="padding-top: 20px;">
+    <div class="container">
+      
+      <!-- Filters Row -->
+      <div class="card" style="margin-bottom: 24px; padding: 16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <select id="industry-filter" style="width:180px;">
+              <option value="all">All Industries</option>
+              <option value="Beauty">Beauty</option>
+              <option value="Technology">Technology</option>
+              <option value="Food & Beverage">Food & Beverage</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Other">Other</option>
+            </select>
+            <select id="sort-filter" style="width:180px;">
+              <option value="newest">Newest First</option>
+              <option value="prize">Highest Prize</option>
+              <option value="deadline">Soonest Deadline</option>
+            </select>
+          </div>
+          <div>
+            <span id="briefs-count" class="text-muted text-sm">0 active briefs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Briefs Grid -->
+      <div class="grid-auto" id="briefs-grid">
+        <div class="empty-state">
+          <div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div>
+          <p>Loading brand briefs...</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer" style="margin-top:100px;">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span>Play</span></div>
+        <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
+        <a href="browse.html">Browse</a>
+        <a href="create-competition.html">Host</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="about.html">About</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let briefs = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBriefs();
+
+      document.getElementById('industry-filter').addEventListener('change', filterAndRender);
+      document.getElementById('sort-filter').addEventListener('change', filterAndRender);
+    });
+
+    async function loadBriefs() {
+      const grid = document.getElementById('briefs-grid');
+      try {
+        // Fetch only brand brief competitions (is_brand_brief=1)
+        briefs = await API.getCompetitions({ is_brand_brief: 1 });
+        filterAndRender();
+      } catch (err) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="icon"><svg data-lucide="wifi-off"></svg></div>
+            <h3>Could not load briefs</h3>
+            <p>${err.message}</p>
+            <button class="btn btn-outline btn-sm" onclick="loadBriefs()"><svg data-lucide="refresh-cw"></svg> Retry</button>
+          </div>`;
+        lucide.createIcons();
+      }
+    }
+
+    function filterAndRender() {
+      const grid = document.getElementById('briefs-grid');
+      const ind = document.getElementById('industry-filter').value;
+      const sort = document.getElementById('sort-filter').value;
+
+      let filtered = [...briefs];
+
+      // Filter by industry (we map industry to brief theme or category)
+      if (ind !== 'all') {
+        filtered = filtered.filter(b => b.theme === ind);
+      }
+
+      // Sort
+      if (sort === 'prize') {
+        filtered.sort((a, b) => {
+          const valA = parseInt((a.prize || '').replace(/\D/g, '') || '0', 10);
+          const valB = parseInt((b.prize || '').replace(/\D/g, '') || '0', 10);
+          return valB - valA;
+        });
+      } else if (sort === 'deadline') {
+        filtered.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+      } else {
+        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+
+      document.getElementById('briefs-count').textContent = `${filtered.length} active brief${filtered.length !== 1 ? 's' : ''}`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1; padding: 40px 0;">
+            <div class="icon"><svg data-lucide="folder-open"></svg></div>
+            <h3>No briefs found</h3>
+            <p>Try changing your filters or check back later.</p>
+          </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      // We can fetch brand logo for each if we join or mock it
+      // Let's use clean mock logos based on category/brand name for UI wow
+      const categoryLogos = {
+        'Beauty': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&auto=format&fit=crop',
+        'Technology': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&auto=format&fit=crop',
+        'Food & Beverage': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=100&auto=format&fit=crop',
+        'Fashion': 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=100&auto=format&fit=crop'
+      };
+
+      grid.innerHTML = filtered.map(brief => {
+        const logo = categoryLogos[brief.theme] || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&auto=format&fit=crop';
+        const isFunded = brief.prize_funded === 1;
+        const fundingBadge = isFunded 
+          ? `<span class="badge badge-gold" style="font-size: 0.68rem; padding: 2px 6px;"><svg data-lucide="check-circle" style="width:10px;height:10px;"></svg> Funded</span>`
+          : `<span class="badge badge-neutral" style="font-size: 0.68rem; padding: 2px 6px;">Unfunded</span>`;
+
+        return `
+          <div class="comp-card" style="margin: 0; display:flex; flex-direction:column; justify-content:space-between; height: 100%;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <img src="${logo}" style="width:36px; height:36px; border-radius:6px; object-fit:cover; border:1px solid var(--glass-border);" />
+                  <div>
+                    <h4 style="font-size:0.75rem; color:var(--text-3); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin:0;">${brief.hostName}</h4>
+                    <span style="font-size:0.7rem; color:var(--purple-light);">${brief.theme || 'General'}</span>
+                  </div>
+                </div>
+                ${fundingBadge}
+              </div>
+              <h3 style="font-size:1.05rem; font-weight:700; color:var(--text); margin:0 0 8px 0; line-height:1.3;">${brief.title}</h3>
+              <p style="font-size:0.8rem; color:var(--text-3); line-height:1.4; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin:0 0 16px 0;">${brief.description}</p>
+            </div>
+            <div style="border-top:1px solid rgba(255,255,255,0.04); padding-top:12px; margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-size:0.7rem; color:var(--text-4); text-transform:uppercase;">Prize Pool</div>
+                <div style="font-size:1.1rem; font-weight:800; color:#fff;">${brief.prize || 'No prize'}</div>
+              </div>
+              <a href="brief.html?id=${brief.id}" class="btn btn-primary btn-sm" style="gap:4px; padding:6px 12px; font-size:0.78rem;">View Brief <svg data-lucide="arrow-right" style="width:12px;height:12px;"></svg></a>
+            </div>
+          </div>`;
+      }).join('');
+
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

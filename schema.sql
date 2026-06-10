@@ -9,6 +9,9 @@ CREATE TABLE IF NOT EXISTS competitions (
   prize       TEXT,
   prize_pool_cents INTEGER DEFAULT 0,
   prize_funded INTEGER DEFAULT 0,
+  is_brand_brief INTEGER DEFAULT 0,
+  brand_id    TEXT,
+  featured    INTEGER DEFAULT 0,
   maxDuration INTEGER DEFAULT 15,
   deadline    TEXT NOT NULL,
   status      TEXT DEFAULT 'open',
@@ -93,5 +96,31 @@ CREATE TABLE IF NOT EXISTS payments (
   created_at TEXT NOT NULL,
   FOREIGN KEY (competition_id) REFERENCES competitions(id)
 );
+
+CREATE TABLE IF NOT EXISTS brands (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  company_name TEXT NOT NULL,
+  logo_url TEXT,
+  website TEXT,
+  industry TEXT,
+  verified INTEGER DEFAULT 0,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Seed Brands and briefs
+INSERT OR IGNORE INTO users (id, email, password, username, role, created_at) VALUES 
+  ('u_brand1', 'marketing@lumina.com', '$2a$10$UnA7vj7w8v8v8v8v8v8v8u8u8u8u8u8u8u8u8u8u8u8u8u8u8u8u', 'Lumina Beauty', 'brand', '2026-03-01'),
+  ('u_brand2', 'briefs@apextech.com', '$2a$10$UnA7vj7w8v8v8v8v8v8v8u8u8u8u8u8u8u8u8u8u8u8u8u8u8u8u', 'Apex Tech', 'brand', '2026-03-01');
+
+INSERT OR IGNORE INTO brands (id, user_id, company_name, logo_url, website, industry, verified, created_at) VALUES
+  ('b_lumina', 'u_brand1', 'Lumina Beauty', 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&auto=format&fit=crop', 'https://lumina.com', 'Beauty', 1, '2026-03-01'),
+  ('b_apex', 'u_brand2', 'Apex Tech', 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&auto=format&fit=crop', 'https://apextech.com', 'Technology', 1, '2026-03-01');
+
+INSERT OR IGNORE INTO competitions (id, title, description, theme, prize, prize_pool_cents, prize_funded, is_brand_brief, brand_id, featured, maxDuration, deadline, status, hostId, hostName, judging, createdAt) VALUES
+  ('brief_lumina', 'Lumina Skin Glow-Up Commercial', 'Create a 15-second cinematic promotional video for Lumina''s new hydration serum. Showcase refreshing water-like visuals, radiant skin, and clean modern aesthetic.', 'Glow from Within', '$1,000', 100000, 1, 1, 'b_lumina', 1, 15, '2026-08-30', 'open', 'u_brand1', 'Lumina Beauty', 'manual', '2026-03-01'),
+  ('brief_apex', 'Apex NextGen VR Headset Promo', 'Apex NextGen VR headset commercial (30 seconds). We want futuristic, immersive 3D-rendered worlds, glowing sci-fi interfaces, and a story showcasing boundary-pushing entertainment.', 'Step into the Next Realm', '$2,500', 250000, 1, 1, 'b_apex', 1, 30, '2026-09-15', 'open', 'u_brand2', 'Apex Tech', 'manual', '2026-03-01');
+
 
 

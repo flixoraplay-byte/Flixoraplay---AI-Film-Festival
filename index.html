@@ -323,6 +323,23 @@
   </section>
 
 
+  <!-- ── BRAND ADARENA ──────────────────────────────────────── -->
+  <section style="border-top:1px solid var(--glass-border);padding:72px 0;background:rgba(0,0,0,0.1);">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:32px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <span class="badge badge-purple" style="margin-bottom:8px;">Featured briefs</span>
+          <h2 style="font-size:1.8rem;font-weight:800;color:#fff;margin:0;">🔥 Brand AdArena</h2>
+          <p style="color:var(--text-3);margin-top:6px;font-size:0.9rem;">Compete in sponsored video challenges and get paid by verified brands.</p>
+        </div>
+        <a href="adarena.html" class="btn btn-outline btn-sm">Explore AdArena <svg data-lucide="arrow-right" style="width:13px;height:13px;display:inline-block;vertical-align:middle;"></svg></a>
+      </div>
+      <div class="grid-auto" id="brand-briefs-home">
+        <div class="empty-state"><div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div><p>Loading brand briefs...</p></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── CTA ────────────────────────────────────────────────── -->
   <section
     style="border-top:1px solid var(--glass-border);padding:72px 0;text-align:center;position:relative;overflow:hidden;">
@@ -432,14 +449,52 @@
           API.getLeaderboard()
         ]);
 
-        // Active competitions
-        const openComps = competitions.filter(c => c.status === 'open');
+        // Active competitions (exclude brand briefs)
+        const openComps = competitions.filter(c => c.status === 'open' && !c.is_brand_brief);
         if (openComps.length === 0) {
           compEl.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="inbox"></svg></div><h3>No active competitions</h3><p>Be the first to host one!</p><a href="create-competition.html" class="btn btn-primary btn-sm" style="margin-top:8px;"><svg data-lucide="plus"></svg> Host Now</a></div>`;
         } else {
           compEl.innerHTML = openComps.slice(0, 3).map(comp => {
             const cnt = allEntries.filter(e => e.competitionId === comp.id).length;
             return renderCompCard(comp, cnt);
+          }).join('');
+        }
+
+        // Brand briefs
+        const brandBriefs = competitions.filter(c => c.is_brand_brief === 1 && c.status === 'open');
+        const briefEl = document.getElementById('brand-briefs-home');
+        if (brandBriefs.length === 0) {
+          briefEl.innerHTML = `<div class="empty-state" style="grid-column:1/-1;padding:24px;"><div class="icon"><svg data-lucide="folder-open"></svg></div><p>No active briefs at the moment.</p></div>`;
+        } else {
+          const categoryLogos = {
+            'Beauty': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&auto=format&fit=crop',
+            'Technology': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&auto=format&fit=crop',
+            'Food & Beverage': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=100&auto=format&fit=crop',
+            'Fashion': 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=100&auto=format&fit=crop'
+          };
+          briefEl.innerHTML = brandBriefs.slice(0, 3).map(brief => {
+            const logo = categoryLogos[brief.theme] || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&auto=format&fit=crop';
+            return `
+            <div class="comp-card" style="margin:0; display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+              <div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                  <img src="${logo}" style="width:32px; height:32px; border-radius:6px; object-fit:cover; border:1px solid var(--glass-border);" />
+                  <div>
+                    <h4 style="font-size:0.75rem; color:var(--text-3); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin:0;">${brief.hostName}</h4>
+                    <span style="font-size:0.7rem; color:var(--purple-light);">${brief.theme}</span>
+                  </div>
+                </div>
+                <h3 style="font-size:1.05rem; font-weight:700; color:#fff; margin:0 0 8px 0;">${brief.title}</h3>
+                <p style="font-size:0.8rem; color:var(--text-3); line-height:1.4; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin:0;">${brief.description}</p>
+              </div>
+              <div style="border-top:1px solid rgba(255,255,255,0.04); padding-top:12px; margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-size:0.7rem; color:var(--text-4); text-transform:uppercase;">Prize Pool</div>
+                  <div style="font-size:1.1rem; font-weight:800; color:#fff;">${brief.prize || 'No prize'}</div>
+                </div>
+                <a href="brief.html?id=${brief.id}" class="btn btn-primary btn-sm">View Brief</a>
+              </div>
+            </div>`;
           }).join('');
         }
 

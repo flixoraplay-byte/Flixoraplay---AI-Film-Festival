@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post a Brand Brief — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header page-top">
+    <div class="container" style="max-width: 700px;">
+      <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <a href="adarena.html">AdArena</a> <span>›</span> Post</div>
+      <h1 id="page-title">Post a Brand Brief</h1>
+      <p id="page-tagline">Launch a video campaign for creators to submit AI-generated commercial ads.</p>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container" style="max-width: 700px;">
+      
+      <!-- Brand Registration view (If not brand role) -->
+      <div id="brand-register-section" class="card" style="display:none; padding: 24px;">
+        <h2 style="font-size:1.3rem; margin-bottom:12px;"><svg data-lucide="building" style="vertical-align:middle; margin-right:6px; color:var(--purple-light);"></svg> Register Brand Profile</h2>
+        <p class="text-muted" style="margin-bottom:20px;">To post commercial briefs, you must register as a Brand partner first.</p>
+        
+        <div class="form-group">
+          <label for="b-name">Company / Brand Name <span class="req">*</span></label>
+          <input type="text" id="b-name" placeholder="e.g. Lumina Cosmetics" />
+        </div>
+        <div class="form-group">
+          <label for="b-website">Website URL</label>
+          <input type="url" id="b-website" placeholder="https://example.com" />
+        </div>
+        <div class="form-group">
+          <label for="b-logo">Brand Logo URL</label>
+          <input type="url" id="b-logo" placeholder="https://unsplash.com/logo.png" />
+          <div class="form-hint">Image link. If empty, a professional default placeholder logo will be assigned.</div>
+        </div>
+        <div class="form-group">
+          <label for="b-industry">Industry Category</label>
+          <select id="b-industry">
+            <option value="Beauty">Beauty</option>
+            <option value="Technology">Technology</option>
+            <option value="Food & Beverage">Food & Beverage</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary w-full" onclick="registerBrand()">
+          <svg data-lucide="check-circle"></svg> Complete Brand Registration
+        </button>
+      </div>
+
+      <!-- Brief Creation view (If user is brand) -->
+      <div id="brief-create-section" class="card" style="display:none; padding: 24px;">
+        <h2 style="font-size:1.3rem; margin-bottom:16px;">Campaign Brief details</h2>
+        
+        <div class="form-group">
+          <label for="br-title">Brief / Campaign Title <span class="req">*</span></label>
+          <input type="text" id="br-title" placeholder="e.g. NextGen VR Headset Promo Commercial" />
+        </div>
+        <div class="form-group">
+          <label for="br-desc">Campaign Description & Requirements <span class="req">*</span></label>
+          <textarea id="br-desc" placeholder="Describe the product, commercial concept, core message, style guidance, and anything creators need to know..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="br-theme">Industry Category</label>
+          <select id="br-theme">
+            <option value="Beauty">Beauty</option>
+            <option value="Technology">Technology</option>
+            <option value="Food & Beverage">Food & Beverage</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="br-duration">Video Duration Requirement</label>
+            <select id="br-duration">
+              <option value="15">15 Seconds</option>
+              <option value="30">30 Seconds</option>
+              <option value="60">60 Seconds</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="br-prize">Prize Pool ($ USD) <span class="req">*</span></label>
+            <input type="number" id="br-prize" placeholder="e.g. 1000" min="100" />
+            <div class="form-hint">Minimum $100. Prize is held securely in escrow.</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="br-deadline">Submission Deadline <span class="req">*</span></label>
+          <input type="date" id="br-deadline" />
+        </div>
+        
+        <div class="form-group" style="display:flex; align-items:center; gap:8px; margin: 16px 0;">
+          <input type="checkbox" id="br-usage" checked style="width:auto; cursor:pointer;" />
+          <label for="br-usage" style="margin:0; cursor:pointer; font-size:0.82rem;">Winner grants brand full commercial usage rights <span class="req">*</span></label>
+        </div>
+
+        <button class="btn btn-primary w-full" onclick="submitBrief()">
+          <svg data-lucide="credit-card"></svg> Post Brief & Fund Prize Pool
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer" style="margin-top:100px;">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span>Play</span></div>
+        <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
+        <a href="browse.html">Browse</a>
+        <a href="create-competition.html">Host</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="about.html">About</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const session = getSession();
+      if (!session) {
+        showToast('Please sign in to post briefs.', 'error');
+        setTimeout(() => navigate('login.html'), 1500);
+        return;
+      }
+
+      // Check user role
+      if (session.role === 'brand') {
+        document.getElementById('brief-create-section').style.display = 'block';
+      } else {
+        document.getElementById('brand-register-section').style.display = 'block';
+        document.getElementById('page-title').textContent = 'Brand Registration';
+        document.getElementById('page-tagline').textContent = 'Create your brand profile to run advertising briefly campaigns.';
+      }
+    });
+
+    async function registerBrand() {
+      const name = document.getElementById('b-name').value.trim();
+      const website = document.getElementById('b-website').value.trim();
+      const logo = document.getElementById('b-logo').value.trim();
+      const industry = document.getElementById('b-industry').value;
+
+      if (!name) {
+        showToast('Brand name is required.', 'error');
+        return;
+      }
+
+      try {
+        const res = await API.registerBrand(name, website, industry, logo);
+        showToast('Brand profile registered successfully!', 'success');
+
+        // Update local session role
+        const session = getSession();
+        session.role = 'brand';
+        session.username = name;
+        setSession(session);
+
+        // Switch sections
+        document.getElementById('brand-register-section').style.display = 'none';
+        document.getElementById('brief-create-section').style.display = 'block';
+        document.getElementById('page-title').textContent = 'Post a Brand Brief';
+        document.getElementById('page-tagline').textContent = 'Launch a video campaign for creators to submit AI-generated commercial ads.';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function submitBrief() {
+      const title = document.getElementById('br-title').value.trim();
+      const desc = document.getElementById('br-desc').value.trim();
+      const theme = document.getElementById('br-theme').value;
+      const duration = parseInt(document.getElementById('br-duration').value, 10);
+      const prizeAmt = parseFloat(document.getElementById('br-prize').value);
+      const deadline = document.getElementById('br-deadline').value;
+      const usageGranted = document.getElementById('br-usage').checked;
+
+      if (!title || !desc || !prizeAmt || !deadline) {
+        showToast('Please fill in all required fields.', 'error');
+        return;
+      }
+
+      if (prizeAmt < 100) {
+        showToast('Prize pool must be at least $100.', 'error');
+        return;
+      }
+
+      if (!usageGranted) {
+        showToast('You must require usage rights to host brand briefs.', 'error');
+        return;
+      }
+
+      const session = getSession();
+
+      try {
+        // Create brand brief competition
+        const comp = await API.createCompetition({
+          title,
+          description: desc,
+          theme, // We use theme field to store category
+          prize: `$${prizeAmt.toLocaleString()}`,
+          maxDuration: duration,
+          deadline,
+          hostId: session.id,
+          hostName: session.username || 'Brand Partner',
+          is_brand_brief: 1,
+          prize_pool_cents: Math.round(prizeAmt * 100)
+        });
+
+        showToast('Brief created! Redirecting to secure funding...', 'success');
+        setTimeout(() => navigate(`checkout.html?id=${comp.id}`), 1500);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -18,9 +18,15 @@ export async function onRequestGet({ request, env }) {
     const search = url.searchParams.get('search');
     const category = url.searchParams.get('category');
     const sort = url.searchParams.get('sort') || 'newest';
+    const isBrandBrief = url.searchParams.get('is_brand_brief');
 
     let sql = `SELECT * FROM competitions WHERE 1=1`;
     const params = [];
+
+    if (isBrandBrief !== null) {
+      sql += ` AND is_brand_brief = ?`;
+      params.push(parseInt(isBrandBrief, 10));
+    }
 
     if (category && category !== 'all') {
       sql += ` AND theme = ?`;
@@ -54,15 +60,26 @@ export async function onRequestPost({ request, env }) {
     const id = 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const now = new Date().toISOString().split('T')[0];
 
+    const isBrand = body.is_brand_brief ? 1 : 0;
+    const brandId = body.brand_id || null;
+    const featured = body.featured ? 1 : 0;
+    const prizePoolCents = body.prize_pool_cents || 0;
+    const prizeFunded = body.prize_funded || 0;
+
     await env.DB.prepare(
-      `INSERT INTO competitions (id,title,description,theme,prize,maxDuration,deadline,status,hostId,hostName,judging,createdAt)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
+      `INSERT INTO competitions (id,title,description,theme,prize,prize_pool_cents,prize_funded,is_brand_brief,brand_id,featured,maxDuration,deadline,status,hostId,hostName,judging,createdAt)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
     ).bind(
       id,
       body.title || '',
       body.description || '',
       body.theme || '',
       body.prize || null,
+      prizePoolCents,
+      prizeFunded,
+      isBrand,
+      brandId,
+      featured,
       body.maxDuration || 15,
       body.deadline,
       'open',

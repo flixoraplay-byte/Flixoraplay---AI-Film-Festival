@@ -206,7 +206,8 @@
         let comps = await API.getCompetitions({
           search: searchVal || null,
           category: activeCategory || null,
-          sort: sortVal || null
+          sort: sortVal || null,
+          is_brand_brief: 0
         });
 
         // Filter status client-side since API returns full list
