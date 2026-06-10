@@ -1,3 +1,4 @@
+import { getDB } from '../_db.js';
 // functions/api/competitions/[id].js
 // GET /api/competitions/:id   — get single competition
 // PUT /api/competitions/:id   — update (status, winners, scores)
@@ -16,7 +17,7 @@ export async function onRequestOptions() {
 
 export async function onRequestGet({ params, env }) {
   try {
-    const comp = await env.DB.prepare(
+    const comp = await getDB(env).prepare(
       `SELECT * FROM competitions WHERE id=?`
     ).bind(params.id).first();
 
@@ -47,32 +48,32 @@ export async function onRequestPut({ params, request, env }) {
     }
 
     values.push(params.id);
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `UPDATE competitions SET ${fields.join(',')} WHERE id=?`
     ).bind(...values).run();
 
     // If ranking entries is part of update, handle entry ranks
     if (body.rankings) {
       for (const [entryId, rank] of Object.entries(body.rankings)) {
-        await env.DB.prepare(
+        await getDB(env).prepare(
           `UPDATE entries SET rank=? WHERE id=? AND competitionId=?`
         ).bind(rank, entryId, params.id).run();
       }
     }
 
-    const comp = await env.DB.prepare(`SELECT * FROM competitions WHERE id=?`).bind(params.id).first();
+    const comp = await getDB(env).prepare(`SELECT * FROM competitions WHERE id=?`).bind(params.id).first();
 
     // If status transitioned to 'results', notify all entrants
     if (body.status === 'results' && comp) {
       try {
-        const { results: entries } = await env.DB.prepare(
+        const { results: entries } = await getDB(env).prepare(
           `SELECT * FROM entries WHERE competitionId=?`
         ).bind(params.id).all();
 
         for (const entry of entries) {
           if (entry.creatorId && entry.creatorId !== 'guest') {
             // Create in-app notification
-            await createNotification(env.DB, {
+            await createNotification(getDB(env), {
               userId: entry.creatorId,
               type: 'results',
               title: 'Competition Results Published',
@@ -81,7 +82,7 @@ export async function onRequestPut({ params, request, env }) {
             });
 
             // Fetch user email to send email notification
-            const user = await env.DB.prepare(`SELECT email FROM users WHERE id=?`).bind(entry.creatorId).first();
+            const user = await getDB(env).prepare(`SELECT email FROM users WHERE id=?`).bind(entry.creatorId).first();
             if (user && user.email) {
               await sendEmail({
                 to: user.email,

@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/brands.js
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,7 +12,7 @@ export async function onRequestOptions() {
 
 export async function onRequestGet({ env }) {
   try {
-    const { results } = await env.DB.prepare(
+    const { results } = await getDB(env).prepare(
       `SELECT * FROM brands WHERE verified = 1 ORDER BY company_name ASC`
     ).all();
     return Response.json({ brands: results }, { headers: corsHeaders });
@@ -33,7 +34,7 @@ export async function onRequestPost({ request, env, data }) {
     }
 
     // Check if brand profile already exists
-    const existing = await env.DB.prepare(
+    const existing = await getDB(env).prepare(
       `SELECT id FROM brands WHERE user_id = ?`
     ).bind(user.id).first();
 
@@ -45,13 +46,13 @@ export async function onRequestPost({ request, env, data }) {
     const now = new Date().toISOString();
 
     // Insert brand profile
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `INSERT INTO brands (id, user_id, company_name, logo_url, website, industry, verified, created_at)
        VALUES (?, ?, ?, ?, ?, ?, 1, ?)` // Auto-verified for demo simplicity
     ).bind(brandId, user.id, companyName, logoUrl || '', website || '', industry || 'Other', now).run();
 
     // Update user role to 'brand'
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `UPDATE users SET role = 'brand' WHERE id = ?`
     ).bind(user.id).run();
 

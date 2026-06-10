@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/notifications.js
 // GET /api/notifications — return notifications for authenticated user
 
@@ -19,12 +20,12 @@ export async function onRequestGet({ env, data }) {
 
   try {
     // Get last 50 notifications
-    const { results: notifications } = await env.DB.prepare(
+    const { results: notifications } = await getDB(env).prepare(
       `SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 50`
     ).bind(user.id).all();
 
     // Get unread count
-    const unreadRes = await env.DB.prepare(
+    const unreadRes = await getDB(env).prepare(
       `SELECT COUNT(*) as unreadCount FROM notifications WHERE user_id = ? AND read = 0`
     ).bind(user.id).first();
 

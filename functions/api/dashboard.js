@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/dashboard.js
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -17,7 +18,7 @@ export async function onRequestGet({ env, data }) {
 
   try {
     // 1. Get user profile
-    const profile = await env.DB.prepare(
+    const profile = await getDB(env).prepare(
       `SELECT id, username, email, role, verified, avatar_url, bio, total_points, createdAt FROM users WHERE id = ?`
     ).bind(user.id).first();
 
@@ -34,24 +35,24 @@ export async function onRequestGet({ env, data }) {
     profile.tier = tier;
 
     // 2. Stats calculations
-    const entriesCountRes = await env.DB.prepare(
+    const entriesCountRes = await getDB(env).prepare(
       `SELECT COUNT(*) as cnt FROM entries WHERE creatorId = ?`
     ).bind(user.id).first();
     const totalEntries = entriesCountRes?.cnt || 0;
 
-    const winsRes = await env.DB.prepare(
+    const winsRes = await getDB(env).prepare(
       `SELECT COUNT(*) as cnt FROM entries WHERE creatorId = ? AND rank = 1`
     ).bind(user.id).first();
     const wins = winsRes?.cnt || 0;
 
     // Total earnings from Stripe Payouts
-    const earningsRes = await env.DB.prepare(
+    const earningsRes = await getDB(env).prepare(
       `SELECT SUM(amount_cents) as total FROM payments WHERE payee_id = ? AND status = 'completed'`
     ).bind(user.id).first();
     const earnings = earningsRes?.total || 0;
 
     // 3. Recent Entries (last 20) with Competition Details
-    const { results: recentEntries } = await env.DB.prepare(
+    const { results: recentEntries } = await getDB(env).prepare(
       `SELECT e.*, c.title as competitionTitle, c.status as competitionStatus
        FROM entries e
        LEFT JOIN competitions c ON e.competitionId = c.id
@@ -61,7 +62,7 @@ export async function onRequestGet({ env, data }) {
     ).bind(user.id).all();
 
     // 4. Hosted Competitions (excluding brand briefs)
-    const { results: hostedCompetitions } = await env.DB.prepare(
+    const { results: hostedCompetitions } = await getDB(env).prepare(
       `SELECT c.*, 
         (SELECT COUNT(*) FROM entries WHERE competitionId = c.id) as entryCount
        FROM competitions c
@@ -71,12 +72,12 @@ export async function onRequestGet({ env, data }) {
 
     // 5. Brand Briefs (if brand account)
     let brandBriefs = [];
-    const brand = await env.DB.prepare(
+    const brand = await getDB(env).prepare(
       `SELECT id FROM brands WHERE user_id = ?`
     ).bind(user.id).first();
 
     if (brand) {
-      const { results } = await env.DB.prepare(
+      const { results } = await getDB(env).prepare(
         `SELECT c.*,
           (SELECT COUNT(*) FROM entries WHERE competitionId = c.id) as entryCount
          FROM competitions c

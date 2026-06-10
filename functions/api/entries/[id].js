@@ -1,3 +1,4 @@
+import { getDB } from '../_db.js';
 // functions/api/entries/[id].js
 // GET /api/entries/:id   — get single entry
 // PUT /api/entries/:id   — update score, rank, notes
@@ -14,7 +15,7 @@ export async function onRequestOptions() {
 
 export async function onRequestGet({ params, env }) {
   try {
-    const entry = await env.DB.prepare(
+    const entry = await getDB(env).prepare(
       `SELECT * FROM entries WHERE id=?`
     ).bind(params.id).first();
 
@@ -45,11 +46,11 @@ export async function onRequestPut({ params, request, env }) {
     }
 
     values.push(params.id);
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `UPDATE entries SET ${fields.join(',')} WHERE id=?`
     ).bind(...values).run();
 
-    const entry = await env.DB.prepare(`SELECT * FROM entries WHERE id=?`).bind(params.id).first();
+    const entry = await getDB(env).prepare(`SELECT * FROM entries WHERE id=?`).bind(params.id).first();
     entry.tools = JSON.parse(entry.tools || '[]');
     return Response.json(entry, { headers: corsHeaders });
   } catch (e) {

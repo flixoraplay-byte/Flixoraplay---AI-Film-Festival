@@ -1,3 +1,4 @@
+import { getDB } from '../_db.js';
 // functions/api/brands/[id].js
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,7 +12,7 @@ export async function onRequestOptions() {
 
 export async function onRequestGet({ params, env }) {
   try {
-    const brand = await env.DB.prepare(
+    const brand = await getDB(env).prepare(
       `SELECT * FROM brands WHERE id = ?`
     ).bind(params.id).first();
 

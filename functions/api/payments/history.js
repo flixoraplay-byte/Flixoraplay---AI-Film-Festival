@@ -1,3 +1,4 @@
+import { getDB } from '../_db.js';
 // functions/api/payments/history.js
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,7 +17,7 @@ export async function onRequestGet({ env, data }) {
   }
 
   try {
-    const { results } = await env.DB.prepare(
+    const { results } = await getDB(env).prepare(
       `SELECT p.*, c.title as competition_title
        FROM payments p
        JOIN competitions c ON p.competition_id = c.id

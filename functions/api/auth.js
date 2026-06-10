@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/auth.js
 // POST /api/auth  — register or login
 // body: { action: 'register' | 'login', email, password, username? }
@@ -34,7 +35,7 @@ export async function onRequestPost({ request, env, data }) {
       if (newPassword.length < 6) {
         return Response.json({ error: 'New password must be at least 6 characters' }, { status: 400, headers: corsHeaders });
       }
-      const user = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(authUser.id).first();
+      const user = await getDB(env).prepare('SELECT * FROM users WHERE id=?').bind(authUser.id).first();
       if (!user) {
         return Response.json({ error: 'User not found' }, { status: 404, headers: corsHeaders });
       }
@@ -45,7 +46,7 @@ export async function onRequestPost({ request, env, data }) {
         }
       }
       const newHash = await bcrypt.hash(newPassword, 10);
-      await env.DB.prepare('UPDATE users SET password_hash=? WHERE id=?').bind(newHash, authUser.id).run();
+      await getDB(env).prepare('UPDATE users SET password_hash=? WHERE id=?').bind(newHash, authUser.id).run();
       return Response.json({ success: true, message: 'Password updated successfully' }, { headers: corsHeaders });
     }
 
@@ -62,7 +63,7 @@ export async function onRequestPost({ request, env, data }) {
       }
 
       // Check if email already exists
-      const existing = await env.DB.prepare(
+      const existing = await getDB(env).prepare(
         `SELECT id FROM users WHERE email=?`
       ).bind(email).first();
 
@@ -71,7 +72,7 @@ export async function onRequestPost({ request, env, data }) {
       }
 
       // Check if username already exists
-      const existingName = await env.DB.prepare(
+      const existingName = await getDB(env).prepare(
         `SELECT id FROM users WHERE username=?`
       ).bind(username).first();
 
@@ -86,7 +87,7 @@ export async function onRequestPost({ request, env, data }) {
       const passwordHash = await bcrypt.hash(password, saltRounds);
       const role = 'creator';
 
-      await env.DB.prepare(
+      await getDB(env).prepare(
         `INSERT INTO users (id, username, email, password_hash, role, createdAt) VALUES (?,?,?,?,?,?)`
       ).bind(id, username, email, passwordHash, role, now).run();
 
@@ -109,7 +110,7 @@ export async function onRequestPost({ request, env, data }) {
 
     } else if (action === 'login') {
       // Find user by email
-      const user = await env.DB.prepare(
+      const user = await getDB(env).prepare(
         `SELECT * FROM users WHERE email=?`
       ).bind(email).first();
 

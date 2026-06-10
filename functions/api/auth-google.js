@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 import bcrypt from 'bcryptjs';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 import { sendEmail, welcomeEmail } from './_email.js';
@@ -37,7 +38,7 @@ export async function onRequestPost({ request, env }) {
     }
 
     // Check if user exists by email
-    let user = await env.DB.prepare(
+    let user = await getDB(env).prepare(
       `SELECT * FROM users WHERE email=?`
     ).bind(email).first();
 
@@ -46,7 +47,7 @@ export async function onRequestPost({ request, env }) {
     if (user) {
       // User exists, check if google_id is set
       if (!user.google_id) {
-        await env.DB.prepare(
+        await getDB(env).prepare(
           `UPDATE users SET google_id=? WHERE email=?`
         ).bind(sub, email).run();
         user.google_id = sub;
@@ -64,7 +65,7 @@ export async function onRequestPost({ request, env }) {
       // Fallback if name is missing
       const username = name || email.split('@')[0];
 
-      await env.DB.prepare(
+      await getDB(env).prepare(
         `INSERT INTO users (id, username, email, password_hash, role, createdAt, google_id) VALUES (?,?,?,?,?,?,?)`
       ).bind(id, username, email, passwordHash, role, now, sub).run();
 

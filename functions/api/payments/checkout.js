@@ -1,3 +1,4 @@
+import { getDB } from '../_db.js';
 // functions/api/payments/checkout.js
 import Stripe from 'stripe';
 
@@ -27,7 +28,7 @@ export async function onRequestPost({ request, env, data }) {
     const origin = new URL(request.url).origin;
 
     // Fetch competition to make sure it exists
-    const comp = await env.DB.prepare(`SELECT * FROM competitions WHERE id = ?`).bind(competitionId).first();
+    const comp = await getDB(env).prepare(`SELECT * FROM competitions WHERE id = ?`).bind(competitionId).first();
     if (!comp) {
       return Response.json({ error: 'Competition not found' }, { status: 404, headers: corsHeaders });
     }
@@ -73,7 +74,7 @@ export async function onRequestPost({ request, env, data }) {
     // Insert pending payment record
     const paymentId = 'pay_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const now = new Date().toISOString();
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `INSERT INTO payments (id, competition_id, payer_id, amount_cents, currency, type, status, stripe_session_id, created_at)
        VALUES (?, ?, ?, ?, 'usd', 'funding', 'pending', ?, ?)`
     ).bind(paymentId, competitionId, user.id, amountCents, sessionId, now).run();

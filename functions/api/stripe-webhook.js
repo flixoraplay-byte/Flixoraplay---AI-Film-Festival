@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/stripe-webhook.js
 import Stripe from 'stripe';
 
@@ -51,16 +52,16 @@ export async function onRequestPost({ request, env }) {
       const amtCents = parseInt(session.metadata?.amountCents || '0', 10);
 
       // Verify payment details exist
-      const payment = await env.DB.prepare(
+      const payment = await getDB(env).prepare(
         `SELECT * FROM payments WHERE stripe_session_id = ?`
       ).bind(sessionId).first();
 
       if (payment && payment.status === 'pending') {
-        await env.DB.prepare(
+        await getDB(env).prepare(
           `UPDATE payments SET status = 'completed' WHERE id = ?`
         ).bind(payment.id).run();
 
-        await env.DB.prepare(
+        await getDB(env).prepare(
           `UPDATE competitions SET prize_funded = 1, prize_pool_cents = ? WHERE id = ?`
         ).bind(amtCents, compId).run();
 

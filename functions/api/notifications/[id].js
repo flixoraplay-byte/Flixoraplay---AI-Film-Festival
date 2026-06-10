@@ -1,3 +1,4 @@
+import { getDB } from '../_db.js';
 // functions/api/notifications/[id].js
 // PUT /api/notifications/:id — mark notification as read (or 'read-all')
 
@@ -22,13 +23,13 @@ export async function onRequestPut({ params, env, data }) {
   try {
     if (id === 'read-all') {
       // Mark all as read for user
-      await env.DB.prepare(
+      await getDB(env).prepare(
         `UPDATE notifications SET read = 1 WHERE user_id = ?`
       ).bind(user.id).run();
       return Response.json({ success: true, message: 'All notifications marked as read' }, { headers: corsHeaders });
     } else {
       // Mark specific notification as read
-      const result = await env.DB.prepare(
+      const result = await getDB(env).prepare(
         `UPDATE notifications SET read = 1 WHERE id = ? AND user_id = ?`
       ).bind(id, user.id).run();
 

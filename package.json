@@ -11,6 +11,7 @@
     "wrangler": "^4.96.0"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.3",
     "@tsndr/cloudflare-worker-jwt": "^3.2.1",
     "bcryptjs": "^3.0.3",
     "stripe": "^22.2.0"

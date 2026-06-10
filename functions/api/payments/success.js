@@ -1,3 +1,4 @@
+import { getDB } from '../_db.js';
 // functions/api/payments/success.js
 import Stripe from 'stripe';
 
@@ -22,7 +23,7 @@ export async function onRequestGet({ request, env }) {
 
   try {
     // Find payment record by session ID
-    const payment = await env.DB.prepare(
+    const payment = await getDB(env).prepare(
       `SELECT * FROM payments WHERE stripe_session_id = ?`
     ).bind(sessionId).first();
 
@@ -46,12 +47,12 @@ export async function onRequestGet({ request, env }) {
 
     if (verified && payment.status === 'pending') {
       // Update payment record to completed
-      await env.DB.prepare(
+      await getDB(env).prepare(
         `UPDATE payments SET status = 'completed' WHERE id = ?`
       ).bind(payment.id).run();
 
       // Update competition to funded
-      await env.DB.prepare(
+      await getDB(env).prepare(
         `UPDATE competitions SET prize_funded = 1, prize_pool_cents = ? WHERE id = ?`
       ).bind(payment.amount_cents, payment.competition_id).run();
 

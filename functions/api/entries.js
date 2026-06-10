@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/entries.js
 // GET  /api/entries?competitionId=xxx   — list entries (filtered)
 // POST /api/entries                     — submit an entry
@@ -20,11 +21,11 @@ export async function onRequestGet({ request, env }) {
 
     let results;
     if (competitionId) {
-      ({ results } = await env.DB.prepare(
+      ({ results } = await getDB(env).prepare(
         `SELECT * FROM entries WHERE competitionId=? ORDER BY score DESC, votes DESC`
       ).bind(competitionId).all());
     } else {
-      ({ results } = await env.DB.prepare(
+      ({ results } = await getDB(env).prepare(
         `SELECT * FROM entries ORDER BY submittedAt DESC`
       ).all());
     }
@@ -43,7 +44,7 @@ export async function onRequestPost({ request, env }) {
     const id = 'e_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const now = new Date().toISOString().split('T')[0];
 
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `INSERT INTO entries (id,competitionId,title,description,videoUrl,creatorId,creatorName,tools,score,rank,votes,submittedAt)
        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
     ).bind(
@@ -63,9 +64,9 @@ export async function onRequestPost({ request, env }) {
 
     // Fetch competition and trigger host notification
     try {
-      const comp = await env.DB.prepare(`SELECT * FROM competitions WHERE id = ?`).bind(body.competitionId).first();
+      const comp = await getDB(env).prepare(`SELECT * FROM competitions WHERE id = ?`).bind(body.competitionId).first();
       if (comp && comp.hostId) {
-        await createNotification(env.DB, {
+        await createNotification(getDB(env), {
           userId: comp.hostId,
           type: 'submission',
           title: 'New Entry Submitted',
@@ -77,7 +78,7 @@ export async function onRequestPost({ request, env }) {
       console.error('Failed to notify host of entry submission:', notifErr);
     }
 
-    const entry = await env.DB.prepare(`SELECT * FROM entries WHERE id=?`).bind(id).first();
+    const entry = await getDB(env).prepare(`SELECT * FROM entries WHERE id=?`).bind(id).first();
     entry.tools = JSON.parse(entry.tools || '[]');
     return Response.json(entry, { status: 201, headers: corsHeaders });
   } catch (e) {

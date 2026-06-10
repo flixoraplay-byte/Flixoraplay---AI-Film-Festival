@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/users.js
 // GET  /api/users?id=xxx  — public profile data
 // PUT  /api/users         — update own profile (requires auth)
@@ -29,7 +30,7 @@ export async function onRequestGet({ request, env }) {
     }
 
     // Fetch user — use SELECT * to handle schema variations
-    const user = await env.DB.prepare(
+    const user = await getDB(env).prepare(
       `SELECT * FROM users WHERE id=?`
     ).bind(userId).first();
 
@@ -52,22 +53,22 @@ export async function onRequestGet({ request, env }) {
     publicUser.tier = calcTier(publicUser.total_points);
 
     // Stats: entries count
-    const entryCount = await env.DB.prepare(
+    const entryCount = await getDB(env).prepare(
       `SELECT COUNT(*) as count FROM entries WHERE creatorId=?`
     ).bind(userId).first();
 
     // Stats: wins (rank=1)
-    const winCount = await env.DB.prepare(
+    const winCount = await getDB(env).prepare(
       `SELECT COUNT(*) as count FROM entries WHERE creatorId=? AND rank=1`
     ).bind(userId).first();
 
     // Stats: competitions hosted
-    const hostCount = await env.DB.prepare(
+    const hostCount = await getDB(env).prepare(
       `SELECT COUNT(*) as count FROM competitions WHERE hostId=?`
     ).bind(userId).first();
 
     // Recent entries with competition titles (last 15)
-    const { results: recentEntries } = await env.DB.prepare(
+    const { results: recentEntries } = await getDB(env).prepare(
       `SELECT e.id, e.title, e.competitionId, e.creatorId, e.score, e.rank, e.votes, e.submittedAt, e.tools,
               c.title as competitionTitle
        FROM entries e
@@ -127,11 +128,11 @@ export async function onRequestPut({ request, env, data }) {
     }
 
     values.push(authUser.id);
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `UPDATE users SET ${updates.join(', ')} WHERE id=?`
     ).bind(...values).run();
 
-    const updated = await env.DB.prepare(
+    const updated = await getDB(env).prepare(
       `SELECT id, username, email, role, avatar_url, bio, total_points, verified, createdAt FROM users WHERE id=?`
     ).bind(authUser.id).first();
 

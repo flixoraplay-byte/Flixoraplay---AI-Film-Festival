@@ -1,3 +1,4 @@
+import { getDB } from '../_db.js';
 // functions/api/payments/payout.js
 import Stripe from 'stripe';
 
@@ -24,7 +25,7 @@ export async function onRequestPost({ request, env, data }) {
     }
 
     // Fetch competition to verify host permissions
-    const comp = await env.DB.prepare(`SELECT * FROM competitions WHERE id = ?`).bind(competitionId).first();
+    const comp = await getDB(env).prepare(`SELECT * FROM competitions WHERE id = ?`).bind(competitionId).first();
     if (!comp) {
       return Response.json({ error: 'Competition not found' }, { status: 404, headers: corsHeaders });
     }
@@ -40,7 +41,7 @@ export async function onRequestPost({ request, env, data }) {
     }
 
     // Get winner's stripe account or details (mock/fallback for demo)
-    const winner = await env.DB.prepare(`SELECT google_id, username FROM users WHERE id=?`).bind(winnerId).first();
+    const winner = await getDB(env).prepare(`SELECT google_id, username FROM users WHERE id=?`).bind(winnerId).first();
     if (!winner) {
       return Response.json({ error: 'Winner user not found' }, { status: 404, headers: corsHeaders });
     }
@@ -71,13 +72,13 @@ export async function onRequestPost({ request, env, data }) {
     // Record payout transaction
     const payoutId = 'pay_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const now = new Date().toISOString();
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `INSERT INTO payments (id, competition_id, payer_id, payee_id, amount_cents, currency, type, status, stripe_session_id, created_at)
        VALUES (?, ?, ?, ?, ?, 'usd', 'payout', 'completed', ?, ?)`
     ).bind(payoutId, competitionId, user.id, winnerId, amountCents, transferId, now).run();
 
     // Deduct/mark competition as closed/distributed
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `UPDATE competitions SET status = 'closed' WHERE id = ?`
     ).bind(competitionId).run();
 

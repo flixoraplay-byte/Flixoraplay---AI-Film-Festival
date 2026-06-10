@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/leaderboard.js
 // GET /api/leaderboard — global creator ranking based on medals
 
@@ -14,7 +15,7 @@ export async function onRequestOptions() {
 export async function onRequestGet({ env }) {
   try {
     // Aggregate points per creator: 1st=3pts, 2nd=2pts, 3rd=1pt
-    const { results } = await env.DB.prepare(`
+    const { results } = await getDB(env).prepare(`
       SELECT
         creatorId,
         creatorName,

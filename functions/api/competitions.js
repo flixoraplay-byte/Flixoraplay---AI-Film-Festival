@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/competitions.js
 // GET  /api/competitions          — list all
 // POST /api/competitions          — create one
@@ -47,7 +48,7 @@ export async function onRequestGet({ request, env }) {
       sql += ` ORDER BY createdAt DESC`;
     }
 
-    const { results } = await env.DB.prepare(sql).bind(...params).all();
+    const { results } = await getDB(env).prepare(sql).bind(...params).all();
     return Response.json(results, { headers: corsHeaders });
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500, headers: corsHeaders });
@@ -66,7 +67,7 @@ export async function onRequestPost({ request, env }) {
     const prizePoolCents = body.prize_pool_cents || 0;
     const prizeFunded = body.prize_funded || 0;
 
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `INSERT INTO competitions (id,title,description,theme,prize,prize_pool_cents,prize_funded,is_brand_brief,brand_id,featured,maxDuration,deadline,status,hostId,hostName,judging,createdAt)
        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
     ).bind(
@@ -89,7 +90,7 @@ export async function onRequestPost({ request, env }) {
       now
     ).run();
 
-    const comp = await env.DB.prepare(`SELECT * FROM competitions WHERE id=?`).bind(id).first();
+    const comp = await getDB(env).prepare(`SELECT * FROM competitions WHERE id=?`).bind(id).first();
     return Response.json(comp, { status: 201, headers: corsHeaders });
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500, headers: corsHeaders });

@@ -1,3 +1,4 @@
+import { getDB } from './_db.js';
 // functions/api/votes.js
 // POST /api/votes  — cast a vote for an entry (once per voter per entry)
 import { createNotification } from './notifications.js';
@@ -22,7 +23,7 @@ export async function onRequestPost({ request, env }) {
     }
 
     // Check for duplicate
-    const existing = await env.DB.prepare(
+    const existing = await getDB(env).prepare(
       `SELECT id FROM votes WHERE entryId=? AND voterId=?`
     ).bind(entryId, voterId).first();
 
@@ -33,28 +34,28 @@ export async function onRequestPost({ request, env }) {
     const id = 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const now = new Date().toISOString();
 
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `INSERT INTO votes (id, entryId, voterId, createdAt) VALUES (?,?,?,?)`
     ).bind(id, entryId, voterId, now).run();
 
     // Increment vote count
-    await env.DB.prepare(
+    await getDB(env).prepare(
       `UPDATE entries SET votes = votes + 1 WHERE id=?`
     ).bind(entryId).run();
 
-    const entry = await env.DB.prepare(`SELECT * FROM entries WHERE id=?`).bind(entryId).first();
+    const entry = await getDB(env).prepare(`SELECT * FROM entries WHERE id=?`).bind(entryId).first();
 
     // Trigger vote notification (max 1 per hour per entry)
     try {
       if (entry && entry.creatorId && entry.creatorId !== 'guest') {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
         const link = `competition.html?id=${entry.competitionId}`;
-        const recentNotif = await env.DB.prepare(
+        const recentNotif = await getDB(env).prepare(
           `SELECT id FROM notifications WHERE user_id = ? AND type = 'vote' AND link = ? AND created_at > ?`
         ).bind(entry.creatorId, link, oneHourAgo).first();
 
         if (!recentNotif) {
-          await createNotification(env.DB, {
+          await createNotification(getDB(env), {
             userId: entry.creatorId,
             type: 'vote',
             title: 'Your Entry Received Votes',
