@@ -65,3 +65,16 @@ INSERT OR IGNORE INTO entries VALUES
   ('e1','c3','The Last Teardrop','An AI film depicting the final moments of memory fading away.','https://www.youtube.com/watch?v=dQw4w9WgXcQ','u_c1','Arya Mehta','["Runway ML","Midjourney"]',92,1,47,'2026-03-10'),
   ('e2','c3','Echoes of Childhood','Nostalgic memories visualized through dreamy AI landscapes.','https://www.youtube.com/watch?v=dQw4w9WgXcQ','u_c2','Dev Patel','["Pika Labs","Stable Video"]',85,2,32,'2026-03-11'),
   ('e3','c3','Joy in the Rain','Pure happiness rendered through AI-generated rain scenes.','https://www.youtube.com/watch?v=dQw4w9WgXcQ','u_c3','Priya Singh','["Sora","Kling AI"]',78,3,26,'2026-03-12');
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  message TEXT,
+  read INTEGER DEFAULT 0,
+  link TEXT,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+

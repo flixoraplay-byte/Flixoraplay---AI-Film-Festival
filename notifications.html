@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications — FlixoraPlay</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header page-top">
+    <div class="container">
+      <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> Notifications</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1>Notifications</h1>
+          <p>Stay updated on votes, submissions, results, and rewards.</p>
+        </div>
+        <div>
+          <button id="mark-all-read-btn" class="btn btn-outline btn-sm" onclick="markAllRead()"><svg data-lucide="check-check"></svg> Mark All Read</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+      <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <div id="notifications-list" style="display:flex; flex-direction:column; gap:16px;">
+          <!-- Loading state -->
+          <div class="empty-state">
+            <div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div>
+            <p>Loading notifications...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer" style="margin-top:80px;">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span>Play</span></div>
+        <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
+        <a href="browse.html">Browse</a>
+        <a href="create-competition.html">Host</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="about.html">About</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Direct unauthorized users back to login
+      const session = getSession();
+      if (!session || !session.id) {
+        showToast('Please sign in to view notifications.', 'error');
+        setTimeout(() => navigate('login.html'), 1500);
+        return;
+      }
+
+      loadNotifications();
+    });
+
+    async function loadNotifications() {
+      const listEl = document.getElementById('notifications-list');
+      try {
+        const { notifications } = await API.getNotifications();
+        
+        if (!notifications || notifications.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state" style="padding: 40px 0;">
+              <div class="icon"><svg data-lucide="bell-off"></svg></div>
+              <h3>All caught up!</h3>
+              <p>You have no notifications at the moment.</p>
+            </div>`;
+          document.getElementById('mark-all-read-btn').style.display = 'none';
+          lucide.createIcons();
+          return;
+        }
+
+        document.getElementById('mark-all-read-btn').style.display = 'inline-flex';
+
+        listEl.innerHTML = notifications.map(notif => {
+          const typeIcons = {
+            submission: 'video',
+            vote: 'thumbs-up',
+            results: 'award'
+          };
+          const icon = typeIcons[notif.type] || 'bell';
+          const isUnread = !notif.read;
+          const readBadge = isUnread ? `<span class="badge badge-purple" style="font-size:0.7rem;padding:2px 8px;">New</span>` : '';
+          const cardStyle = isUnread ? 'background: rgba(139,92,246,0.04); border-left: 3px solid var(--purple);' : 'opacity: 0.8;';
+
+          return `
+            <div class="comp-card" style="margin:0; padding:16px; display:flex; gap:16px; align-items:flex-start; justify-content:space-between; ${cardStyle}">
+              <div style="display:flex; gap:16px; align-items:flex-start; flex:1;">
+                <div style="background:var(--purple-dim); color:var(--purple-light); padding:10px; border-radius:8px; display:flex; align-items:center; justify-content:center;">
+                  <svg data-lucide="${icon}" style="width:20px;height:20px;"></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+                    <h3 style="font-size:0.95rem; font-weight:600; margin:0; color:var(--text);">${notif.title}</h3>
+                    ${readBadge}
+                  </div>
+                  <p style="font-size:0.85rem; color:var(--text-3); margin:0 0 8px 0; line-height:1.4;">${notif.message || ''}</p>
+                  <span style="font-size:0.74rem; color:var(--text-4); display:block;">${formatTimeAgo(notif.created_at)}</span>
+                </div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                ${notif.link ? `<a href="${notif.link}" class="btn btn-sm btn-outline" style="padding:6px 12px; font-size:0.78rem;" onclick="markRead('${notif.id}', event)"><svg data-lucide="external-link" style="width:12px;height:12px;"></svg> Go</a>` : ''}
+                ${isUnread ? `<button class="btn btn-sm btn-ghost" style="padding:6px 8px; color:var(--text-3);" onclick="markRead('${notif.id}')" title="Mark as Read"><svg data-lucide="check" style="width:14px;height:14px;"></svg></button>` : ''}
+              </div>
+            </div>`;
+        }).join('');
+
+        lucide.createIcons();
+      } catch (err) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="icon"><svg data-lucide="wifi-off"></svg></div>
+            <h3>Could not load notifications</h3>
+            <p>${err.message}</p>
+            <button class="btn btn-outline btn-sm" onclick="loadNotifications()"><svg data-lucide="refresh-cw"></svg> Retry</button>
+          </div>`;
+        lucide.createIcons();
+      }
+    }
+
+    async function markRead(id, e) {
+      if (e) {
+        // Prevent default navigation if needed, but we actually want to mark as read first
+        // We will call markNotificationRead and let it navigate
+      }
+      try {
+        await API.markNotificationRead(id);
+        loadNotifications();
+        // Also refresh nav dropdown badge
+        if (window.refreshNotificationsNav) window.refreshNotificationsNav();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function markAllRead() {
+      try {
+        await API.markAllNotificationsRead();
+        showToast('All notifications marked as read', 'success');
+        loadNotifications();
+        if (window.refreshNotificationsNav) window.refreshNotificationsNav();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function formatTimeAgo(dateStr) {
+      if (!dateStr) return '';
+      const seconds = Math.floor((new Date() - new Date(dateStr)) / 1000);
+      let interval = seconds / 31536000;
+
+      if (interval > 1) return Math.floor(interval) + " years ago";
+      interval = seconds / 2592000;
+      if (interval > 1) return Math.floor(interval) + " months ago";
+      interval = seconds / 86400;
+      if (interval > 1) return Math.floor(interval) + " days ago";
+      interval = seconds / 3600;
+      if (interval > 1) return Math.floor(interval) + " hours ago";
+      interval = seconds / 60;
+      if (interval > 1) return Math.floor(interval) + " minutes ago";
+      return "just now";
+    }
+  </script>
+</body>
+</html>

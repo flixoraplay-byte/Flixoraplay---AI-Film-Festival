@@ -1,6 +1,7 @@
 // functions/api/entries.js
 // GET  /api/entries?competitionId=xxx   — list entries (filtered)
 // POST /api/entries                     — submit an entry
+import { createNotification } from './notifications.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -59,6 +60,22 @@ export async function onRequestPost({ request, env }) {
       0,
       now
     ).run();
+
+    // Fetch competition and trigger host notification
+    try {
+      const comp = await env.DB.prepare(`SELECT * FROM competitions WHERE id = ?`).bind(body.competitionId).first();
+      if (comp && comp.hostId) {
+        await createNotification(env.DB, {
+          userId: comp.hostId,
+          type: 'submission',
+          title: 'New Entry Submitted',
+          message: `"${body.creatorName || 'Anonymous'}" submitted "${body.title || 'Untitled'}" to your competition "${comp.title}".`,
+          link: `competition.html?id=${comp.id}`
+        });
+      }
+    } catch (notifErr) {
+      console.error('Failed to notify host of entry submission:', notifErr);
+    }
 
     const entry = await env.DB.prepare(`SELECT * FROM entries WHERE id=?`).bind(id).first();
     entry.tools = JSON.parse(entry.tools || '[]');

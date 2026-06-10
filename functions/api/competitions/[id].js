@@ -1,6 +1,8 @@
 // functions/api/competitions/[id].js
 // GET /api/competitions/:id   — get single competition
 // PUT /api/competitions/:id   — update (status, winners, scores)
+import { createNotification } from '../notifications.js';
+import { sendEmail, resultsAnnouncedEmail } from '../_email.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -59,6 +61,41 @@ export async function onRequestPut({ params, request, env }) {
     }
 
     const comp = await env.DB.prepare(`SELECT * FROM competitions WHERE id=?`).bind(params.id).first();
+
+    // If status transitioned to 'results', notify all entrants
+    if (body.status === 'results' && comp) {
+      try {
+        const { results: entries } = await env.DB.prepare(
+          `SELECT * FROM entries WHERE competitionId=?`
+        ).bind(params.id).all();
+
+        for (const entry of entries) {
+          if (entry.creatorId && entry.creatorId !== 'guest') {
+            // Create in-app notification
+            await createNotification(env.DB, {
+              userId: entry.creatorId,
+              type: 'results',
+              title: 'Competition Results Published',
+              message: `The results for "${comp.title}" have been announced! Your rank: ${entry.rank || 'Participant'}.`,
+              link: `competition.html?id=${comp.id}`
+            });
+
+            // Fetch user email to send email notification
+            const user = await env.DB.prepare(`SELECT email FROM users WHERE id=?`).bind(entry.creatorId).first();
+            if (user && user.email) {
+              await sendEmail({
+                to: user.email,
+                subject: `Results announced for ${comp.title}`,
+                html: resultsAnnouncedEmail(comp.title, entry.rank)
+              }, env);
+            }
+          }
+        }
+      } catch (notifyErr) {
+        console.error('Failed to dispatch results notifications:', notifyErr);
+      }
+    }
+
     return Response.json(comp, { headers: corsHeaders });
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500, headers: corsHeaders });

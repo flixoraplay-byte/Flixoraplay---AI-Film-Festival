@@ -126,6 +126,29 @@ const API = {
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Google Login failed');
     return data;
+  },
+  async getNotifications() {
+    const r = await fetch(`${API_BASE}/notifications`, {
+      headers: this.getHeaders()
+    });
+    if (!r.ok) throw new Error('Failed to load notifications');
+    return r.json();
+  },
+  async markNotificationRead(id) {
+    const r = await fetch(`${API_BASE}/notifications/${id}`, {
+      method: 'PUT',
+      headers: this.getHeaders()
+    });
+    if (!r.ok) throw new Error('Failed to update notification');
+    return r.json();
+  },
+  async markAllNotificationsRead() {
+    const r = await fetch(`${API_BASE}/notifications/read-all`, {
+      method: 'PUT',
+      headers: this.getHeaders()
+    });
+    if (!r.ok) throw new Error('Failed to mark all read');
+    return r.json();
   }
 };
 
@@ -258,6 +281,26 @@ function updateNavForAuth() {
         <svg data-lucide="plus-circle"></svg> Host
       </a>
       <div style="display:flex;align-items:center;gap:10px;">
+        <!-- Notifications Bell -->
+        <div class="notification-dropdown-container" style="position:relative;">
+          <button class="btn btn-ghost btn-sm" id="nav-notifications-bell" style="gap:4px;padding:6px 10px;position:relative;" title="Notifications">
+            <svg data-lucide="bell"></svg>
+            <span class="notification-badge" id="nav-notifications-badge" style="display:none;position:absolute;top:2px;right:2px;background:var(--red);border-radius:50%;width:8px;height:8px;"></span>
+          </button>
+          <div class="notification-dropdown" id="nav-notifications-dropdown" style="display:none;position:absolute;top:100%;right:0;width:300px;background:rgba(17,22,39,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius-md);margin-top:8px;padding:12px;box-shadow:var(--shadow-lg);z-index:1100;">
+            <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--glass-border);padding-bottom:8px;margin-bottom:8px;">
+              <span style="font-weight:600;font-size:0.88rem;">Notifications</span>
+              <button onclick="handleMarkAllReadNav(event)" style="font-size:0.75rem;background:none;border:none;color:var(--purple-light);cursor:pointer;padding:0;font-weight:500;">Mark all read</button>
+            </div>
+            <div id="nav-notifications-list" style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;text-align:left;">
+              <div style="text-align:center;padding:12px;color:var(--text-3);font-size:0.8rem;">No new notifications</div>
+            </div>
+            <div style="text-align:center;border-top:1px solid var(--glass-border);padding-top:8px;margin-top:8px;">
+              <a href="notifications.html" style="font-size:0.8rem;color:var(--purple-light);font-weight:600;">View All Notifications</a>
+            </div>
+          </div>
+        </div>
+
         <a href="profile.html?id=${session.id}" style="display:flex;align-items:center;gap:8px;text-decoration:none;" title="View Profile">
           <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#7dd3fc);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:#fff;flex-shrink:0;cursor:pointer;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 0 2px var(--purple-light)'" onmouseout="this.style.boxShadow='none'">${initial}</div>
         </a>
@@ -268,6 +311,8 @@ function updateNavForAuth() {
           <svg data-lucide="log-out"></svg> Sign Out
         </button>
       </div>`;
+
+    setupNotificationBell();
   } else {
     // Keep default nav — ensure Host + Sign In are shown
     navActions.innerHTML = `
@@ -431,4 +476,121 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
+// ── Notifications Helper Implementation ──────────────────
+let notificationPollInterval = null;
+
+function setupNotificationBell() {
+  const bell = document.getElementById('nav-notifications-bell');
+  const dropdown = document.getElementById('nav-notifications-dropdown');
+  if (!bell || !dropdown) return;
+
+  // Toggle dropdown
+  bell.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isShowing = dropdown.style.display === 'block';
+    dropdown.style.display = isShowing ? 'none' : 'block';
+    if (!isShowing) {
+      refreshNotificationsNav();
+    }
+  });
+
+  // Close dropdown on click outside
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
+
+  // Initial fetch & setup polling (every 60s)
+  refreshNotificationsNav();
+  clearInterval(notificationPollInterval);
+  notificationPollInterval = setInterval(refreshNotificationsNav, 60000);
+}
+
+async function refreshNotificationsNav() {
+  const badge = document.getElementById('nav-notifications-badge');
+  const list = document.getElementById('nav-notifications-list');
+  if (!badge || !list) return;
+
+  try {
+    const { notifications, unreadCount } = await API.getNotifications();
+
+    // Show/hide unread badge
+    if (unreadCount > 0) {
+      badge.style.display = 'block';
+      badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+      // Add text styling if unreadCount > 0
+      badge.style.width = '14px';
+      badge.style.height = '14px';
+      badge.style.fontSize = '9px';
+      badge.style.fontWeight = '700';
+      badge.style.lineHeight = '14px';
+      badge.style.textAlign = 'center';
+      badge.style.color = '#fff';
+      badge.style.top = '-2px';
+      badge.style.right = '-2px';
+    } else {
+      badge.style.display = 'none';
+    }
+
+    if (!notifications || notifications.length === 0) {
+      list.innerHTML = `<div style="text-align:center;padding:12px;color:var(--text-3);font-size:0.8rem;">No notifications yet</div>`;
+      return;
+    }
+
+    // List top 5 notifications
+    const recent = notifications.slice(0, 5);
+    list.innerHTML = recent.map(notif => {
+      const typeIcons = {
+        submission: 'video',
+        vote: 'thumbs-up',
+        results: 'award'
+      };
+      const icon = typeIcons[notif.type] || 'bell';
+      const readStyle = notif.read ? 'opacity: 0.6;' : 'font-weight: 500; border-left: 2px solid var(--purple);';
+
+      return `
+        <div onclick="handleNotificationClickNav('${notif.id}', '${notif.link || '#'}')" style="padding:8px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.03);cursor:pointer;${readStyle} transition:background var(--t);display:flex;align-items:flex-start;gap:8px;" onmouseover="this.style.background='var(--glass-2)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+          <div style="background:var(--purple-dim);color:var(--purple-light);padding:4px;border-radius:4px;display:flex;align-items:center;justify-content:center;margin-top:2px;">
+            <svg data-lucide="${icon}" style="width:13px;height:13px;"></svg>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.78rem;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${notif.title}</div>
+            <div style="font-size:0.72rem;color:var(--text-3);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${notif.message || ''}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    if (typeof lucide !== 'undefined') lucide.createIcons({ el: list });
+  } catch (err) {
+    console.error('Failed to refresh notifications navigation:', err);
+  }
+}
+
+async function handleMarkAllReadNav(e) {
+  e.stopPropagation();
+  try {
+    await API.markAllNotificationsRead();
+    showToast('All notifications marked as read', 'success');
+    refreshNotificationsNav();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function handleNotificationClickNav(id, link) {
+  try {
+    await API.markNotificationRead(id);
+    if (link && link !== '#') {
+      navigate(link);
+    } else {
+      refreshNotificationsNav();
+    }
+  } catch (err) {
+    console.error('Failed to mark notification read:', err);
+    if (link && link !== '#') navigate(link);
+  }
+}
+
 

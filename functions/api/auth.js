@@ -4,6 +4,7 @@
 
 import bcrypt from 'bcryptjs';
 import jwt from '@tsndr/cloudflare-worker-jwt';
+import { sendEmail, welcomeEmail } from './_email.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -88,6 +89,13 @@ export async function onRequestPost({ request, env, data }) {
       await env.DB.prepare(
         `INSERT INTO users (id, username, email, password_hash, role, createdAt) VALUES (?,?,?,?,?,?)`
       ).bind(id, username, email, passwordHash, role, now).run();
+
+      // Dispatch welcome email asynchronously
+      try {
+        sendEmail({ to: email, subject: 'Welcome to FlixoraPlay!', html: welcomeEmail(username) }, env);
+      } catch (err) {
+        console.error('Welcome email dispatch failed:', err);
+      }
 
       const token = await jwt.sign(
         { id, username, email, role, exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) },
