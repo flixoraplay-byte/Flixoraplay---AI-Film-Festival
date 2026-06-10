@@ -1255,4 +1255,42 @@ tbody tr:last-child td { border-bottom: none; }
   height: 16px;
 }
 
+/* ── Tier Badges ───────────────────────────────────────── */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.tier-bronze {
+  background: linear-gradient(135deg, #a75d34, #6e3a1e);
+  box-shadow: 0 2px 8px rgba(110, 58, 30, 0.3);
+}
+.tier-silver {
+  background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+  box-shadow: 0 2px 8px rgba(149, 165, 166, 0.3);
+}
+.tier-gold {
+  background: linear-gradient(135deg, #f1c40f, #d35400);
+  box-shadow: 0 2px 8px rgba(211, 84, 0, 0.3);
+}
+.tier-platinum {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  border-color: rgba(155, 89, 182, 0.4);
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.4);
+  animation: plat-glow 2s infinite alternate;
+}
+@keyframes plat-glow {
+  0% { box-shadow: 0 0 8px rgba(155, 89, 182, 0.3); }
+  100% { box-shadow: 0 0 16px rgba(155, 89, 182, 0.6); }
+}
+
+
 

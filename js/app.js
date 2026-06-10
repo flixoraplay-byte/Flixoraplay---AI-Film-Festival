@@ -184,6 +184,22 @@ const API = {
     });
     if (!r.ok) throw new Error('Brand not found');
     return r.json();
+  },
+  async getDashboard() {
+    const r = await fetch(`${API_BASE}/dashboard`, {
+      headers: this.getHeaders()
+    });
+    if (!r.ok) throw new Error('Failed to load dashboard data');
+    return r.json();
+  },
+  getTierBadge(tier) {
+    const badgeMap = {
+      'Platinum': '<span class="tier-badge tier-platinum"><svg data-lucide="sparkles" style="width:10px;height:10px;"></svg> Platinum</span>',
+      'Gold': '<span class="tier-badge tier-gold"><svg data-lucide="award" style="width:10px;height:10px;"></svg> Gold</span>',
+      'Silver': '<span class="tier-badge tier-silver"><svg data-lucide="shield" style="width:10px;height:10px;"></svg> Silver</span>',
+      'Bronze': '<span class="tier-badge tier-bronze"><svg data-lucide="star" style="width:10px;height:10px;"></svg> Bronze</span>'
+    };
+    return badgeMap[tier] || badgeMap['Bronze'];
   }
 };
 
@@ -316,6 +332,12 @@ function updateNavForAuth() {
         <svg data-lucide="plus-circle"></svg> Host
       </a>
       <div style="display:flex;align-items:center;gap:10px;">
+        <!-- Dashboard Link -->
+        <a href="dashboard.html" class="btn btn-ghost btn-sm" style="gap:4px;padding:6px 10px;" title="Dashboard">
+          <svg data-lucide="layout-dashboard"></svg>
+          <span style="font-weight:600;">Dashboard</span>
+        </a>
+
         <!-- Notifications Bell -->
         <div class="notification-dropdown-container" style="position:relative;">
           <button class="btn btn-ghost btn-sm" id="nav-notifications-bell" style="gap:4px;padding:6px 10px;position:relative;" title="Notifications">
