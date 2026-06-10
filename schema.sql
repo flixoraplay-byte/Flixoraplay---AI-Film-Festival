@@ -42,10 +42,16 @@ CREATE TABLE IF NOT EXISTS votes (
 );
 
 CREATE TABLE IF NOT EXISTS users (
-  id        TEXT PRIMARY KEY,
-  username  TEXT UNIQUE NOT NULL,
-  email     TEXT UNIQUE NOT NULL,
-  createdAt TEXT NOT NULL
+  id           TEXT PRIMARY KEY,
+  username     TEXT UNIQUE NOT NULL,
+  email        TEXT UNIQUE NOT NULL,
+  password_hash TEXT,
+  role         TEXT DEFAULT 'creator',
+  verified     INTEGER DEFAULT 0,
+  avatar_url   TEXT,
+  bio          TEXT DEFAULT '',
+  total_points INTEGER DEFAULT 0,
+  createdAt    TEXT NOT NULL
 );
 
 -- Seed demo data
