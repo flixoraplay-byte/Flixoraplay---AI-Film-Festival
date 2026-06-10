@@ -303,9 +303,126 @@ window.addEventListener('scroll', () => {
   if (nav) nav.classList.toggle('scrolled', window.scrollY > 10);
 });
 
+// ── Video Embed Utilities ─────────────────────────────────
+function getYouTubeId(url) {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
+function getVimeoId(url) {
+  if (!url) return null;
+  const regExp = /vimeo\.com\/(?:video\/)?([0-9]+)/;
+  const match = url.match(regExp);
+  return match ? match[1] : null;
+}
+
+function getVideoThumbnail(url) {
+  const ytId = getYouTubeId(url);
+  if (ytId) {
+    return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+  }
+  const vimId = getVimeoId(url);
+  if (vimId) {
+    // Return a default gradient/play button card for Vimeo (since Vimeo API is async)
+    return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%238b5cf6"/><stop offset="100%" stop-color="%233b82f6"/></linearGradient></defs><rect width="300" height="200" fill="url(%23g)"/><polygon points="130,75 180,100 130,125" fill="%23fff"/></svg>`;
+  }
+  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><rect width="300" height="200" fill="%231e1e2f"/><circle cx="150" cy="100" r="30" fill="%238b5cf6" opacity="0.8"/><polygon points="142,88 165,100 142,112" fill="%23fff"/></svg>`;
+}
+
+function getVideoEmbed(url) {
+  const ytId = getYouTubeId(url);
+  if (ytId) {
+    return `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  }
+  const vimId = getVimeoId(url);
+  if (vimId) {
+    return `<iframe src="https://player.vimeo.com/video/${vimId}?autoplay=1&badge=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+  }
+  return `<div class="empty-state" style="padding:20px;"><div class="icon"><svg data-lucide="alert-triangle"></svg></div><p>Unsupported video format. <a href="${url}" target="_blank">Open directly</a></p></div>`;
+}
+
+// Helper to toggle inline video player in entry list
+function toggleInlinePlayer(entryId, url) {
+  const containerId = `video-player-${entryId}`;
+  let container = document.getElementById(containerId);
+
+  if (container) {
+    // If already open, close it
+    container.remove();
+    return;
+  }
+
+  // Close any other open players first to avoid clutter
+  document.querySelectorAll('.video-player-container').forEach(el => el.remove());
+
+  // Insert player container below the entry card body (or inline)
+  const entryCard = document.getElementById(`entry-card-${entryId}`);
+  if (!entryCard) return;
+
+  container = document.createElement('div');
+  container.id = containerId;
+  container.className = 'video-player-container';
+  container.innerHTML = getVideoEmbed(url);
+
+  // Insert right before the footer
+  const footer = entryCard.querySelector('.entry-footer');
+  if (footer) {
+    entryCard.insertBefore(container, footer);
+  } else {
+    entryCard.appendChild(container);
+  }
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
 // ── Init on load ──────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   setActiveNav();
   initTabs();
   updateNavForAuth();
+
+  // Dynamic mobile menu injection & handling
+  const navInner = document.querySelector('.nav-inner');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (navInner && navLinks) {
+    // Create hamburger button if it doesn't exist
+    if (!document.getElementById('nav-hamburger')) {
+      const hamburger = document.createElement('button');
+      hamburger.id = 'nav-hamburger';
+      hamburger.className = 'nav-hamburger';
+      hamburger.setAttribute('aria-label', 'Toggle menu');
+      hamburger.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>`;
+      
+      // Insert right after the logo
+      const logo = navInner.querySelector('.nav-logo');
+      if (logo) {
+        logo.after(hamburger);
+      } else {
+        navInner.prepend(hamburger);
+      }
+
+      hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navLinks.classList.toggle('active');
+        // Toggle hamburger icon between menu and X
+        if (navLinks.classList.contains('active')) {
+          hamburger.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>`;
+        } else {
+          hamburger.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>`;
+        }
+      });
+
+      // Close menu if clicking outside
+      document.addEventListener('click', (e) => {
+        if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+          navLinks.classList.remove('active');
+          hamburger.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>`;
+        }
+      });
+    }
+  }
 });
+

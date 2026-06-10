@@ -230,11 +230,13 @@
         const rankClass = entry.rank === 1 ? 'rank-1' : entry.rank === 2 ? 'rank-2' : entry.rank === 3 ? 'rank-3' : '';
         const rankIcon = entry.rank === 1 ? 'medal' : entry.rank === 2 ? 'award' : entry.rank === 3 ? 'star' : '';
         const alreadyVoted = votedEntries.includes(entry.id);
+        const thumbUrl = getVideoThumbnail(entry.videoUrl);
         grid.innerHTML += `
-          <div class="entry-card">
-            <div class="entry-thumb">
+          <div class="entry-card" id="entry-card-${entry.id}">
+            <div class="entry-thumb" onclick="toggleInlinePlayer('${entry.id}', '${entry.videoUrl}')">
               ${entry.rank ? `<div class="rank-badge ${rankClass}"><svg data-lucide="${rankIcon}"></svg></div>` : ''}
-              <svg data-lucide="film"></svg>
+              <img src="${thumbUrl}" alt="${entry.title}" onerror="this.style.display='none';" />
+              <div class="play-overlay"><svg data-lucide="play"></svg></div>
             </div>
             <div class="entry-body">
               <div class="entry-title">${entry.title}</div>
@@ -250,7 +252,10 @@
                 </button>
                 ${entry.score ? `<span style="font-size:0.78rem;color:var(--text-3);">Score: <strong style="color:var(--purple)">${entry.score}</strong></span>` : ''}
               </div>
-              <a href="${entry.videoUrl}" target="_blank" class="btn btn-sm btn-outline"><svg data-lucide="play"></svg> Watch</a>
+              <div style="display:flex;gap:8px;">
+                <button onclick="toggleInlinePlayer('${entry.id}', '${entry.videoUrl}')" class="btn btn-sm btn-primary"><svg data-lucide="play"></svg> Watch</button>
+                <a href="${entry.videoUrl}" target="_blank" class="btn btn-sm btn-outline" title="Open in new tab"><svg data-lucide="external-link"></svg></a>
+              </div>
             </div>
           </div>`;
       });
