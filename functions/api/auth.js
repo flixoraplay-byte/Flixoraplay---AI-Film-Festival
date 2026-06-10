@@ -15,10 +15,38 @@ export async function onRequestOptions() {
   return new Response(null, { headers: corsHeaders });
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, data }) {
   try {
     const body = await request.json();
     const { action, email, password, username } = body;
+
+    // ── Change Password (requires auth) ──────────
+    if (action === 'change-password') {
+      const authUser = data?.user;
+      if (!authUser || !authUser.id) {
+        return Response.json({ error: 'Authentication required' }, { status: 401, headers: corsHeaders });
+      }
+      const { currentPassword, newPassword } = body;
+      if (!currentPassword || !newPassword) {
+        return Response.json({ error: 'Current and new password are required' }, { status: 400, headers: corsHeaders });
+      }
+      if (newPassword.length < 6) {
+        return Response.json({ error: 'New password must be at least 6 characters' }, { status: 400, headers: corsHeaders });
+      }
+      const user = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(authUser.id).first();
+      if (!user) {
+        return Response.json({ error: 'User not found' }, { status: 404, headers: corsHeaders });
+      }
+      if (user.password_hash) {
+        const isValid = await bcrypt.compare(currentPassword, user.password_hash);
+        if (!isValid) {
+          return Response.json({ error: 'Current password is incorrect' }, { status: 401, headers: corsHeaders });
+        }
+      }
+      const newHash = await bcrypt.hash(newPassword, 10);
+      await env.DB.prepare('UPDATE users SET password_hash=? WHERE id=?').bind(newHash, authUser.id).run();
+      return Response.json({ success: true, message: 'Password updated successfully' }, { headers: corsHeaders });
+    }
 
     if (!email || !password) {
       return Response.json({ error: 'Email and password are required' }, { status: 400, headers: corsHeaders });

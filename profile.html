@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creator Profile — FlixoraPlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* ── Profile-specific styles ─────────────────── */
+    .profile-hero {
+      padding: 40px 0 0;
+      position: relative;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 180px;
+      background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(59,130,246,0.06));
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .profile-card {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      gap: 24px;
+      padding-bottom: 28px;
+    }
+    .profile-avatar {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      border: 4px solid var(--bg);
+      box-shadow: 0 0 0 2px rgba(139,92,246,0.4), var(--shadow-lg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.4rem; font-weight: 800; color: #fff;
+      background: linear-gradient(135deg, var(--purple), #7dd3fc);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .profile-avatar img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .profile-meta {
+      flex: 1; min-width: 0; padding-bottom: 6px;
+    }
+    .profile-username {
+      font-size: 1.6rem; font-weight: 800; color: #fff;
+      letter-spacing: -0.03em;
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: wrap;
+    }
+    .profile-sub {
+      font-size: 0.82rem; color: var(--text-3); margin-top: 4px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .profile-sub svg { width: 13px; height: 13px; }
+    .profile-bio {
+      font-size: 0.88rem; color: var(--text-2); margin-top: 12px;
+      line-height: 1.65; max-width: 600px;
+    }
+    .profile-actions {
+      display: flex; gap: 10px; flex-shrink: 0; padding-bottom: 6px;
+    }
+
+    /* Tier badges */
+    .tier-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 12px; border-radius: 9999px;
+      font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .tier-bronze   { background: rgba(180,130,80,0.15); color: #d4a574; border: 1px solid rgba(180,130,80,0.3); }
+    .tier-silver   { background: rgba(148,163,184,0.12); color: #cbd5e1; border: 1px solid rgba(148,163,184,0.3); }
+    .tier-gold     { background: rgba(245,158,11,0.12); color: var(--gold-light); border: 1px solid rgba(245,158,11,0.3); }
+    .tier-platinum {
+      background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.1));
+      color: var(--purple-light);
+      border: 1px solid rgba(139,92,246,0.35);
+      box-shadow: 0 0 12px rgba(139,92,246,0.15);
+    }
+    .tier-badge svg { width: 11px; height: 11px; }
+
+    /* Stats */
+    .profile-stats {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    /* History list */
+    .history-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--glass-border);
+      transition: background var(--t);
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-item:hover { background: var(--glass); }
+    .history-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      background: var(--glass-2); border: 1px solid var(--glass-border);
+      color: var(--text-4);
+    }
+    .history-icon svg { width: 16px; height: 16px; }
+    .history-icon.won { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: var(--gold-light); }
+    .history-icon.silver { background: rgba(148,163,184,0.1); border-color: rgba(148,163,184,0.3); color: #cbd5e1; }
+    .history-icon.bronze { background: rgba(217,119,6,0.1); border-color: rgba(217,119,6,0.3); color: #fbbf24; }
+    .history-info { flex: 1; min-width: 0; }
+    .history-title {
+      font-weight: 600; font-size: 0.88rem; color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .history-detail { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
+    .history-score {
+      text-align: right; flex-shrink: 0;
+    }
+    .history-score .num { font-size: 1.1rem; font-weight: 800; color: var(--purple-light); }
+    .history-score .lbl { font-size: 0.62rem; color: var(--text-4); }
+
+    @media (max-width: 768px) {
+      .profile-card { flex-direction: column; align-items: center; text-align: center; }
+      .profile-username { justify-content: center; }
+      .profile-sub { justify-content: center; }
+      .profile-bio { margin-inline: auto; }
+      .profile-actions { justify-content: center; }
+      .profile-stats { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
+        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
+        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
+        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
+        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Profile Hero -->
+  <section class="page-top profile-hero">
+    <div class="container">
+      <div class="profile-card" id="profile-card">
+        <div class="empty-state" style="width:100%;padding:80px 20px;">
+          <div class="icon"><svg data-lucide="loader"></svg></div>
+          <p>Loading profile...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats + Content -->
+  <div class="page-body" style="padding-top:0;">
+    <div class="container">
+      <!-- Stats Row -->
+      <div class="profile-stats" id="profile-stats" style="display:none;">
+        <div class="stat-box">
+          <div class="stat-icon"><svg data-lucide="film"></svg></div>
+          <div class="num" id="stat-entries">0</div>
+          <div class="lbl">Entries</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon"><svg data-lucide="trophy"></svg></div>
+          <div class="num" id="stat-wins">0</div>
+          <div class="lbl">Wins</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon"><svg data-lucide="star"></svg></div>
+          <div class="num" id="stat-points">0</div>
+          <div class="lbl">Points</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon"><svg data-lucide="megaphone"></svg></div>
+          <div class="num" id="stat-hosted">0</div>
+          <div class="lbl">Hosted</div>
+        </div>
+      </div>
+
+      <!-- Tabs: Entries / Hosted -->
+      <div class="tabs" id="profile-tabs" style="display:none;">
+        <button class="tab-btn" data-tab="entries"><svg data-lucide="film"></svg> Competition History</button>
+        <button class="tab-btn" data-tab="hosted"><svg data-lucide="megaphone"></svg> Hosted Competitions</button>
+      </div>
+
+      <!-- Entries Tab -->
+      <div class="tab-panel" data-tab="entries">
+        <div class="card">
+          <div class="card-header"><svg data-lucide="history"></svg> Recent Entries</div>
+          <div id="entries-list">
+            <div class="empty-state" style="padding:40px;">
+              <div class="icon"><svg data-lucide="inbox"></svg></div>
+              <p>No entries yet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hosted Tab -->
+      <div class="tab-panel" data-tab="hosted">
+        <div class="card">
+          <div class="card-header"><svg data-lucide="megaphone"></svg> Competitions Hosted</div>
+          <div id="hosted-list">
+            <div class="empty-state" style="padding:40px;">
+              <div class="icon"><svg data-lucide="inbox"></svg></div>
+              <p>No competitions hosted yet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span style="color:var(--purple-light);">Play</span></div>
+        <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
+        <a href="browse.html">Browse</a>
+        <a href="create-competition.html">Host</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="about.html">About</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const profileId = getParam('id');
+
+    function getTierBadge(tier) {
+      const icons = { bronze: 'shield', silver: 'shield', gold: 'award', platinum: 'gem' };
+      const labels = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold', platinum: 'Platinum' };
+      return `<span class="tier-badge tier-${tier}"><svg data-lucide="${icons[tier] || 'shield'}"></svg> ${labels[tier] || 'Bronze'}</span>`;
+    }
+
+    function getRankIcon(rank) {
+      if (rank === 1) return { icon: 'medal', cls: 'won', label: '🥇 1st Place' };
+      if (rank === 2) return { icon: 'award', cls: 'silver', label: '🥈 2nd Place' };
+      if (rank === 3) return { icon: 'star', cls: 'bronze', label: '🥉 3rd Place' };
+      return { icon: 'film', cls: '', label: 'Participated' };
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+
+      if (!profileId) {
+        // If no ID, check if logged in and show own profile
+        const session = getSession();
+        if (session && session.id) {
+          window.location.href = `profile.html?id=${session.id}`;
+          return;
+        }
+        document.getElementById('profile-card').innerHTML = `
+          <div class="empty-state" style="width:100%;padding:60px 20px;">
+            <div class="icon"><svg data-lucide="user-x"></svg></div>
+            <h3>No profile selected</h3>
+            <p>Sign in to view your profile, or click a creator's name to see theirs.</p>
+            <a href="login.html" class="btn btn-primary btn-sm" style="margin-top:8px;"><svg data-lucide="log-in"></svg> Sign In</a>
+          </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/users?id=${profileId}`, { headers: API.getHeaders() });
+        if (!res.ok) throw new Error('Profile not found');
+        const data = await res.json();
+        const { user, stats, entries } = data;
+
+        document.title = `${user.username} — FlixoraPlay`;
+
+        // Is this the logged-in user's own profile?
+        const session = getSession();
+        const isOwnProfile = session && session.id === user.id;
+
+        // Render profile card
+        const initial = (user.username || '?')[0].toUpperCase();
+        const avatarContent = user.avatar_url
+          ? `<img src="${user.avatar_url}" alt="${user.username}" />`
+          : initial;
+
+        document.getElementById('profile-card').innerHTML = `
+          <div class="profile-avatar">${avatarContent}</div>
+          <div class="profile-meta">
+            <div class="profile-username">
+              ${user.username}
+              ${getTierBadge(user.tier)}
+              ${user.verified ? '<span class="badge badge-green"><svg data-lucide="check-circle"></svg> Verified</span>' : ''}
+            </div>
+            <div class="profile-sub">
+              <span><svg data-lucide="at-sign"></svg> ${user.email?.split('@')[0]}</span>
+              <span>·</span>
+              <span><svg data-lucide="calendar"></svg> Joined ${formatDate(user.createdAt)}</span>
+              <span>·</span>
+              <span><svg data-lucide="shield"></svg> ${user.role}</span>
+            </div>
+            ${user.bio ? `<div class="profile-bio">${user.bio}</div>` : ''}
+          </div>
+          <div class="profile-actions">
+            ${isOwnProfile ? `<a href="settings.html" class="btn btn-outline btn-sm"><svg data-lucide="settings"></svg> Edit Profile</a>` : ''}
+          </div>`;
+
+        // Stats
+        document.getElementById('stat-entries').textContent = stats.totalEntries;
+        document.getElementById('stat-wins').textContent = stats.wins;
+        document.getElementById('stat-points').textContent = stats.points;
+        document.getElementById('stat-hosted').textContent = stats.competitionsHosted;
+        document.getElementById('profile-stats').style.display = 'grid';
+        document.getElementById('profile-tabs').style.display = 'flex';
+
+        // Entries list
+        const entriesList = document.getElementById('entries-list');
+        if (entries.length === 0) {
+          entriesList.innerHTML = `<div class="empty-state" style="padding:40px;"><div class="icon"><svg data-lucide="inbox"></svg></div><p>No competition entries yet.</p></div>`;
+        } else {
+          entriesList.innerHTML = entries.map(e => {
+            const r = getRankIcon(e.rank);
+            return `
+              <div class="history-item">
+                <div class="history-icon ${r.cls}"><svg data-lucide="${r.icon}"></svg></div>
+                <div class="history-info">
+                  <div class="history-title">${e.title}</div>
+                  <div class="history-detail">
+                    ${r.label} · <a href="competition.html?id=${e.competitionId}">${e.competitionTitle || 'Competition'}</a> · ${formatDate(e.submittedAt)}
+                  </div>
+                </div>
+                <div class="history-score">
+                  ${e.score ? `<div class="num">${e.score}</div><div class="lbl">score</div>` : `<div style="font-size:0.75rem;color:var(--text-4);">—</div>`}
+                </div>
+              </div>`;
+          }).join('');
+        }
+
+        // Hosted list — fetch competitions hosted by this user
+        if (stats.competitionsHosted > 0) {
+          try {
+            const allComps = await API.getCompetitions();
+            const hosted = allComps.filter(c => c.hostId === profileId);
+            const hostedList = document.getElementById('hosted-list');
+            if (hosted.length > 0) {
+              hostedList.innerHTML = hosted.map(c => {
+                const statusBadge = c.status === 'open'
+                  ? '<span class="badge badge-green"><svg data-lucide="circle-dot"></svg> Open</span>'
+                  : c.status === 'judging'
+                  ? '<span class="badge badge-gold"><svg data-lucide="scale"></svg> Judging</span>'
+                  : '<span class="badge badge-neutral"><svg data-lucide="lock"></svg> Closed</span>';
+                return `
+                  <div class="history-item">
+                    <div class="history-icon"><svg data-lucide="clapperboard"></svg></div>
+                    <div class="history-info">
+                      <div class="history-title"><a href="competition.html?id=${c.id}">${c.title}</a></div>
+                      <div class="history-detail">${statusBadge} · ${c.prize || 'No prize'} · Deadline: ${formatDate(c.deadline)}</div>
+                    </div>
+                  </div>`;
+              }).join('');
+            }
+          } catch (err) {
+            console.warn('Could not load hosted competitions:', err);
+          }
+        }
+
+        lucide.createIcons();
+        initTabs();
+
+      } catch (err) {
+        document.getElementById('profile-card').innerHTML = `
+          <div class="empty-state" style="width:100%;padding:60px 20px;">
+            <div class="icon"><svg data-lucide="user-x"></svg></div>
+            <h3>Profile not found</h3>
+            <p>${err.message}</p>
+            <a href="index.html" class="btn btn-outline btn-sm" style="margin-top:8px;"><svg data-lucide="home"></svg> Back Home</a>
+          </div>`;
+        lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>

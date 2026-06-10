@@ -107,7 +107,7 @@
           <div class="ranking-row">
             <div class="ranking-pos ${rankCls}"><svg data-lucide="${medalIcon}"></svg></div>
             <div class="ranking-info">
-              <div class="ranking-name">${c.creatorName}</div>
+              <div class="ranking-name">${profileLink(c.creatorId, c.creatorName)}</div>
               <div class="ranking-sub">${c.wins} gold &middot; ${c.p2} silver &middot; ${c.p3} bronze</div>
             </div>
             <div style="text-align:right;">
@@ -136,7 +136,7 @@
             <div class="ranking-pos ${cls}"><svg data-lucide="${icon}"></svg></div>
             <div style="flex:1;min-width:0;">
               <div style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);">${entry.title}</div>
-              <div style="font-size:0.75rem;color:var(--text-3);">by ${entry.creatorName} &middot; <a href="competition.html?id=${entry.competitionId}">${comp ? comp.title : '&mdash;'}</a></div>
+              <div style="font-size:0.75rem;color:var(--text-3);">by ${profileLink(entry.creatorId, entry.creatorName)} &middot; <a href="competition.html?id=${entry.competitionId}">${comp ? comp.title : '&mdash;'}</a></div>
             </div>
             <div style="font-weight:800;color:var(--purple-light);font-size:1.1rem;">${entry.score}</div>
           </div>`;

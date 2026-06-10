@@ -242,7 +242,12 @@ function updateNavForAuth() {
         <svg data-lucide="plus-circle"></svg> Host
       </a>
       <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#7dd3fc);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:#fff;flex-shrink:0;" title="${session.username || session.name || session.email}">${initial}</div>
+        <a href="profile.html?id=${session.id}" style="display:flex;align-items:center;gap:8px;text-decoration:none;" title="View Profile">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#7dd3fc);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:#fff;flex-shrink:0;cursor:pointer;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 0 2px var(--purple-light)'" onmouseout="this.style.boxShadow='none'">${initial}</div>
+        </a>
+        <a href="settings.html" class="btn btn-ghost btn-sm" style="gap:4px;padding:6px 10px;" title="Settings">
+          <svg data-lucide="settings"></svg>
+        </a>
         <button class="btn btn-ghost btn-sm" onclick="signOut()" style="gap:4px;">
           <svg data-lucide="log-out"></svg> Sign Out
         </button>
@@ -258,6 +263,11 @@ function updateNavForAuth() {
       </a>`;
   }
   if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// ── Profile link helper ───────────────────────────────────
+function profileLink(userId, displayName) {
+  return `<a href="profile.html?id=${userId}" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--purple-light)'" onmouseout="this.style.color='inherit'">${displayName}</a>`;
 }
 
 // ── Tab switcher ──────────────────────────────────────────

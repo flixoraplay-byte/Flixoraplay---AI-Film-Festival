@@ -238,7 +238,7 @@
             </div>
             <div class="entry-body">
               <div class="entry-title">${entry.title}</div>
-              <div class="entry-creator"><svg data-lucide="user" style="width:11px;height:11px;"></svg>${entry.creatorName} &nbsp;&middot;&nbsp; ${formatDate(entry.submittedAt)}</div>
+              <div class="entry-creator"><svg data-lucide="user" style="width:11px;height:11px;"></svg>${profileLink(entry.creatorId, entry.creatorName)} &nbsp;&middot;&nbsp; ${formatDate(entry.submittedAt)}</div>
               <div class="entry-tools">${tools.map(t => `<span class="tool-tag">${t}</span>`).join('')}</div>
               ${entry.description ? `<p style="font-size:0.8rem;color:var(--text-3);margin-top:6px;line-height:1.5;">${entry.description}</p>` : ''}
             </div>
