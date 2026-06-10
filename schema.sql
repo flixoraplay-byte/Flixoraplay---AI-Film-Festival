@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Seed demo data
-INSERT OR IGNORE INTO competitions VALUES
+INSERT OR IGNORE INTO competitions (id, title, description, theme, prize, maxDuration, deadline, status, hostId, hostName, judging, createdAt) VALUES
   ('c1','Sci-Fi Visions 2025','Create a cinematic sci-fi AI-generated video in under 60 seconds. Think space, future cities, alien landscapes.','Sci-fi short under 60 seconds','$500',60,'2026-07-30','open','u_host1','Neon Studios','manual','2026-04-01'),
   ('c2','Nature Reimagined','Show nature like never seen before using AI video generation tools. Forests, oceans, mountains — reimagined.','AI-rendered nature scenes','$300',30,'2026-08-15','open','u_host2','EarthFrame Co.','manual','2026-04-05'),
   ('c3','Human Emotion Reel','Tell an emotional story using AI-generated visuals. No dialogue needed. Express through imagery.','Emotion storytelling under 90s',NULL,90,'2026-03-20','judging','u_host1','Neon Studios','manual','2026-03-01');
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS brands (
 );
 
 -- Seed Brands and briefs
-INSERT OR IGNORE INTO users (id, email, password, username, role, created_at) VALUES 
+INSERT OR IGNORE INTO users (id, email, password_hash, username, role, createdAt) VALUES 
   ('u_brand1', 'marketing@lumina.com', '$2a$10$UnA7vj7w8v8v8v8v8v8v8u8u8u8u8u8u8u8u8u8u8u8u8u8u8u8u', 'Lumina Beauty', 'brand', '2026-03-01'),
   ('u_brand2', 'briefs@apextech.com', '$2a$10$UnA7vj7w8v8v8v8v8v8v8u8u8u8u8u8u8u8u8u8u8u8u8u8u8u8u', 'Apex Tech', 'brand', '2026-03-01');
 
