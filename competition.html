@@ -183,14 +183,27 @@
 
       const days = daysRemaining(competition.deadline);
       const statusLabel = { open: '<svg data-lucide="circle-dot" style="width:12px;height:12px;display:inline;vertical-align:middle;color:var(--green-light);"></svg> Open', judging: '<svg data-lucide="scale" style="width:12px;height:12px;display:inline;vertical-align:middle;color:var(--gold-light);"></svg> Judging', closed: '<svg data-lucide="lock" style="width:12px;height:12px;display:inline;vertical-align:middle;color:var(--text-3);"></svg> Closed' }[competition.status] || competition.status;
+      
+      const session = getSession();
+      const isFunded = competition.prize_funded === 1;
+      const prizeBadge = isFunded 
+        ? `<span class="badge badge-gold" style="margin-left:auto;font-size:0.7rem;"><svg data-lucide="check-circle" style="width:9px;height:9px;"></svg> Funded</span>` 
+        : `<span class="badge badge-neutral" style="margin-left:auto;font-size:0.7rem;">Unfunded</span>`;
+
+      let fundButton = '';
+      if (competition.prize && !isFunded && session && session.id === competition.hostId) {
+        fundButton = `<div style="margin-top:10px;"><a href="checkout.html?id=${compId}" class="btn btn-primary w-full" style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg data-lucide="credit-card" style="width:13px;height:13px;"></svg> Fund Prize Pool</a></div>`;
+      }
+
       document.getElementById('sidebar-info').innerHTML = `
         <div class="sidebar-info-row"><span class="label">Status</span><span class="value">${statusLabel}</span></div>
         <div class="sidebar-info-row"><span class="label">Hosted by</span><span class="value">${competition.hostName}</span></div>
         <div class="sidebar-info-row"><span class="label">Deadline</span><span class="value">${formatDate(competition.deadline)}</span></div>
         <div class="sidebar-info-row"><span class="label">Days Left</span><span class="value">${days > 0 ? days : 'Ended'}</span></div>
         <div class="sidebar-info-row"><span class="label">Max Duration</span><span class="value">${competition.maxDuration || 15}s</span></div>
-        <div class="sidebar-info-row"><span class="label">Prize</span><span class="value">${competition.prize || 'No prize'}</span></div>
+        <div class="sidebar-info-row" style="display:flex;align-items:center;"><span class="label">Prize</span><span class="value">${competition.prize || 'No prize'}</span> ${competition.prize ? prizeBadge : ''}</div>
         <div class="sidebar-info-row"><span class="label">Judging</span><span class="value">Manual</span></div>
+        ${fundButton}
         <div style="margin-top:14px;"><a href="judge.html?id=${compId}" class="btn btn-outline w-full" style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg data-lucide="gavel" style="width:13px;height:13px;"></svg> Open Judge Panel</a></div>`;
       lucide.createIcons();
 
@@ -198,9 +211,17 @@
         <tr><td style="color:var(--text-3);padding:6px 16px 6px 0;">Theme</td><td><strong>${competition.theme || ''}</strong></td></tr>
         <tr><td style="color:var(--text-3);padding:6px 16px 6px 0;">Deadline</td><td><strong>${formatDate(competition.deadline)}</strong></td></tr>
         <tr><td style="color:var(--text-3);padding:6px 16px 6px 0;">Max Duration</td><td><strong>${competition.maxDuration || 15} seconds</strong></td></tr>
-        <tr><td style="color:var(--text-3);padding:6px 16px 6px 0;">Prize</td><td><strong>${competition.prize || 'No prize'}</strong></td></tr>
+        <tr><td style="color:var(--text-3);padding:6px 16px 6px 0;">Prize</td><td><div style="display:flex;align-items:center;gap:8px;"><strong>${competition.prize || 'No prize'}</strong> ${competition.prize ? prizeBadge : ''}</div></td></tr>
         <tr><td style="color:#888;padding:6px 16px 6px 0;">Judging</td><td><strong>Manual (Host-selected winners)</strong></td></tr>
         <tr><td style="color:#888;padding:6px 16px 6px 0;">Created</td><td><strong>${formatDate(competition.createdAt)}</strong></td></tr>`;
+
+      // Show payment status toast if any
+      const paymentStatus = getParam('payment');
+      if (paymentStatus === 'success') {
+        showToast('Prize pool funded successfully! Thank you for backing this competition.', 'success');
+      } else if (paymentStatus === 'cancelled') {
+        showToast('Prize pool funding was cancelled.', 'info');
+      }
 
       await loadEntries();
     });

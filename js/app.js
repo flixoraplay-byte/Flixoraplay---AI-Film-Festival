@@ -149,6 +149,23 @@ const API = {
     });
     if (!r.ok) throw new Error('Failed to mark all read');
     return r.json();
+  },
+  async createCheckout(competitionId, amountCents) {
+    const r = await fetch(`${API_BASE}/payments/checkout`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify({ competitionId, amountCents })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Checkout session failed');
+    return data;
+  },
+  async getPaymentHistory() {
+    const r = await fetch(`${API_BASE}/payments/history`, {
+      headers: this.getHeaders()
+    });
+    if (!r.ok) throw new Error('Failed to load payment history');
+    return r.json();
   }
 };
 

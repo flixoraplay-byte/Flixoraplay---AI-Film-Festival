@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS competitions (
   description TEXT,
   theme       TEXT,
   prize       TEXT,
+  prize_pool_cents INTEGER DEFAULT 0,
+  prize_funded INTEGER DEFAULT 0,
   maxDuration INTEGER DEFAULT 15,
   deadline    TEXT NOT NULL,
   status      TEXT DEFAULT 'open',
@@ -77,4 +79,19 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_at TEXT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS payments (
+  id TEXT PRIMARY KEY,
+  competition_id TEXT NOT NULL,
+  payer_id TEXT NOT NULL,
+  payee_id TEXT,
+  amount_cents INTEGER NOT NULL,
+  currency TEXT DEFAULT 'usd',
+  type TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  stripe_session_id TEXT,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (competition_id) REFERENCES competitions(id)
+);
+
 
