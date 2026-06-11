@@ -45,6 +45,7 @@ export async function onRequestGet({ request, env }) {
       email: user.email,
       role: user.role || 'creator',
       avatar_url: user.avatar_url || null,
+      cover_url: user.cover_url || null,
       bio: user.bio || '',
       total_points: user.total_points || 0,
       verified: user.verified || 0,
@@ -108,12 +109,16 @@ export async function onRequestPut({ request, env, data }) {
     }
 
     const body = await request.json();
-    const { bio, avatar_url } = body;
+    const { username, bio, avatar_url, cover_url } = body;
 
     // Only allow updating own profile
     const updates = [];
     const values = [];
 
+    if (typeof username === 'string' && username.length > 0) {
+      updates.push('username=?');
+      values.push(username.slice(0, 50)); // max 50 chars
+    }
     if (typeof bio === 'string') {
       updates.push('bio=?');
       values.push(bio.slice(0, 500)); // max 500 chars
@@ -121,6 +126,10 @@ export async function onRequestPut({ request, env, data }) {
     if (typeof avatar_url === 'string') {
       updates.push('avatar_url=?');
       values.push(avatar_url);
+    }
+    if (typeof cover_url === 'string') {
+      updates.push('cover_url=?');
+      values.push(cover_url);
     }
 
     if (updates.length === 0) {
@@ -132,8 +141,15 @@ export async function onRequestPut({ request, env, data }) {
       `UPDATE users SET ${updates.join(', ')} WHERE id=?`
     ).bind(...values).run();
 
+    // If username was updated, we must cascade this change to denormalized tables (entries & competitions)
+    if (typeof username === 'string' && username.length > 0) {
+      const uName = username.slice(0, 50);
+      await getDB(env).prepare(`UPDATE entries SET creatorName=? WHERE creatorId=?`).bind(uName, authUser.id).run();
+      await getDB(env).prepare(`UPDATE competitions SET hostName=? WHERE hostId=?`).bind(uName, authUser.id).run();
+    }
+
     const updated = await getDB(env).prepare(
-      `SELECT id, username, email, role, avatar_url, bio, total_points, verified, createdAt FROM users WHERE id=?`
+      `SELECT id, username, email, role, avatar_url, cover_url, bio, total_points, verified, createdAt FROM users WHERE id=?`
     ).bind(authUser.id).first();
 
     updated.tier = calcTier(updated.total_points || 0);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,29 +40,40 @@
     }
 
     .cc-avatar {
-      width: 88px; height: 88px;
+      width: 88px;
+      height: 88px;
       border-radius: 50%;
       border: 3px solid var(--bg-2);
       background: var(--bg-3);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; font-weight: 800; color: var(--text-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-2);
       margin: -44px auto 0;
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
     }
+
     .cc-avatar img {
-      width: 100%; height: 100%; object-fit: cover;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .cc-name {
-      font-size: 1.25rem; font-weight: 800; color: #fff;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
       letter-spacing: -0.02em;
       margin-top: 14px;
     }
 
     .cc-role {
-      font-size: 0.72rem; font-weight: 600;
+      font-size: 0.72rem;
+      font-weight: 600;
       color: var(--text-3);
       text-transform: uppercase;
       letter-spacing: 0.06em;
@@ -69,22 +81,45 @@
     }
 
     .cc-tier {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 3px 14px; border-radius: 9999px;
-      font-size: 0.65rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.05em;
-      background: var(--bg-3); color: var(--text-2);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 14px;
+      border-radius: 9999px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--bg-3);
+      color: var(--text-2);
       border: 1px solid var(--glass-border);
       margin-top: 10px;
     }
-    .cc-tier svg { width: 11px; height: 11px; }
-    .cc-tier.tier-bronze { color: #d4a574; }
-    .cc-tier.tier-silver { color: #cbd5e1; }
-    .cc-tier.tier-gold   { color: var(--gold-light); }
-    .cc-tier.tier-platinum { color: var(--purple-light); }
+
+    .cc-tier svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    .cc-tier.tier-bronze {
+      color: #d4a574;
+    }
+
+    .cc-tier.tier-silver {
+      color: #cbd5e1;
+    }
+
+    .cc-tier.tier-gold {
+      color: var(--gold-light);
+    }
+
+    .cc-tier.tier-platinum {
+      color: var(--purple-light);
+    }
 
     .cc-bio {
-      font-size: 0.82rem; color: var(--text-3);
+      font-size: 0.82rem;
+      color: var(--text-3);
       line-height: 1.55;
       margin-top: 16px;
       text-align: left;
@@ -106,12 +141,17 @@
       padding: 12px 0;
       text-align: center;
     }
+
     .cc-stat-num {
-      font-size: 1.2rem; font-weight: 800; color: #fff;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
       line-height: 1;
     }
+
     .cc-stat-lbl {
-      font-size: 0.62rem; font-weight: 600;
+      font-size: 0.62rem;
+      font-weight: 600;
       color: var(--text-4);
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -123,69 +163,82 @@
     }
 
     .cc-meta-row {
-      display: flex; align-items: center; gap: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       padding: 7px 0;
-      font-size: 0.78rem; color: var(--text-3);
+      font-size: 0.78rem;
+      color: var(--text-3);
     }
-    .cc-meta-row svg { width: 13px; height: 13px; color: var(--text-4); flex-shrink: 0; }
+
+    .cc-meta-row svg {
+      width: 13px;
+      height: 13px;
+      color: var(--text-4);
+      flex-shrink: 0;
+    }
 
     .cc-footer {
       padding: 16px 28px;
       border-top: 1px solid var(--glass-border);
-      display: flex; gap: 8px;
+      display: flex;
+      gap: 8px;
     }
-    .cc-footer .btn { flex: 1; justify-content: center; }
+
+    .cc-footer .btn {
+      flex: 1;
+      justify-content: center;
+    }
 
     .cc-badge-row {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       flex-wrap: wrap;
       margin-top: 8px;
     }
 
     /* ── Right Panel ────────────────────────────── */
     .profile-right-header {
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 20px;
     }
+
     .profile-right-header h2 {
-      font-size: 1.15rem; font-weight: 700; color: #fff;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
     }
 
-    /* History list */
-    .history-item {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--glass-border);
-      transition: background var(--t);
+    /* ── V6 Tables (From Dashboard) ───────────────── */
+    .table-card {
+      background: rgba(255,255,255,0.01);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 48px;
     }
-    .history-item:last-child { border-bottom: none; }
-    .history-item:hover { background: var(--glass); }
-    .history-icon {
-      width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      background: var(--bg-3); border: 1px solid var(--glass-border);
-      color: var(--text-4);
+    .table-v6 { width: 100%; border-collapse: collapse; text-align: left; }
+    .table-v6 th {
+      padding: 16px 24px; font-size: 0.75rem; font-weight: 700; color: var(--text-4);
+      text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.01);
     }
-    .history-icon svg { width: 16px; height: 16px; }
-    .history-icon.won { color: var(--gold-light); }
-    .history-icon.silver { color: #cbd5e1; }
-    .history-icon.bronze { color: #fbbf24; }
-    .history-info { flex: 1; min-width: 0; }
-    .history-title {
-      font-weight: 600; font-size: 0.88rem; color: var(--text);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    .table-v6 td {
+      padding: 16px 24px; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle;
     }
-    .history-detail { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
-    .history-score { text-align: right; flex-shrink: 0; }
-    .history-score .num { font-size: 1.1rem; font-weight: 800; color: #fff; }
-    .history-score .lbl { font-size: 0.62rem; color: var(--text-4); }
+    .table-v6 tbody tr:last-child td { border-bottom: none; }
+    .table-v6 tbody tr:hover { background: rgba(255,255,255,0.02); }
 
     /* ── Responsive ─────────────────────────────── */
     @media (max-width: 860px) {
       .profile-layout {
         grid-template-columns: 1fr;
       }
+
       .creator-card {
         position: static;
         max-width: 420px;
@@ -194,6 +247,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <nav>
@@ -236,6 +290,7 @@
           <div class="tabs" id="profile-tabs">
             <button class="tab-btn" data-tab="entries">Entries</button>
             <button class="tab-btn" data-tab="hosted">Hosted</button>
+            <button class="tab-btn" data-tab="settings" id="tab-settings-btn" style="display:none;"><svg data-lucide="settings" style="width:14px;height:14px;margin-right:4px;vertical-align:-2px;"></svg>Settings</button>
           </div>
 
           <!-- Entries Tab -->
@@ -259,6 +314,37 @@
               </div>
             </div>
           </div>
+
+          <!-- Settings Tab -->
+          <div class="tab-panel" data-tab="settings">
+            <div class="card" style="padding: 32px;">
+              <h3 style="margin-top:0; font-size:1.2rem; font-weight:800; color:#fff; border-bottom:1px solid var(--glass-border); padding-bottom:16px; margin-bottom:24px;">Edit Profile</h3>
+              
+              <div style="display:flex; flex-direction:column; gap:20px;">
+                <div>
+                  <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-4); margin-bottom:6px; text-transform:uppercase;">Username</label>
+                  <input type="text" id="edit-username" class="search-input" style="width:100%;" />
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-4); margin-bottom:6px; text-transform:uppercase;">Bio</label>
+                  <textarea id="edit-bio" class="search-input" style="width:100%; min-height:80px; resize:vertical; padding:12px; border-radius:8px;"></textarea>
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-4); margin-bottom:6px; text-transform:uppercase;">Avatar URL</label>
+                  <input type="text" id="edit-avatar" class="search-input" style="width:100%;" placeholder="https://..." />
+                </div>
+                <div>
+                  <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-4); margin-bottom:6px; text-transform:uppercase;">Banner URL</label>
+                  <input type="text" id="edit-banner" class="search-input" style="width:100%;" placeholder="https://..." />
+                </div>
+                
+                <div style="margin-top:12px;">
+                  <button id="save-profile-btn" class="btn btn-primary" style="padding:10px 24px;">Save Changes</button>
+                  <button class="btn btn-outline" style="margin-left:12px;" onclick="signOut()">Sign Out</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -268,9 +354,11 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <div class="container"
+      style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
       <div>
-        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span style="color:var(--text-3);">Play</span></div>
+        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span
+            style="color:var(--text-3);">Play</span></div>
         <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
@@ -289,10 +377,10 @@
 
     function getTierInfo(tier) {
       const map = {
-        bronze:   { icon: 'shield',  label: 'Bronze',   cls: 'tier-bronze' },
-        silver:   { icon: 'shield',  label: 'Silver',   cls: 'tier-silver' },
-        gold:     { icon: 'award',   label: 'Gold',     cls: 'tier-gold' },
-        platinum: { icon: 'gem',     label: 'Platinum', cls: 'tier-platinum' }
+        bronze: { icon: 'shield', label: 'Bronze', cls: 'tier-bronze' },
+        silver: { icon: 'shield', label: 'Silver', cls: 'tier-silver' },
+        gold: { icon: 'award', label: 'Gold', cls: 'tier-gold' },
+        platinum: { icon: 'gem', label: 'Platinum', cls: 'tier-platinum' }
       };
       return map[tier] || map.bronze;
     }
@@ -347,10 +435,10 @@
 
         const card = document.getElementById('creator-card');
         card.innerHTML = `
-          <div class="cc-banner"></div>
+          <div class="cc-banner" id="card-banner" ${user.cover_url ? `style="background-image:url('${user.cover_url}')"` : ''}></div>
           <div class="cc-body">
-            <div class="cc-avatar">${avatarContent}</div>
-            <div class="cc-name">${user.username}</div>
+            <div class="cc-avatar" id="card-avatar">${avatarContent}</div>
+            <div class="cc-name" id="card-name">${user.username}</div>
             <div class="cc-role">${user.role || 'Creator'}</div>
 
             <div class="cc-badge-row">
@@ -361,7 +449,7 @@
               ${user.verified ? '<span class="cc-tier" style="color:var(--green-light);">Verified</span>' : ''}
             </div>
 
-            ${user.bio ? `<div class="cc-bio">${user.bio}</div>` : ''}
+            <div class="cc-bio" id="card-bio" ${!user.bio ? 'style="display:none;"' : ''}>${user.bio || ''}</div>
 
             <hr class="cc-divider" />
 
@@ -400,7 +488,7 @@
 
           ${isOwnProfile ? `
           <div class="cc-footer">
-            <a href="settings.html" class="btn btn-outline btn-sm">Edit Profile</a>
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('tab-settings-btn').click();">Edit Profile</button>
             <a href="dashboard.html" class="btn btn-primary btn-sm">Dashboard</a>
           </div>` : ''}
         `;
@@ -414,22 +502,39 @@
         if (entries.length === 0) {
           entriesList.innerHTML = `<div class="empty-state" style="padding:40px;"><p>No competition entries yet.</p></div>`;
         } else {
-          entriesList.innerHTML = entries.map(e => {
+          const rows = entries.map(e => {
             const r = getRankIcon(e.rank);
+            const rankLabel = r.label !== 'Participated' ? `<span style="color:var(--gold-light); font-weight:700; font-size:0.75rem; text-transform:uppercase;"><svg data-lucide="${r.icon}" style="width:12px;height:12px;vertical-align:middle;margin-right:2px;"></svg>${r.label}</span>` : `<span style="color:var(--text-4); font-size:0.75rem;">Participant</span>`;
+            const scoreLabel = e.score ? `<strong style="color:var(--purple-light); font-size:1.1rem;">${e.score}</strong>` : '—';
+            
             return `
-              <div class="history-item">
-                <div class="history-icon ${r.cls}"><svg data-lucide="${r.icon}"></svg></div>
-                <div class="history-info">
-                  <div class="history-title">${e.title}</div>
-                  <div class="history-detail">
-                    ${r.label} · <a href="competition.html?id=${e.competitionId}">${e.competitionTitle || 'Competition'}</a> · ${formatDate(e.submittedAt)}
-                  </div>
-                </div>
-                <div class="history-score">
-                  ${e.score ? `<div class="num">${e.score}</div><div class="lbl">score</div>` : `<div style="font-size:0.75rem;color:var(--text-4);">—</div>`}
-                </div>
-              </div>`;
+              <tr>
+                <td>
+                  <div style="font-weight:700; color:#fff; margin-bottom:4px; font-size:0.95rem;">${e.title}</div>
+                  <div style="font-size:0.75rem; color:var(--text-4);">Tools: ${e.tools || 'None'}</div>
+                </td>
+                <td><a href="competition.html?id=${e.competitionId}" style="color:var(--text-2);text-decoration:none;font-weight:600;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-2)'">${e.competitionTitle || 'Competition'}</a></td>
+                <td style="color:var(--text-3); font-size:0.85rem;">${formatDate(e.submittedAt)}</td>
+                <td><div style="display:flex; align-items:center; gap:12px;">${scoreLabel} ${rankLabel}</div></td>
+              </tr>`;
           }).join('');
+          
+          entriesList.innerHTML = `
+            <div class="table-card" style="margin-bottom:0;">
+              <div style="overflow-x:auto;">
+                <table class="table-v6">
+                  <thead>
+                    <tr>
+                      <th>Video Information</th>
+                      <th>Competition</th>
+                      <th>Submitted On</th>
+                      <th>Score & Rank</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rows}</tbody>
+                </table>
+              </div>
+            </div>`;
         }
 
         // ── Hosted list ─────────────────────────────
@@ -439,18 +544,37 @@
             const hosted = allComps.filter(c => c.hostId === profileId);
             const hostedList = document.getElementById('hosted-list');
             if (hosted.length > 0) {
-              hostedList.innerHTML = hosted.map(c => {
-                const statusLabel = c.status === 'open' ? 'Open'
-                  : c.status === 'judging' ? 'Judging' : 'Closed';
+              const hRows = hosted.map(c => {
+                const statusMap = {
+                  open: '<span style="color:var(--green-light); font-weight:600; font-size:0.8rem;">OPEN</span>',
+                  judging: '<span style="color:var(--gold-light); font-weight:600; font-size:0.8rem;">JUDGING</span>',
+                  closed: '<span style="color:var(--text-4); font-weight:600; font-size:0.8rem;">CLOSED</span>'
+                };
                 return `
-                  <div class="history-item">
-                    <div class="history-icon"><svg data-lucide="clapperboard"></svg></div>
-                    <div class="history-info">
-                      <div class="history-title"><a href="competition.html?id=${c.id}">${c.title}</a></div>
-                      <div class="history-detail">${statusLabel} · ${c.prize || 'No prize'} · Deadline: ${formatDate(c.deadline)}</div>
-                    </div>
-                  </div>`;
+                  <tr>
+                    <td><a href="competition.html?id=${c.id}" style="font-weight:700; color:#fff; text-decoration:none;">${c.title}</a></td>
+                    <td style="font-weight:600; color:var(--gold-light);">${c.prize || 'No prize'}</td>
+                    <td style="color:var(--text-3); font-size:0.85rem;">${formatDate(c.deadline)}</td>
+                    <td>${statusMap[c.status] || c.status}</td>
+                  </tr>`;
               }).join('');
+              
+              hostedList.innerHTML = `
+                <div class="table-card" style="margin-bottom:0;">
+                  <div style="overflow-x:auto;">
+                    <table class="table-v6">
+                      <thead>
+                        <tr>
+                          <th>Competition Title</th>
+                          <th>Prize Pool</th>
+                          <th>Deadline</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>${hRows}</tbody>
+                    </table>
+                  </div>
+                </div>`;
             }
           } catch (err) {
             console.warn('Could not load hosted competitions:', err);
@@ -464,6 +588,65 @@
         lucide.createIcons();
         initTabs();
 
+        if (isOwnProfile) {
+          document.getElementById('tab-settings-btn').style.display = 'inline-block';
+          document.getElementById('edit-username').value = user.username || '';
+          document.getElementById('edit-bio').value = user.bio || '';
+          document.getElementById('edit-avatar').value = user.avatar_url || '';
+          document.getElementById('edit-banner').value = user.cover_url || '';
+
+          document.getElementById('save-profile-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('save-profile-btn');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+            try {
+              const payload = {
+                username: document.getElementById('edit-username').value.trim(),
+                bio: document.getElementById('edit-bio').value.trim(),
+                avatar_url: document.getElementById('edit-avatar').value.trim(),
+                cover_url: document.getElementById('edit-banner').value.trim()
+              };
+              await API.updateProfile(payload);
+              
+              // Update live card
+              document.getElementById('card-name').textContent = payload.username;
+              if (payload.bio) {
+                const bioEl = document.getElementById('card-bio');
+                bioEl.textContent = payload.bio;
+                bioEl.style.display = 'block';
+              } else {
+                document.getElementById('card-bio').style.display = 'none';
+              }
+              if (payload.avatar_url) {
+                document.getElementById('card-avatar').innerHTML = `<img src="${payload.avatar_url}" alt="${payload.username}" />`;
+              } else {
+                document.getElementById('card-avatar').textContent = payload.username[0].toUpperCase();
+              }
+              if (payload.cover_url) {
+                document.getElementById('card-banner').style.backgroundImage = `url('${payload.cover_url}')`;
+              } else {
+                document.getElementById('card-banner').style.backgroundImage = 'none';
+              }
+
+              // Also update session info globally
+              const session = getSession();
+              if (session) {
+                session.username = payload.username;
+                session.avatar_url = payload.avatar_url;
+                setSession(session);
+                updateNavForAuth();
+              }
+
+              showToast('Profile updated perfectly!', 'success');
+            } catch (err) {
+              showToast(err.message, 'error');
+            } finally {
+              btn.textContent = 'Save Changes';
+              btn.disabled = false;
+            }
+          });
+        }
+
       } catch (err) {
         document.getElementById('profile-loading').innerHTML = `
           <div class="empty-state" style="padding:60px 20px;">
@@ -475,4 +658,5 @@
     });
   </script>
 </body>
+
 </html>

@@ -19,7 +19,7 @@ export async function onRequestGet({ env, data }) {
   try {
     // 1. Get user profile
     const profile = await getDB(env).prepare(
-      `SELECT id, username, email, role, verified, avatar_url, bio, total_points, createdAt FROM users WHERE id = ?`
+      `SELECT id, username, email, role, verified, avatar_url, cover_url, bio, total_points, createdAt FROM users WHERE id = ?`
     ).bind(user.id).first();
 
     if (!profile) {

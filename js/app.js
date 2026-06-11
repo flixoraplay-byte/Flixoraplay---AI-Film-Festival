@@ -192,6 +192,18 @@ const API = {
     if (!r.ok) throw new Error('Failed to load dashboard data');
     return r.json();
   },
+  async updateProfile(data) {
+    const r = await fetch(`${API_BASE}/users`, {
+      method: 'PUT',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!r.ok) {
+      const err = await r.json();
+      throw new Error(err.error || 'Failed to update profile');
+    }
+    return r.json();
+  },
   getTierBadge(tier) {
     const badgeMap = {
       'Platinum': '<span class="tier-badge tier-platinum"><svg data-lucide="sparkles" style="width:10px;height:10px;"></svg> Platinum</span>',
@@ -356,7 +368,6 @@ function updateNavForAuth() {
         <a href="profile.html?id=${session.id}" style="display:flex;align-items:center;gap:8px;text-decoration:none;" title="View Profile">
           <div style="width:32px;height:32px;border-radius:50%;background:var(--bg-3);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:var(--text-2);flex-shrink:0;cursor:pointer;">${initial}</div>
         </a>
-        <a href="settings.html" class="nav-link" title="Settings">Settings</a>
         <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>`;
 
@@ -408,7 +419,7 @@ window.addEventListener('scroll', () => {
 // ── Video Embed Utilities ─────────────────────────────────
 function getYouTubeId(url) {
   if (!url) return null;
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
   const match = url.match(regExp);
   return (match && match[2].length === 11) ? match[2] : null;
 }
@@ -428,19 +439,24 @@ function getVideoThumbnail(url) {
   const vimId = getVimeoId(url);
   if (vimId) {
     // Return a default gradient/play button card for Vimeo (since Vimeo API is async)
-    return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%238b5cf6"/><stop offset="100%" stop-color="%233b82f6"/></linearGradient></defs><rect width="300" height="200" fill="url(%23g)"/><polygon points="130,75 180,100 130,125" fill="%23fff"/></svg>`;
+    const vimeoSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient></defs><rect width="300" height="200" fill="url(#g)"/><polygon points="130,75 180,100 130,125" fill="#fff"/></svg>`;
+    return `data:image/svg+xml;utf8,${encodeURIComponent(vimeoSvg)}`;
   }
-  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><rect width="300" height="200" fill="%231e1e2f"/><circle cx="150" cy="100" r="30" fill="%238b5cf6" opacity="0.8"/><polygon points="142,88 165,100 142,112" fill="%23fff"/></svg>`;
+  const defaultSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><rect width="300" height="200" fill="#1e1e2f"/><circle cx="150" cy="100" r="30" fill="#8b5cf6" opacity="0.8"/><polygon points="142,88 165,100 142,112" fill="#fff"/></svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(defaultSvg)}`;
 }
 
 function getVideoEmbed(url) {
   const ytId = getYouTubeId(url);
+  const isShort = url.includes('/shorts/');
+  const style = isShort ? 'aspect-ratio: 9/16; max-height: 80vh; max-width: 400px; margin: 0 auto; display: block; border:none; width: 100%; border-radius: 8px;' : 'aspect-ratio: 16/9; width: 100%; border:none; display:block;';
+  
   if (ytId) {
-    return `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    return `<iframe style="${style}" src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
   }
   const vimId = getVimeoId(url);
   if (vimId) {
-    return `<iframe src="https://player.vimeo.com/video/${vimId}?autoplay=1&badge=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+    return `<iframe style="${style}" src="https://player.vimeo.com/video/${vimId}?autoplay=1&badge=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
   }
   return `<div class="empty-state" style="padding:20px;"><div class="icon"><svg data-lucide="alert-triangle"></svg></div><p>Unsupported video format. <a href="${url}" target="_blank">Open directly</a></p></div>`;
 }
@@ -449,23 +465,32 @@ function getVideoEmbed(url) {
 function toggleInlinePlayer(entryId, url) {
   const containerId = `video-player-${entryId}`;
   let container = document.getElementById(containerId);
+  const entryCard = document.getElementById(`entry-card-${entryId}`);
+  const watchBtn = entryCard ? entryCard.querySelector('.entry-footer .btn-primary') : null;
 
   if (container) {
     // If already open, close it
     container.remove();
+    if (watchBtn) watchBtn.innerHTML = 'Watch';
     return;
   }
 
   // Close any other open players first to avoid clutter
   document.querySelectorAll('.video-player-container').forEach(el => el.remove());
+  
+  // Reset all other Watch buttons that might say "Close"
+  document.querySelectorAll('.entry-card .entry-footer .btn-primary').forEach(btn => {
+    if (btn.innerHTML.includes('Close')) btn.innerHTML = 'Watch';
+  });
 
-  // Insert player container below the entry card body (or inline)
-  const entryCard = document.getElementById(`entry-card-${entryId}`);
   if (!entryCard) return;
 
   container = document.createElement('div');
   container.id = containerId;
   container.className = 'video-player-container';
+  container.style.background = '#000';
+  container.style.borderTop = '1px solid var(--glass-border)';
+  container.style.padding = '16px';
   container.innerHTML = getVideoEmbed(url);
 
   // Insert right before the footer
@@ -476,6 +501,7 @@ function toggleInlinePlayer(entryId, url) {
     entryCard.appendChild(container);
   }
 
+  if (watchBtn) watchBtn.innerHTML = 'Close';
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
