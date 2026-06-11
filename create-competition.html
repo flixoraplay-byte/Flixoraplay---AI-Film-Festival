@@ -33,107 +33,11 @@
 
   <div class="page-body">
     <div class="container">
-      <div style="max-width:720px;margin:0 auto;">
-
-        <div class="alert alert-info">
-          After creating your competition, you'll get a link to share with creators. Use the <strong>Judge Panel</strong> to score entries and announce winners.
-        </div>
-
-        <div class="card">
-          <div class="card-header"><svg data-lucide="clapperboard"></svg> Competition Details</div>
-          <div class="card-body">
-            <form id="comp-form" onsubmit="return false;">
-
-              <!-- Basic Info -->
-              <div class="form-group">
-                <label for="c-title">Competition Title <span class="req">*</span></label>
-                <input type="text" id="c-title" placeholder="e.g. Sci-Fi Dreams 2025" />
-              </div>
-
-              <div class="form-group">
-                <label for="c-theme">Theme / Brief <span class="req">*</span></label>
-                <input type="text" id="c-theme" placeholder="e.g. Sci-fi short under 60 seconds" />
-                <div class="form-hint">Tell creators exactly what you want them to make.</div>
-              </div>
-
-              <div class="form-group">
-                <label for="c-desc">Full Description <span class="req">*</span></label>
-                <textarea id="c-desc" rows="4" placeholder="Describe the competition — context, goals, what makes a great entry..."></textarea>
-              </div>
-
-              <hr class="divider" />
-
-              <!-- Settings -->
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="c-deadline">Submission Deadline <span class="req">*</span></label>
-                  <input type="date" id="c-deadline" />
-                </div>
-                <div class="form-group">
-                  <label for="c-judging">Judging Type <span class="req">*</span></label>
-                  <select id="c-judging">
-                    <option value="manual">Manual (Host judges)</option>
-                    <option value="public" disabled>Public Voting (V2)</option>
-                    <option value="hybrid" disabled>Hybrid (V2)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="c-prize">Prize (optional)</label>
-                  <input type="text" id="c-prize" placeholder="e.g. $500 or Featured on channel" />
-                  <div class="form-hint">Leave blank if no monetary prize.</div>
-                </div>
-                <div class="form-group">
-                  <label for="c-host">Your Name / Studio <span class="req">*</span></label>
-                  <input type="text" id="c-host" placeholder="e.g. Neon Studios" />
-                </div>
-              </div>
-
-              <!-- Max Video Duration -->
-              <div class="form-group">
-                <label for="c-duration">Max Video Duration (seconds) <span class="req">*</span></label>
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-                  <input type="number" id="c-duration" value="15" min="5" max="600" style="max-width:120px;" />
-                  <div style="display:flex;gap:8px;">
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(15)">15s</button>
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(30)">30s</button>
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(60)">60s</button>
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(90)">90s</button>
-                  </div>
-                </div>
-                <div class="form-hint">Default is 15 seconds. Entries exceeding this will be disqualified.</div>
-              </div>
-
-              <hr class="divider" />
-
-              <!-- Rules -->
-              <div class="form-group">
-                <label for="c-rules">Rules &amp; Guidelines (optional)</label>
-                <textarea id="c-rules" rows="3" placeholder="e.g. AI-generated only, no copyrighted music, original work only..."></textarea>
-              </div>
-
-              <!-- Max entries -->
-              <div class="form-group">
-                <label for="c-max">Max Entries (optional)</label>
-                <input type="number" id="c-max" placeholder="Leave blank for unlimited" min="1" style="max-width:200px;" />
-              </div>
-
-              <div style="margin-top:24px;display:flex;gap:12px;">
-              <button class="btn btn-primary" onclick="createCompetition()">
-                <svg data-lucide="plus-circle"></svg> Create Competition
-              </button>
-                <a href="browse.html" class="btn btn-secondary">Cancel</a>
-              </div>
-
-            </form>
-          </div>
-        </div>
-
-        <!-- Preview Card -->
-        <div style="margin-top:28px;">
-          <div class="section-title">Preview</div>
+      <div style="display: grid; grid-template-columns: 380px 1fr; gap: 40px; align-items: start;">
+        
+        <!-- LEFT: Preview Card -->
+        <div style="position: sticky; top: calc(var(--nav-h) + 24px);">
+          <div class="section-title" style="margin-bottom: 16px;">Live Preview</div>
           <div class="comp-card">
             <div class="comp-card-thumb">
               <svg data-lucide="film" style="width:52px;height:52px;"></svg>
@@ -157,6 +61,104 @@
           </div>
         </div>
 
+        <!-- RIGHT: Editor -->
+        <div>
+          <div class="alert alert-info">
+            After creating your competition, you'll get a link to share with creators. Use the <strong>Judge Panel</strong> to score entries and announce winners.
+          </div>
+
+          <div class="card">
+            <div class="card-header"><svg data-lucide="clapperboard"></svg> Competition Details</div>
+            <div class="card-body">
+              <form id="comp-form" onsubmit="return false;">
+
+                <!-- Basic Info -->
+                <div class="form-group">
+                  <label for="c-title">Competition Title <span class="req">*</span></label>
+                  <input type="text" id="c-title" placeholder="e.g. Sci-Fi Dreams 2025" />
+                </div>
+
+                <div class="form-group">
+                  <label for="c-theme">Theme / Brief <span class="req">*</span></label>
+                  <input type="text" id="c-theme" placeholder="e.g. Sci-fi short under 60 seconds" />
+                  <div class="form-hint">Tell creators exactly what you want them to make.</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="c-desc">Full Description <span class="req">*</span></label>
+                  <textarea id="c-desc" rows="4" placeholder="Describe the competition — context, goals, what makes a great entry..."></textarea>
+                </div>
+
+                <hr class="divider" />
+
+                <!-- Settings -->
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="c-deadline">Submission Deadline <span class="req">*</span></label>
+                    <input type="date" id="c-deadline" />
+                  </div>
+                  <div class="form-group">
+                    <label for="c-judging">Judging Type <span class="req">*</span></label>
+                    <select id="c-judging">
+                      <option value="manual">Manual (Host judges)</option>
+                      <option value="public" disabled>Public Voting (V2)</option>
+                      <option value="hybrid" disabled>Hybrid (V2)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="c-prize">Prize (optional)</label>
+                    <input type="text" id="c-prize" placeholder="e.g. $500 or Featured on channel" />
+                    <div class="form-hint">Leave blank if no monetary prize.</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="c-host">Your Name / Studio <span class="req">*</span></label>
+                    <input type="text" id="c-host" placeholder="e.g. Neon Studios" />
+                  </div>
+                </div>
+
+                <!-- Max Video Duration -->
+                <div class="form-group">
+                  <label for="c-duration">Max Video Duration (seconds) <span class="req">*</span></label>
+                  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <input type="number" id="c-duration" value="15" min="5" max="600" style="max-width:120px;" />
+                    <div style="display:flex;gap:8px;">
+                      <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(15)">15s</button>
+                      <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(30)">30s</button>
+                      <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(60)">60s</button>
+                      <button type="button" class="btn btn-sm btn-secondary" onclick="setDuration(90)">90s</button>
+                    </div>
+                  </div>
+                  <div class="form-hint">Default is 15 seconds. Entries exceeding this will be disqualified.</div>
+                </div>
+
+                <hr class="divider" />
+
+                <!-- Rules -->
+                <div class="form-group">
+                  <label for="c-rules">Rules &amp; Guidelines (optional)</label>
+                  <textarea id="c-rules" rows="3" placeholder="e.g. AI-generated only, no copyrighted music, original work only..."></textarea>
+                </div>
+
+                <!-- Max entries -->
+                <div class="form-group">
+                  <label for="c-max">Max Entries (optional)</label>
+                  <input type="number" id="c-max" placeholder="Leave blank for unlimited" min="1" style="max-width:200px;" />
+                </div>
+
+                <div style="margin-top:24px;display:flex;gap:12px;">
+                  <button class="btn btn-primary" onclick="createCompetition()">
+                    <svg data-lucide="plus-circle"></svg> Create Competition
+                  </button>
+                  <a href="browse.html" class="btn btn-secondary">Cancel</a>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

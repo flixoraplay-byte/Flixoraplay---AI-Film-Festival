@@ -14,47 +14,59 @@
       display: grid;
       grid-template-columns: 380px 1fr;
       gap: 32px;
-      align-items: start;
-    }
-
-    /* ── The Creator Card ───────────────────────── */
-    .creator-card {
+    /* ── The Creator Card (V6) ───────────────────────── */
+    .left-sidebar-sticky {
       position: sticky;
       top: calc(var(--nav-h) + 24px);
-      background: var(--bg-2);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
+    }
+    .creator-card {
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
       overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     }
 
     .cc-banner {
-      height: 80px;
+      height: 100px;
       background: var(--bg-3);
-      border-bottom: 1px solid var(--glass-border);
+      background-size: cover;
+      background-position: center;
       position: relative;
+    }
+    .cc-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%);
     }
 
     .cc-body {
       padding: 0 28px 28px;
       text-align: center;
+      position: relative;
+      z-index: 10;
     }
 
     .cc-avatar {
-      width: 88px;
-      height: 88px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
-      border: 3px solid var(--bg-2);
+      border: 4px solid var(--bg);
       background: var(--bg-3);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: 800;
-      color: var(--text-2);
-      margin: -44px auto 0;
+      color: #fff;
+      margin: -50px auto 0;
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
 
     .cc-avatar img {
@@ -64,98 +76,92 @@
     }
 
     .cc-name {
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       font-weight: 800;
       color: #fff;
-      letter-spacing: -0.02em;
-      margin-top: 14px;
+      letter-spacing: -0.03em;
+      margin-top: 16px;
+      line-height: 1.1;
     }
 
     .cc-role {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: 600;
       color: var(--text-3);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-top: 2px;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
     }
 
     .cc-tier {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 3px 14px;
+      padding: 4px 16px;
       border-radius: 9999px;
-      font-size: 0.65rem;
+      font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      background: var(--bg-3);
-      color: var(--text-2);
-      border: 1px solid var(--glass-border);
-      margin-top: 10px;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-top: 14px;
+      backdrop-filter: blur(10px);
     }
 
     .cc-tier svg {
-      width: 11px;
-      height: 11px;
+      width: 13px;
+      height: 13px;
     }
 
-    .cc-tier.tier-bronze {
-      color: #d4a574;
-    }
-
-    .cc-tier.tier-silver {
-      color: #cbd5e1;
-    }
-
-    .cc-tier.tier-gold {
-      color: var(--gold-light);
-    }
-
-    .cc-tier.tier-platinum {
-      color: var(--purple-light);
-    }
+    .cc-tier.tier-bronze { color: #d4a574; }
+    .cc-tier.tier-silver { color: #cbd5e1; }
+    .cc-tier.tier-gold { color: var(--gold-light); }
+    .cc-tier.tier-platinum { color: var(--purple-light); }
 
     .cc-bio {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: var(--text-3);
-      line-height: 1.55;
-      margin-top: 16px;
+      line-height: 1.6;
+      margin-top: 20px;
       text-align: left;
     }
 
     .cc-divider {
       border: none;
-      border-top: 1px solid var(--glass-border);
-      margin: 20px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin: 24px 0;
     }
 
     .cc-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
+      gap: 8px;
     }
 
     .cc-stat {
-      padding: 12px 0;
+      padding: 14px 0;
       text-align: center;
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.02);
     }
 
     .cc-stat-num {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-weight: 800;
       color: #fff;
       line-height: 1;
     }
 
     .cc-stat-lbl {
-      font-size: 0.62rem;
+      font-size: 0.65rem;
       font-weight: 600;
       color: var(--text-4);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .cc-meta {
@@ -165,24 +171,25 @@
     .cc-meta-row {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 7px 0;
-      font-size: 0.78rem;
+      gap: 12px;
+      padding: 8px 0;
+      font-size: 0.8rem;
       color: var(--text-3);
     }
 
     .cc-meta-row svg {
-      width: 13px;
-      height: 13px;
+      width: 14px;
+      height: 14px;
       color: var(--text-4);
       flex-shrink: 0;
     }
 
     .cc-footer {
-      padding: 16px 28px;
-      border-top: 1px solid var(--glass-border);
+      padding: 20px 28px;
+      border-top: 1px solid rgba(255,255,255,0.05);
       display: flex;
-      gap: 8px;
+      gap: 12px;
+      background: rgba(0,0,0,0.2);
     }
 
     .cc-footer .btn {
@@ -278,7 +285,9 @@
 
         <!-- LEFT: Creator Card -->
         <div>
-          <div class="creator-card" id="creator-card"></div>
+          <div class="left-sidebar-sticky">
+            <div class="creator-card" id="creator-card" style="margin-bottom: 16px;"></div>
+          </div>
         </div>
 
         <!-- RIGHT: Activity -->
@@ -290,7 +299,7 @@
           <div class="tabs" id="profile-tabs">
             <button class="tab-btn" data-tab="entries">Entries</button>
             <button class="tab-btn" data-tab="hosted">Hosted</button>
-            <button class="tab-btn" data-tab="settings" id="tab-settings-btn" style="display:none;"><svg data-lucide="settings" style="width:14px;height:14px;margin-right:4px;vertical-align:-2px;"></svg>Settings</button>
+            <button class="tab-btn" data-tab="settings" id="tab-settings-btn" style="display:none;"><svg data-lucide="edit-3" style="width:14px;height:14px;margin-right:4px;vertical-align:-2px;"></svg>Edit Profile</button>
           </div>
 
           <!-- Entries Tab -->
@@ -485,12 +494,6 @@
               </div>
             </div>
           </div>
-
-          ${isOwnProfile ? `
-          <div class="cc-footer">
-            <button class="btn btn-outline btn-sm" onclick="document.getElementById('tab-settings-btn').click();">Edit Profile</button>
-            <a href="dashboard.html" class="btn btn-primary btn-sm">Dashboard</a>
-          </div>` : ''}
         `;
 
         // ── Right panel title ───────────────────────
