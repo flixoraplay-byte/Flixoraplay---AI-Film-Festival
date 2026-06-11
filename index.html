@@ -8,71 +8,89 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/main.css" />
   <style>
-    /* ── V5 Home Redesign Exploration ─────────────────────── */
+    /* ── V6 Image Background Hero Redesign ─────────────────────── */
     
+    /* Global Nav Override for Image Hero */
+    nav {
+      background: transparent !important;
+      border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    }
+    nav.scrolled {
+      background: rgba(0,0,0,0.8) !important;
+      border-bottom: 1px solid var(--glass-border) !important;
+    }
+
     /* Hero Section */
-    .hero-v5 {
-      padding: 160px 0 100px;
-      text-align: center;
+    .hero-v6 {
       position: relative;
-      overflow: hidden;
+      min-height: 95vh;
+      display: flex;
+      align-items: center;
+      padding-top: var(--nav-h);
+      margin-bottom: 60px;
     }
-    .hero-glow {
+    .hero-bg {
       position: absolute;
-      top: 0%; left: 50%;
-      transform: translate(-50%, -10%);
-      width: 1000px; height: 1000px;
-      background: radial-gradient(circle, rgba(110,86,207,0.12) 0%, rgba(0,0,0,0) 60%);
-      z-index: -1;
-      pointer-events: none;
+      inset: 0;
+      /* High-quality cinematic/abstract sci-fi image */
+      background-image: url('https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2800&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      z-index: -2;
     }
-    .hero-badge-v5 {
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      /* Left-heavy gradient for text readability, and bottom gradient to blend into the page */
+      background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.2) 100%),
+                  linear-gradient(0deg, var(--bg) 0%, rgba(0,0,0,0) 20%);
+      z-index: -1;
+    }
+    
+    .hero-content-left {
+      max-width: 800px;
+      padding-right: 20px;
+    }
+
+    .hero-badge-v6 {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 6px 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 9999px;
       font-size: 0.75rem;
       font-weight: 600;
-      color: var(--text-2);
-      margin-bottom: 32px;
-      backdrop-filter: blur(10px);
-    }
-    .hero-title-v5 {
-      font-size: clamp(3.5rem, 8vw, 6.5rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1;
       color: #fff;
       margin-bottom: 24px;
-      max-width: 1000px;
-      margin-inline: auto;
+      backdrop-filter: blur(10px);
     }
-    .hero-title-v5 span {
-      background: linear-gradient(to right, #fff, var(--text-3));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .hero-title-v6 {
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 24px;
     }
-    .hero-subtitle-v5 {
+    .hero-subtitle-v6 {
       font-size: 1.25rem;
-      color: var(--text-3);
+      color: rgba(255,255,255,0.8);
       max-width: 600px;
-      margin: 0 auto 40px;
-      line-height: 1.5;
+      margin-bottom: 40px;
+      line-height: 1.6;
       font-weight: 400;
     }
 
-    /* Tools Marquee */
+    /* Tools Marquee (Subtle version) */
     .tools-marquee {
       display: flex;
       overflow: hidden;
       white-space: nowrap;
-      padding: 40px 0;
-      border-top: 1px solid var(--glass-border);
+      padding: 30px 0;
       border-bottom: 1px solid var(--glass-border);
-      background: var(--bg-2);
+      background: transparent;
       position: relative;
     }
     .tools-marquee::before, .tools-marquee::after {
@@ -81,12 +99,12 @@
       width: 150px; z-index: 2;
       pointer-events: none;
     }
-    .tools-marquee::before { left: 0; background: linear-gradient(to right, var(--bg-2), transparent); }
-    .tools-marquee::after { right: 0; background: linear-gradient(to left, var(--bg-2), transparent); }
+    .tools-marquee::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+    .tools-marquee::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
     .marquee-content {
       display: inline-flex;
       gap: 60px;
-      animation: scroll 30s linear infinite;
+      animation: scroll 40s linear infinite;
       padding-left: 60px;
     }
     @keyframes scroll {
@@ -94,8 +112,8 @@
       100% { transform: translateX(-50%); }
     }
     .tool-tag {
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-size: 1rem;
+      font-weight: 600;
       color: var(--text-4);
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -103,14 +121,13 @@
 
     /* Bento Grid */
     .bento-section {
-      padding: 120px 0;
+      padding: 100px 0;
     }
     .bento-header {
-      text-align: center;
-      margin-bottom: 64px;
+      margin-bottom: 40px;
     }
     .bento-header h2 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 800;
       letter-spacing: -0.03em;
       color: #fff;
@@ -118,21 +135,24 @@
     .bento-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: 320px 320px;
-      gap: 24px;
+      grid-template-rows: 300px 300px;
+      gap: 20px;
     }
     .bento-card {
       background: var(--bg-2);
       border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 40px;
+      border-radius: 20px;
+      padding: 32px;
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
-      transition: border-color var(--t);
+      transition: transform var(--t), border-color var(--t);
     }
-    .bento-card:hover { border-color: var(--glass-border-2); }
+    .bento-card:hover { 
+      border-color: var(--glass-border-2);
+      transform: translateY(-4px);
+    }
     .bento-wide { grid-column: span 2; }
     .bento-tall { grid-row: span 2; }
     
@@ -146,39 +166,45 @@
       color: var(--text);
     }
     .bento-title {
-      font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-bottom: 12px;
+      font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-bottom: 10px;
     }
     .bento-desc {
-      font-size: 1rem; color: var(--text-3); line-height: 1.5;
+      font-size: 0.95rem; color: var(--text-3); line-height: 1.5;
     }
 
     /* Cinematic Briefs */
     .cinematic-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 32px;
+      gap: 24px;
     }
     .cine-card {
       background: var(--bg-2);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
       overflow: hidden;
-      transition: transform var(--t-slow), border-color var(--t);
+      transition: transform var(--t-slow), border-color var(--t), box-shadow var(--t);
       display: block;
       text-decoration: none;
     }
     .cine-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-6px);
       border-color: var(--glass-border-2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     }
     .cine-thumb {
       aspect-ratio: 16/9;
       background: var(--bg-3);
       position: relative;
       display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
     }
+    .cine-thumb img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity var(--t);
+    }
+    .cine-card:hover .cine-thumb img { opacity: 0.8; }
     .cine-body {
-      padding: 24px;
+      padding: 20px;
     }
 
     @media (max-width: 900px) {
@@ -187,6 +213,11 @@
         grid-template-rows: auto;
       }
       .bento-wide, .bento-tall { grid-column: span 1; grid-row: span 1; min-height: 280px; }
+      .hero-v6 { min-height: 80vh; }
+      .hero-overlay {
+        background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.9) 70%, var(--bg) 100%);
+      }
+      .hero-content-left { text-align: center; margin: 0 auto; padding: 0; }
     }
   </style>
 </head>
@@ -203,29 +234,33 @@
       </div>
       <div class="nav-actions">
         <!-- Injected via app.js -->
-        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="login.html" class="btn btn-ghost btn-sm" style="color:#fff;">Sign In</a>
         <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
       </div>
     </div>
   </nav>
 
-  <!-- HERO V5 -->
-  <section class="hero-v5">
-    <div class="hero-glow"></div>
+  <!-- HERO V6 (IMAGE BACKGROUND) -->
+  <section class="hero-v6">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    
     <div class="container">
-      <div class="hero-badge-v5">
-        <svg data-lucide="sparkles" style="width:14px;height:14px;color:var(--purple-light);"></svg> 
-        The Standard for Generative Creators
-      </div>
-      <h1 class="hero-title-v5">
-        Define the Future <br><span>of Filmmaking.</span>
-      </h1>
-      <p class="hero-subtitle-v5">
-        FlixoraPlay is the professional infrastructure for AI creators. Host branded briefs, submit generated films, and build your global portfolio.
-      </p>
-      <div style="display:flex; gap:16px; justify-content:center; align-items:center;">
-        <a href="browse.html" class="btn btn-primary btn-lg" style="border-radius: 99px; padding: 12px 28px;">Explore Briefs</a>
-        <a href="register.html" id="start-creating-btn" class="btn btn-secondary btn-lg" style="border-radius: 99px; padding: 12px 28px; background:var(--glass-2);">Start Creating</a>
+      <div class="hero-content-left">
+        <div class="hero-badge-v6">
+          <svg data-lucide="play-circle" style="width:14px;height:14px;"></svg> 
+          The Gen-AI Cinema Platform
+        </div>
+        <h1 class="hero-title-v6">
+          Direct the next era of film.
+        </h1>
+        <p class="hero-subtitle-v6">
+          Join the premiere destination for AI filmmakers. Compete in brand-funded briefs, build your portfolio, and rank among the world's best generative creators.
+        </p>
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+          <a href="register.html" id="start-creating-btn" class="btn btn-primary btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; font-weight:700;">Start Creating</a>
+          <a href="browse.html" class="btn btn-outline btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; color:#fff; border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.05); backdrop-filter:blur(10px);">Explore Briefs</a>
+        </div>
       </div>
     </div>
   </section>
@@ -253,16 +288,14 @@
   <section class="bento-section">
     <div class="container">
       <div class="bento-header">
-        <h2>Professional Infrastructure.</h2>
+        <h2>Built for the pros.</h2>
       </div>
       <div class="bento-grid">
         <!-- Wide Card -->
         <div class="bento-card bento-wide">
           <div class="bento-icon"><svg data-lucide="briefcase" style="width:24px;height:24px;"></svg></div>
           <div class="bento-title">Funded Brand Briefs</div>
-          <div class="bento-desc">Access high-quality competitions hosted by verified industry brands looking for cutting-edge generative video content. Escrow-backed prize pools.</div>
-          <!-- Abstract deco -->
-          <div style="position:absolute; bottom:-40px; right:-20px; width:200px; height:200px; background:var(--glass-border); border-radius:50%; filter:blur(40px); opacity:0.5; z-index:-1;"></div>
+          <div class="bento-desc">Access high-quality competitions hosted by verified industry brands looking for cutting-edge generative video content. Escrow-backed prize pools ensure you get paid.</div>
         </div>
         <!-- Normal Card -->
         <div class="bento-card">
@@ -289,9 +322,9 @@
   <!-- LIVE COMPETITIONS (Cinematic) -->
   <section style="padding: 0 0 120px;">
     <div class="container">
-      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:48px;">
-        <h2 style="font-size:2.5rem; font-weight:800; letter-spacing:-0.03em; color:#fff;">Active Briefs</h2>
-        <a href="browse.html" class="btn btn-outline" style="border-radius:99px;">View All</a>
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:40px;">
+        <h2 style="font-size:2.2rem; font-weight:800; letter-spacing:-0.03em; color:#fff;">Active Briefs</h2>
+        <a href="browse.html" class="btn btn-outline" style="border-radius:8px;">View All</a>
       </div>
       
       <div class="cinematic-grid" id="home-competitions">
@@ -324,6 +357,16 @@
   <script src="js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
+      // Nav scroll effect override for image background
+      window.addEventListener('scroll', () => {
+        const nav = document.querySelector('nav');
+        if (window.scrollY > 50) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      });
+
       // 1. Load active competitions into cinematic cards
       try {
         const res = await fetch('/api/competitions');
@@ -335,11 +378,19 @@
           if (activeComps.length === 0) {
             compContainer.innerHTML = `<div class="empty-state"><p>No active briefs at the moment.</p></div>`;
           } else {
-            compContainer.innerHTML = activeComps.map(c => `
+            // Assign some placeholder cinematic images to the briefs
+            const placeholders = [
+              'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=800&auto=format&fit=crop'
+            ];
+
+            compContainer.innerHTML = activeComps.map((c, index) => `
               <a href="competition.html?id=${c.id}" class="cine-card">
                 <div class="cine-thumb">
-                  <svg data-lucide="${c.is_brand_brief ? 'briefcase' : 'film'}" style="width:32px;height:32px;color:var(--glass-border-2);"></svg>
-                  ${c.is_brand_brief ? `<div style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.1);">BRAND BRIEF</div>` : ''}
+                  <img src="${placeholders[index % placeholders.length]}" alt="Brief thumbnail" />
+                  <svg data-lucide="${c.is_brand_brief ? 'briefcase' : 'film'}" style="position:relative; z-index:1; width:32px;height:32px;color:#fff;opacity:0.8;"></svg>
+                  ${c.is_brand_brief ? `<div style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.1);z-index:2;">BRAND BRIEF</div>` : ''}
                 </div>
                 <div class="cine-body">
                   <h3 style="font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:8px;">${c.title}</h3>
