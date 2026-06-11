@@ -4,10 +4,112 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Leaderboard — FlixoraPlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* Cinematic Mini Hero for Leaderboard */
+    .hero-lb {
+      position: relative;
+      padding: 140px 0 80px;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .hero-lb-bg {
+      position: absolute;
+      inset: 0;
+      /* Epic, dark, golden/monumental vibe for Hall of Fame */
+      background-image: url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2800&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center 60%;
+      z-index: -2;
+    }
+    .hero-lb-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, var(--bg) 100%);
+      z-index: -1;
+    }
+    .hero-lb-title {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+    .hero-lb-title span {
+      background: linear-gradient(to right, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-lb-desc {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.8);
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    /* Glass Cards for Leaderboards */
+    .lb-glass-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+    }
+    .lb-glass-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .lb-glass-title {
+      font-weight: 800; font-size: 1.25rem; color: #fff; letter-spacing: -0.02em;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* Cinematic Briefs Grid (reused from Browse) */
+    .cinematic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    .cine-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform var(--t-slow), border-color var(--t), box-shadow var(--t);
+      display: flex; flex-direction: column; text-decoration: none;
+    }
+    .cine-card:hover {
+      transform: translateY(-6px); border-color: rgba(255,255,255,0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .cine-thumb {
+      aspect-ratio: 16/9; background: var(--bg-3); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .cine-thumb img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity var(--t);
+      filter: grayscale(0.5); /* Judged comps look a bit desaturated/classic */
+    }
+    .cine-card:hover .cine-thumb img { opacity: 0.9; filter: grayscale(0); }
+    .cine-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .cine-title { font-size: 1.15rem; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing:-0.02em; }
+    .cine-desc { font-size: 0.85rem; color: var(--text-3); line-height: 1.5; margin-bottom: 16px; }
+
+    /* Nav overriding */
+    nav {
+      background: rgba(0,0,0,0.8) !important;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border) !important;
+      position: fixed; top:0; left:0; right:0; z-index:1000;
+    }
+  </style>
 </head>
 <body>
 
+  <!-- NAV -->
   <nav>
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
@@ -17,64 +119,97 @@
         <a href="leaderboard.html" class="nav-link active">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
+        <!-- Injected via app.js -->
+        <a href="login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
 
-  <div class="page-header">
+  <!-- CINEMATIC HERO -->
+  <header class="hero-lb">
+    <div class="hero-lb-bg"></div>
+    <div class="hero-lb-overlay"></div>
     <div class="container">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <svg data-lucide="trophy" style="width:20px;height:20px;color:var(--text-3);"></svg>
-        <h1>Leaderboard</h1>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:var(--gold-light);padding:4px 10px;border-radius:99px;font-size:0.75rem;font-weight:700;margin-bottom:20px;">
+        <svg data-lucide="award" style="width:12px;height:12px;"></svg> Hall of Fame
       </div>
-      <p>Top creators ranked by competition wins and scores.</p>
+      <h1 class="hero-lb-title">Global <span>Leaderboard</span></h1>
+      <p class="hero-lb-desc">The definitive ranking of the world's best generative filmmakers. Compete in briefs, earn points, and solidify your legacy.</p>
     </div>
-  </div>
+  </header>
 
-  <div class="page-body">
+  <div class="page-body" style="padding-bottom: 120px;">
     <div class="container">
-      <div class="grid-2" style="align-items:start;gap:28px;">
+      
+      <div class="grid-2" style="align-items:start; gap:32px;">
 
         <!-- CREATORS LEADERBOARD -->
         <div>
-          <div class="section-title">Top Creators</div>
-          <div class="card">
-            <div class="card-header" style="display:flex;justify-content:space-between;">
-              <span>Creator Rankings</span>
-              <select id="lb-period" style="font-size:0.8rem;padding:3px 8px;width:auto;" onchange="renderCreatorLB()">
+          <div class="lb-glass-card">
+            <div class="lb-glass-header">
+              <span class="lb-glass-title"><svg data-lucide="users" style="color:var(--text-3);"></svg> Top Creators</span>
+              <select id="lb-period" style="background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:6px 10px; font-size:0.8rem;" onchange="renderCreatorLB()">
                 <option value="all">All Time</option>
                 <option value="month">This Month</option>
               </select>
             </div>
-            <div id="creator-lb"></div>
+            <div id="creator-lb">
+              <div class="empty-state" style="padding: 40px;"><svg data-lucide="loader" class="animate-spin" style="color:var(--text-4);"></svg></div>
+            </div>
           </div>
         </div>
 
         <!-- TOP ENTRIES -->
         <div>
-          <div class="section-title">Top Entries</div>
-          <div class="card">
-            <div class="card-header">Highest Scored Videos</div>
-            <div id="top-entries-list"></div>
+          <div class="lb-glass-card">
+            <div class="lb-glass-header">
+              <span class="lb-glass-title"><svg data-lucide="play-square" style="color:var(--text-3);"></svg> Highest Scored Films</span>
+            </div>
+            <div id="top-entries-list">
+              <div class="empty-state" style="padding: 40px;"><svg data-lucide="loader" class="animate-spin" style="color:var(--text-4);"></svg></div>
+            </div>
           </div>
         </div>
 
       </div>
 
-      <!-- RECENT COMPETITIONS -->
-      <div style="margin-top:32px;">
-        <div class="section-title">Recently Judged Competitions</div>
-        <div class="grid-auto" id="judged-comps"></div>
+      <!-- RECENTLY JUDGED -->
+      <div style="margin-top:80px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:32px;">
+          <h2 style="font-size:2.2rem; font-weight:800; letter-spacing:-0.03em; color:#fff;">Recently Judged</h2>
+        </div>
+        <div class="cinematic-grid" id="judged-comps">
+          <div class="empty-state" style="grid-column:1/-1;">
+            <div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div>
+            <p>Loading past competitions...</p>
+          </div>
+        </div>
       </div>
 
     </div>
   </div>
 
-  <div id="toast-container"></div>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- FOOTER -->
+  <footer class="footer" style="border-top:1px solid var(--glass-border);">
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <div style="font-weight: 800; font-size:1.2rem; color: #fff; letter-spacing:-0.03em;">Flixora<span style="color:var(--text-3);">Play</span></div>
+          <div style="font-size: 0.8rem; color: var(--text-4); margin-top:4px;">© 2026 FlixoraPlay. Professional AI Film Infrastructure.</div>
+        </div>
+        <div style="display:flex; gap:24px; font-size:0.85rem; font-weight:500;">
+          <a href="browse.html" style="color:var(--text-2);">Browse</a>
+          <a href="create-competition.html" style="color:var(--text-2);">Host</a>
+          <a href="leaderboard.html" style="color:var(--text-2);">Leaderboard</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/app.js"></script>
+  <script src="js/database.js"></script>
   <script>
     let allEntries = [];
     let allCompetitions = [];
@@ -93,85 +228,129 @@
       let leaderboard = [];
       try { leaderboard = await API.getLeaderboard(); } catch {}
       const container = document.getElementById('creator-lb');
+      
       if (leaderboard.length === 0) {
-        container.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="users"></svg></div><p>No creators yet.</p></div>`;
+        container.innerHTML = `<div class="empty-state" style="padding:40px;"><div class="icon"><svg data-lucide="users"></svg></div><p>No creators yet.</p></div>`;
         lucide.createIcons(); return;
       }
+      
       container.innerHTML = '';
       leaderboard.forEach((c, i) => {
         const rank = i + 1;
         const medalIcon = rank===1?'medal':rank===2?'award':rank===3?'star':'hash';
         const rankCls = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
+        
         container.innerHTML += `
-          <div class="ranking-row">
-            <div class="ranking-pos ${rankCls}"><svg data-lucide="${medalIcon}"></svg></div>
-            <div class="ranking-info">
-              <div class="ranking-name">${profileLink(c.creatorId, c.creatorName)}</div>
-              <div class="ranking-sub">${c.wins} gold &middot; ${c.p2} silver &middot; ${c.p3} bronze</div>
+          <div style="display:flex; align-items:center; padding:16px 32px; border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div style="width:40px; font-size:1.2rem; font-weight:800; color:${rank===1?'var(--gold-light)':rank===2?'#cbd5e1':rank===3?'#fbbf24':'var(--text-4)'};">
+              ${rank <= 3 ? `<svg data-lucide="${medalIcon}" style="width:20px;height:20px;"></svg>` : rank}
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:1.05rem; font-weight:700; color:#fff; margin-bottom:2px;">${profileLink(c.creatorId, c.creatorName)}</div>
+              <div style="font-size:0.8rem; color:var(--text-3);">${c.wins} Gold &middot; ${c.p2} Silver &middot; ${c.p3} Bronze</div>
             </div>
             <div style="text-align:right;">
-              <div class="ranking-pts">${c.pts}</div>
-              <div class="ranking-pts-l">pts</div>
+              <div style="font-size:1.25rem; font-weight:800; color:var(--purple-light); line-height:1;">${c.pts}</div>
+              <div style="font-size:0.65rem; color:var(--text-4); font-weight:700; letter-spacing:0.05em;">PTS</div>
             </div>
           </div>`;
       });
+      // Remove last border bottom
+      if(container.lastElementChild) container.lastElementChild.style.borderBottom = 'none';
       lucide.createIcons();
     }
 
     function renderTopEntries() {
       const sorted = allEntries.filter(e => e.score !== null && e.score > 0).sort((a,b) => b.score - a.score).slice(0, 10);
       const container = document.getElementById('top-entries-list');
+      
       if (sorted.length === 0) {
-        container.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="video"></svg></div><p>No scored entries yet.</p></div>`;
+        container.innerHTML = `<div class="empty-state" style="padding:40px;"><div class="icon"><svg data-lucide="video"></svg></div><p>No scored entries yet.</p></div>`;
         lucide.createIcons(); return;
       }
+      
       container.innerHTML = '';
       sorted.forEach((entry, i) => {
         const comp = allCompetitions.find(c => c.id === entry.competitionId);
         const icon = i===0?'medal':i===1?'award':i===2?'star':'hash';
-        const cls  = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+        const rankColor = i===0?'var(--gold-light)':i===1?'#cbd5e1':i===2?'#fbbf24':'var(--text-4)';
+        
         container.innerHTML += `
-          <div style="display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--glass-border);">
-            <div class="ranking-pos ${cls}"><svg data-lucide="${icon}"></svg></div>
-            <div style="flex:1;min-width:0;">
-              <div style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);">${entry.title}</div>
-              <div style="font-size:0.75rem;color:var(--text-3);">by ${profileLink(entry.creatorId, entry.creatorName)} &middot; <a href="competition.html?id=${entry.competitionId}">${comp ? comp.title : '&mdash;'}</a></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 32px;border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div style="width:24px; color:${rankColor}; display:flex; justify-content:center;">
+              <svg data-lucide="${icon}" style="width:20px;height:20px;"></svg>
             </div>
-            <div style="font-weight:800;color:var(--purple-light);font-size:1.1rem;">${entry.score}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;margin-bottom:2px;">${entry.title}</div>
+              <div style="font-size:0.8rem;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                by ${profileLink(entry.creatorId, entry.creatorName)} &middot; <a href="competition.html?id=${entry.competitionId}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-3)'">${comp ? comp.title : 'Unknown'}</a>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:800;color:var(--gold-light);font-size:1.15rem;line-height:1;">${entry.score}</div>
+              <div style="font-size:0.65rem; color:var(--text-4); font-weight:700; letter-spacing:0.05em;">SCORE</div>
+            </div>
           </div>`;
       });
+      if(container.lastElementChild) container.lastElementChild.style.borderBottom = 'none';
       lucide.createIcons();
     }
 
     function renderJudgedComps() {
       const judged = allCompetitions.filter(c => c.status === 'judging' || c.status === 'closed');
       const container = document.getElementById('judged-comps');
+      
       if (judged.length === 0) {
-        container.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="inbox"></svg></div><p>No judged competitions yet.</p></div>`;
+        container.innerHTML = `<div class="empty-state" style="grid-column:1/-1; padding:60px 0;"><div class="icon"><svg data-lucide="inbox"></svg></div><p>No judged competitions yet.</p></div>`;
         lucide.createIcons(); return;
       }
-      container.innerHTML = '';
-      judged.forEach(comp => {
+
+      const placeholders = [
+        'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800&auto=format&fit=crop'
+      ];
+
+      container.innerHTML = judged.map((comp, index) => {
         const entries = allEntries.filter(e => e.competitionId === comp.id);
         const statusBadge = comp.status === 'closed'
-          ? `<span class="badge badge-neutral"><svg data-lucide="lock" style="width:9px;height:9px;"></svg> Closed</span>`
-          : `<span class="badge badge-gold"><svg data-lucide="scale" style="width:9px;height:9px;"></svg> Judging</span>`;
+          ? `<span style="background:rgba(255,255,255,0.05); color:var(--text-3); padding:4px 8px; border-radius:4px; font-size:0.65rem; font-weight:700; display:inline-flex; align-items:center; gap:4px;"><svg data-lucide="lock" style="width:10px;height:10px;"></svg> CLOSED</span>`
+          : `<span style="background:rgba(229,165,10,0.15); color:var(--gold-light); padding:4px 8px; border-radius:4px; font-size:0.65rem; font-weight:700; display:inline-flex; align-items:center; gap:4px;"><svg data-lucide="scale" style="width:10px;height:10px;"></svg> JUDGING</span>`;
+        
         const winner = entries.find(e => e.rank === 1);
-        container.innerHTML += `
-          <div class="comp-card">
-            <div class="comp-card-thumb"><svg data-lucide="film" style="width:52px;height:52px;"></svg></div>
-            <div class="comp-card-body">
-              <div style="margin-bottom:8px;">${statusBadge}</div>
-              <div class="comp-card-title">${comp.title}</div>
-              ${winner ? `<div style="font-size:0.82rem;color:var(--text-3);margin-bottom:6px;display:flex;gap:5px;align-items:center;"><svg data-lucide="trophy" style="width:12px;height:12px;color:var(--gold-light);"></svg> <strong>${winner.title}</strong> by ${winner.creatorName}</div>` : ''}
-              <div class="text-muted text-sm">${entries.length} entries &middot; by ${comp.hostName}</div>
+        const img = placeholders[index % placeholders.length];
+
+        return `
+          <a href="competition.html?id=${comp.id}" class="cine-card">
+            <div class="cine-thumb">
+              <img src="${img}" alt="Brief thumbnail" />
+              <svg data-lucide="award" style="position:relative; z-index:1; width:36px;height:36px;color:#fff;opacity:0.6;"></svg>
+              <div style="position:absolute;bottom:16px;left:16px;z-index:2;">
+                ${statusBadge}
+              </div>
             </div>
-            <div class="comp-card-footer">
-              <span class="text-muted" style="font-size:0.78rem;">${formatDate(comp.deadline)}</span>
-              <a href="competition.html?id=${comp.id}" class="btn btn-sm btn-outline"><svg data-lucide="arrow-right"></svg> View</a>
+            
+            <div class="cine-body">
+              <h3 class="cine-title">${comp.title}</h3>
+              
+              <div style="flex:1;">
+                ${winner 
+                  ? `<div style="background:rgba(251,191,36,0.05); border:1px solid rgba(251,191,36,0.15); border-radius:8px; padding:12px; margin-bottom:12px;">
+                      <div style="font-size:0.65rem; color:var(--gold-light); text-transform:uppercase; font-weight:700; margin-bottom:4px; letter-spacing:0.05em;"><svg data-lucide="trophy" style="width:10px;height:10px;display:inline;vertical-align:middle;"></svg> WINNER</div>
+                      <div style="font-size:0.85rem; font-weight:700; color:#fff; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">"${winner.title}"</div>
+                      <div style="font-size:0.75rem; color:var(--text-3); margin-top:2px;">by ${winner.creatorName}</div>
+                     </div>` 
+                  : `<p class="cine-desc" style="margin-bottom:12px;">Currently under review by the judges.</p>`}
+              </div>
+              
+              <div style="margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-4); font-weight:600;">
+                <span>${entries.length} Entries Submitted</span>
+                <span>${formatDate(comp.deadline)}</span>
+              </div>
             </div>
-          </div>`;
-      });
+          </a>`;
+      }).join('');
+      
       lucide.createIcons();
     }
   </script>
