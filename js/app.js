@@ -328,57 +328,51 @@ function updateNavForAuth() {
   if (session && session.id) {
     const initial = (session.username || session.name || session.email || '?')[0].toUpperCase();
     navActions.innerHTML = `
-      <a href="create-competition.html" class="btn btn-outline btn-sm">
-        <svg data-lucide="plus-circle"></svg> Host
-      </a>
+
       <div style="display:flex;align-items:center;gap:10px;">
         <!-- Dashboard Link -->
-        <a href="dashboard.html" class="btn btn-ghost btn-sm" style="gap:4px;padding:6px 10px;" title="Dashboard">
-          <svg data-lucide="layout-dashboard"></svg>
-          <span style="font-weight:600;">Dashboard</span>
-        </a>
+        <a href="dashboard.html" class="btn btn-ghost btn-sm" title="Dashboard">Dashboard</a>
 
         <!-- Notifications Bell -->
         <div class="notification-dropdown-container" style="position:relative;">
-          <button class="btn btn-ghost btn-sm" id="nav-notifications-bell" style="gap:4px;padding:6px 10px;position:relative;" title="Notifications">
+          <button class="btn btn-ghost btn-sm" id="nav-notifications-bell" style="padding:6px 10px;position:relative;" title="Notifications">
             <svg data-lucide="bell"></svg>
             <span class="notification-badge" id="nav-notifications-badge" style="display:none;position:absolute;top:2px;right:2px;background:var(--red);border-radius:50%;width:8px;height:8px;"></span>
           </button>
-          <div class="notification-dropdown" id="nav-notifications-dropdown" style="display:none;position:absolute;top:100%;right:0;width:300px;background:rgba(17,22,39,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius-md);margin-top:8px;padding:12px;box-shadow:var(--shadow-lg);z-index:1100;">
+          <div class="notification-dropdown" id="nav-notifications-dropdown" style="display:none;position:absolute;top:100%;right:0;width:300px;background:var(--bg-3);border:1px solid var(--glass-border);border-radius:var(--radius-md);margin-top:8px;padding:12px;box-shadow:var(--shadow-lg);z-index:1100;">
             <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--glass-border);padding-bottom:8px;margin-bottom:8px;">
               <span style="font-weight:600;font-size:0.88rem;">Notifications</span>
-              <button onclick="handleMarkAllReadNav(event)" style="font-size:0.75rem;background:none;border:none;color:var(--purple-light);cursor:pointer;padding:0;font-weight:500;">Mark all read</button>
+              <button onclick="handleMarkAllReadNav(event)" style="font-size:0.75rem;background:none;border:none;color:var(--text);cursor:pointer;padding:0;font-weight:500;">Mark all read</button>
             </div>
             <div id="nav-notifications-list" style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;text-align:left;">
               <div style="text-align:center;padding:12px;color:var(--text-3);font-size:0.8rem;">No new notifications</div>
             </div>
             <div style="text-align:center;border-top:1px solid var(--glass-border);padding-top:8px;margin-top:8px;">
-              <a href="notifications.html" style="font-size:0.8rem;color:var(--purple-light);font-weight:600;">View All Notifications</a>
+              <a href="notifications.html" style="font-size:0.8rem;color:var(--text);font-weight:600;">View All Notifications</a>
             </div>
           </div>
         </div>
 
         <a href="profile.html?id=${session.id}" style="display:flex;align-items:center;gap:8px;text-decoration:none;" title="View Profile">
-          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#7dd3fc);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:#fff;flex-shrink:0;cursor:pointer;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 0 2px var(--purple-light)'" onmouseout="this.style.boxShadow='none'">${initial}</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--bg-3);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:var(--text-2);flex-shrink:0;cursor:pointer;">${initial}</div>
         </a>
-        <a href="settings.html" class="btn btn-ghost btn-sm" style="gap:4px;padding:6px 10px;" title="Settings">
-          <svg data-lucide="settings"></svg>
-        </a>
-        <button class="btn btn-ghost btn-sm" onclick="signOut()" style="gap:4px;">
-          <svg data-lucide="log-out"></svg> Sign Out
-        </button>
+        <a href="settings.html" class="btn btn-ghost btn-sm" title="Settings">Settings</a>
+        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
       </div>`;
 
     setupNotificationBell();
+    
+    // Quick fix for "Start Creating" button on homepage
+    const startBtn = document.getElementById('start-creating-btn');
+    if (startBtn) {
+      startBtn.href = 'dashboard.html';
+      startBtn.textContent = 'Go to Dashboard';
+    }
   } else {
     // Keep default nav — ensure Host + Sign In are shown
     navActions.innerHTML = `
-      <a href="create-competition.html" class="btn btn-outline btn-sm">
-        <svg data-lucide="plus-circle"></svg> Host
-      </a>
-      <a href="login.html" class="btn btn-primary btn-sm">
-        <svg data-lucide="log-in"></svg> Sign In
-      </a>`;
+      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>`;
   }
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }

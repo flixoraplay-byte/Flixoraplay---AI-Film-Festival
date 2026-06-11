@@ -16,23 +16,22 @@
     }
     .auth-box { width: 100%; max-width: 480px; }
     .auth-logo-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      background: var(--purple-dim);
-      border: 1px solid rgba(139,92,246,0.25);
+      width: 48px; height: 48px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-3);
+      border: 1px solid var(--glass-border);
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 18px;
-      color: var(--purple-light);
+      margin: 0 auto 16px;
+      color: var(--text);
     }
     .auth-logo-icon svg { width: 26px; height: 26px; }
     .capability-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 22px; }
     .capability-card {
-      background: var(--glass);
+      background: var(--bg-2);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
       padding: 14px 12px;
       text-align: center;
-      backdrop-filter: blur(12px);
       transition: all var(--t);
     }
     .capability-card:hover { background: var(--glass-2); border-color: var(--glass-border-2); }
@@ -54,25 +53,15 @@
 
 <nav>
   <div class="container nav-inner">
-    <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+    <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
     <div class="nav-links">
-      <a href="index.html" class="nav-link">
-        <svg data-lucide="home"></svg> Home
-      </a>
-      <a href="browse.html" class="nav-link">
-        <svg data-lucide="compass"></svg> Browse
-      </a>
-      <a href="leaderboard.html" class="nav-link">
-        <svg data-lucide="bar-chart-2"></svg> Leaderboard
-      </a>
-      <a href="about.html" class="nav-link">
-        <svg data-lucide="info"></svg> About
-      </a>
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="browse.html" class="nav-link">Browse</a>
+      <a href="leaderboard.html" class="nav-link">Leaderboard</a>
     </div>
     <div class="nav-actions">
-      <a href="login.html" class="btn btn-outline btn-sm">
-        <svg data-lucide="log-in"></svg> Sign In
-      </a>
+      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
     </div>
   </div>
 </nav>

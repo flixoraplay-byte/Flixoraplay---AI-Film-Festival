@@ -1,529 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FlixoraPlay — AI Film Festival Platform</title>
+  <title>FlixoraPlay — The AI Film Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* ── V5 Home Redesign Exploration ─────────────────────── */
+    
+    /* Hero Section */
+    .hero-v5 {
+      padding: 160px 0 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      top: 0%; left: 50%;
+      transform: translate(-50%, -10%);
+      width: 1000px; height: 1000px;
+      background: radial-gradient(circle, rgba(110,86,207,0.12) 0%, rgba(0,0,0,0) 60%);
+      z-index: -1;
+      pointer-events: none;
+    }
+    .hero-badge-v5 {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-2);
+      margin-bottom: 32px;
+      backdrop-filter: blur(10px);
+    }
+    .hero-title-v5 {
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: #fff;
+      margin-bottom: 24px;
+      max-width: 1000px;
+      margin-inline: auto;
+    }
+    .hero-title-v5 span {
+      background: linear-gradient(to right, #fff, var(--text-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle-v5 {
+      font-size: 1.25rem;
+      color: var(--text-3);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    /* Tools Marquee */
+    .tools-marquee {
+      display: flex;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 40px 0;
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+      background: var(--bg-2);
+      position: relative;
+    }
+    .tools-marquee::before, .tools-marquee::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      width: 150px; z-index: 2;
+      pointer-events: none;
+    }
+    .tools-marquee::before { left: 0; background: linear-gradient(to right, var(--bg-2), transparent); }
+    .tools-marquee::after { right: 0; background: linear-gradient(to left, var(--bg-2), transparent); }
+    .marquee-content {
+      display: inline-flex;
+      gap: 60px;
+      animation: scroll 30s linear infinite;
+      padding-left: 60px;
+    }
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .tool-tag {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Bento Grid */
+    .bento-section {
+      padding: 120px 0;
+    }
+    .bento-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .bento-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 320px 320px;
+      gap: 24px;
+    }
+    .bento-card {
+      background: var(--bg-2);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: border-color var(--t);
+    }
+    .bento-card:hover { border-color: var(--glass-border-2); }
+    .bento-wide { grid-column: span 2; }
+    .bento-tall { grid-row: span 2; }
+    
+    .bento-icon {
+      width: 48px; height: 48px;
+      background: var(--bg-3);
+      border: 1px solid var(--glass-border-2);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: auto;
+      color: var(--text);
+    }
+    .bento-title {
+      font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-bottom: 12px;
+    }
+    .bento-desc {
+      font-size: 1rem; color: var(--text-3); line-height: 1.5;
+    }
+
+    /* Cinematic Briefs */
+    .cinematic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 32px;
+    }
+    .cine-card {
+      background: var(--bg-2);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform var(--t-slow), border-color var(--t);
+      display: block;
+      text-decoration: none;
+    }
+    .cine-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--glass-border-2);
+    }
+    .cine-thumb {
+      aspect-ratio: 16/9;
+      background: var(--bg-3);
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cine-body {
+      padding: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .bento-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+      .bento-wide, .bento-tall { grid-column: span 1; grid-row: span 1; min-height: 280px; }
+    }
+  </style>
 </head>
 
 <body>
-
-  <!-- ── NAV ────────────────────────────────────────────────── -->
+  <!-- NAV -->
   <nav>
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link active">
-          <svg data-lucide="home"></svg> Home
-        </a>
-        <a href="browse.html" class="nav-link">
-          <svg data-lucide="compass"></svg> Browse
-        </a>
-        <a href="leaderboard.html" class="nav-link">
-          <svg data-lucide="bar-chart-2"></svg> Leaderboard
-        </a>
-        <a href="about.html" class="nav-link">
-          <svg data-lucide="info"></svg> About
-        </a>
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="browse.html" class="nav-link">Browse</a>
+        <a href="leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <a href="create-competition.html" class="btn btn-outline btn-sm">
-          <svg data-lucide="plus-circle"></svg> Host
-        </a>
-        <a href="login.html" class="btn btn-primary btn-sm">
-          <svg data-lucide="log-in"></svg> Sign In
-        </a>
+        <!-- Injected via app.js -->
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
       </div>
     </div>
   </nav>
 
-  <!-- ── HERO ───────────────────────────────────────────────── -->
-  <section class="page-top" style="padding:72px 0 60px;position:relative;overflow:hidden;">
-    <!-- Hero graphics removed for minimal aesthetic -->
-
-    <div class="container" style="text-align:center;position:relative;">
-      <div
-        style="display:inline-flex;align-items:center;gap:8px;background:var(--bg-2);border:1px solid var(--glass-border-2);border-radius:var(--radius-full);padding:5px 16px;font-size:0.72rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:24px;">
-        <svg data-lucide="sparkles" style="width:12px;height:12px;color:var(--purple);"></svg>
-        AI Film Festival Platform &nbsp;·&nbsp; Version 3
+  <!-- HERO V5 -->
+  <section class="hero-v5">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero-badge-v5">
+        <svg data-lucide="sparkles" style="width:14px;height:14px;color:var(--purple-light);"></svg> 
+        The Standard for Generative Creators
       </div>
-      <h1
-        style="font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;letter-spacing:-0.045em;line-height:1.08;margin-bottom:18px;color:#fff;">
-        Host. Compete.<br />
-        <span
-          style="color:var(--purple);">
-          Win AI Film Competitions.
-        </span>
+      <h1 class="hero-title-v5">
+        Define the Future <br><span>of Filmmaking.</span>
       </h1>
-      <p style="color:var(--text-2);max-width:520px;margin:0 auto 36px;font-size:0.975rem;line-height:1.75;">
-        One platform for AI filmmakers — host competitions, submit your creations, vote for favorites, and build your
-        global ranking.
+      <p class="hero-subtitle-v5">
+        FlixoraPlay is the professional infrastructure for AI creators. Host branded briefs, submit generated films, and build your global portfolio.
       </p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <a href="browse.html" class="btn btn-primary btn-lg">
-          <svg data-lucide="compass"></svg> Browse Competitions
-        </a>
-        <a href="register.html" class="btn btn-ghost btn-lg">
-          <svg data-lucide="user-plus"></svg> Create Free Account
-        </a>
+      <div style="display:flex; gap:16px; justify-content:center; align-items:center;">
+        <a href="browse.html" class="btn btn-primary btn-lg" style="border-radius: 99px; padding: 12px 28px;">Explore Briefs</a>
+        <a href="register.html" id="start-creating-btn" class="btn btn-secondary btn-lg" style="border-radius: 99px; padding: 12px 28px; background:var(--glass-2);">Start Creating</a>
       </div>
     </div>
   </section>
 
-  <!-- ── RULES GRID ──────────────────────────────────────────────── -->
-  <section style="border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);background:rgba(0,0,0,0.15);">
-    <div class="container" style="padding-top:40px;padding-bottom:40px;">
-      <div class="hiw-rules">
-        <div class="hiw-rule-box">
-          <div class="hiw-rule-title"><svg data-lucide="list-checks"></svg> Core Rules</div>
-          <ul>
-            <li><svg data-lucide="check"></svg> All videos must be AI-generated</li>
-            <li><svg data-lucide="check"></svg> Respect the max video duration per competition</li>
-            <li><svg data-lucide="check"></svg> YouTube or Vimeo links only (V3)</li>
-            <li><svg data-lucide="check"></svg> One submission per user per competition</li>
-          </ul>
-        </div>
-        <div class="hiw-rule-box">
-          <div class="hiw-rule-title"><svg data-lucide="globe"></svg> Global Ranking Points</div>
-          <ul>
-            <li><svg data-lucide="medal"></svg> 1st place &nbsp;=&nbsp; <strong style="color:var(--gold-light)">3 points</strong></li>
-            <li><svg data-lucide="medal"></svg> 2nd place &nbsp;=&nbsp; <strong style="color:#cbd5e1">2 points</strong></li>
-            <li><svg data-lucide="medal"></svg> 3rd place &nbsp;=&nbsp; <strong style="color:#fbbf24">1 point</strong></li>
-            <li><svg data-lucide="check"></svg> Points stack across all competitions</li>
-          </ul>
-        </div>
-        <div class="hiw-rule-box">
-          <div class="hiw-rule-title"><svg data-lucide="cpu"></svg> Supported AI Tools</div>
-          <ul>
-            <li><svg data-lucide="check"></svg> Runway ML, Kling AI, Pika Labs</li>
-            <li><svg data-lucide="check"></svg> Sora, Stable Video Diffusion</li>
-            <li><svg data-lucide="check"></svg> Midjourney + video post tools</li>
-            <li><svg data-lucide="check"></svg> Tag your tools when submitting</li>
-          </ul>
-        </div>
-      </div>
+  <!-- MARQUEE -->
+  <div class="tools-marquee">
+    <div class="marquee-content">
+      <span class="tool-tag">Runway Gen-2</span>
+      <span class="tool-tag">Midjourney V6</span>
+      <span class="tool-tag">OpenAI Sora</span>
+      <span class="tool-tag">Pika Labs</span>
+      <span class="tool-tag">Luma Dream Machine</span>
+      <span class="tool-tag">ElevenLabs</span>
+      <!-- Duplicate for infinite scroll -->
+      <span class="tool-tag">Runway Gen-2</span>
+      <span class="tool-tag">Midjourney V6</span>
+      <span class="tool-tag">OpenAI Sora</span>
+      <span class="tool-tag">Pika Labs</span>
+      <span class="tool-tag">Luma Dream Machine</span>
+      <span class="tool-tag">ElevenLabs</span>
     </div>
-  </section>
+  </div>
 
-  <!-- ── ACTIVE COMPETITIONS ─────────────────────────────────── -->
-  <section style="padding:56px 0 0;">
+  <!-- BENTO GRID -->
+  <section class="bento-section">
     <div class="container">
-      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;">
-        <div>
-          <div class="section-label"><svg data-lucide="zap"></svg> Live Now</div>
-          <div class="section-title">Active Competitions</div>
-        </div>
-        <a href="browse.html" class="btn btn-outline btn-sm"><svg data-lucide="arrow-right"></svg> View All</a>
+      <div class="bento-header">
+        <h2>Professional Infrastructure.</h2>
       </div>
-      <div class="grid-auto" id="home-competitions">
-        <div class="empty-state">
-          <div class="icon"><svg data-lucide="loader"></svg></div>
-          <p>Loading competitions...</p>
+      <div class="bento-grid">
+        <!-- Wide Card -->
+        <div class="bento-card bento-wide">
+          <div class="bento-icon"><svg data-lucide="briefcase" style="width:24px;height:24px;"></svg></div>
+          <div class="bento-title">Funded Brand Briefs</div>
+          <div class="bento-desc">Access high-quality competitions hosted by verified industry brands looking for cutting-edge generative video content. Escrow-backed prize pools.</div>
+          <!-- Abstract deco -->
+          <div style="position:absolute; bottom:-40px; right:-20px; width:200px; height:200px; background:var(--glass-border); border-radius:50%; filter:blur(40px); opacity:0.5; z-index:-1;"></div>
+        </div>
+        <!-- Normal Card -->
+        <div class="bento-card">
+          <div class="bento-icon"><svg data-lucide="bar-chart-2" style="width:24px;height:24px;"></svg></div>
+          <div class="bento-title">Global Ranking</div>
+          <div class="bento-desc">Earn points for every win. Climb the global leaderboard to showcase your proficiency across multiple AI tools.</div>
+        </div>
+        <!-- Normal Card -->
+        <div class="bento-card">
+          <div class="bento-icon"><svg data-lucide="cpu" style="width:24px;height:24px;"></svg></div>
+          <div class="bento-title">Tool Agnostic</div>
+          <div class="bento-desc">Tag your tech stack on every entry. Focus on the final cut, not the software.</div>
+        </div>
+        <!-- Wide Card -->
+        <div class="bento-card bento-wide" style="background:var(--bg-3);">
+          <div class="bento-icon" style="background:var(--bg-2);"><svg data-lucide="shield-check" style="width:24px;height:24px;color:var(--green-light);"></svg></div>
+          <div class="bento-title">Fair Judging System</div>
+          <div class="bento-desc">Blind submissions, multi-stage voting, and community-driven curation ensure the best films always win.</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── GLOBAL RANKING ─────────────────────────────────────── -->
-  <section
-    style="padding:56px 0;margin-top:56px;border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);">
+  <!-- LIVE COMPETITIONS (Cinematic) -->
+  <section style="padding: 0 0 120px;">
     <div class="container">
-      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;">
-        <div>
-          <div class="section-label"><svg data-lucide="globe"></svg> Rankings</div>
-          <div class="section-title">Global Creator Ranking</div>
-          <p class="section-sub" style="margin-bottom:0;font-size:0.8rem;">1st = 3pts &nbsp;·&nbsp; 2nd = 2pts
-            &nbsp;·&nbsp; 3rd = 1pt &nbsp;·&nbsp; Updated after each competition</p>
-        </div>
-        <a href="leaderboard.html" class="btn btn-outline btn-sm"><svg data-lucide="bar-chart-2"></svg> Full
-          Leaderboard</a>
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:48px;">
+        <h2 style="font-size:2.5rem; font-weight:800; letter-spacing:-0.03em; color:#fff;">Active Briefs</h2>
+        <a href="browse.html" class="btn btn-outline" style="border-radius:99px;">View All</a>
       </div>
-
-      <div class="grid-2" style="gap:24px;align-items:start;">
-        <div class="card">
-          <div class="card-header"><svg data-lucide="users"></svg> Top Creators</div>
-          <div id="global-ranking-list"></div>
-          <div class="card-footer" style="text-align:center;">
-            <a href="leaderboard.html" class="btn btn-outline btn-sm"><svg data-lucide="arrow-right"></svg> Full
-              Leaderboard</a>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div class="card">
-            <div class="card-header"><svg data-lucide="trophy"></svg> Recent Champions</div>
-            <div id="recent-champions-list"></div>
-          </div>
-          <div class="alert alert-info">
-            <svg data-lucide="info"></svg>
-            <div><strong>How ranking works:</strong> Win competitions to earn points. Points stack across all
-              competitions. Top creators appear on the global leaderboard.</div>
-          </div>
+      
+      <div class="cinematic-grid" id="home-competitions">
+        <div class="empty-state" style="border: 1px dashed var(--glass-border); border-radius: 16px; padding: 60px;">
+          <div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div>
+          <p>Loading active briefs...</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══ HOW IT WORKS — VISUAL MAP ═════════════════════════════ -->
-  <section style="border-top:1px solid var(--glass-border);background:rgba(0,0,0,0.2);padding:56px 0;">
-    <div class="container hiw-wrapper">
-      <div style="text-align:center;margin-bottom:48px;">
-        <div class="section-label"><svg data-lucide="map"></svg> Platform Guide</div>
-        <div class="section-title">How FlixoraPlay Works</div>
-        <p class="section-sub" style="margin-bottom:0;">Sign in once — choose your path. Host, compete, or vote.</p>
-      </div>
-
-      <!-- ROOT node -->
-      <div class="hiw-start">
-        <div class="hiw-start-node">
-          <svg data-lucide="user-check"></svg>
-          Sign In &nbsp;/&nbsp; Create Account
-        </div>
-      </div>
-
-      <!-- Trunk line -->
-      <div class="hiw-trunk">
-        <div class="hiw-trunk-line"></div>
-      </div>
-
-      <!-- 3 BRANCHES ──────────────────────────────────────── -->
-      <div class="hiw-branches">
-
-        <!-- ── HOST ────────────────────────────────────── -->
-        <div class="hiw-branch b-host">
-          <div class="hiw-branch-drop"></div>
-          <div class="hiw-branch-head">
-            <svg data-lucide="megaphone"></svg> Host
-          </div>
-          <div class="hiw-steps-wrap">
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="plus-circle"></svg><span class="hiw-step-name">Create
-                  Competition</span></div>
-              <div class="hiw-step-desc">Set theme, deadline, prize & max video duration</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="share-2"></svg><span class="hiw-step-name">Share & Collect
-                  Entries</span></div>
-              <div class="hiw-step-desc">Creators submit AI videos before the deadline</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="scale"></svg><span class="hiw-step-name">Judge Panel</span>
-              </div>
-              <div class="hiw-step-desc">Score entries, view public votes, rank submissions</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="flag"></svg><span class="hiw-step-name">Announce
-                  Winners</span></div>
-              <div class="hiw-step-desc">Assign medals, publish results publicly</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-outcome">
-              <svg data-lucide="shield-check"></svg> You run the show
-            </div>
-          </div>
-        </div>
-
-        <!-- ── CREATOR ─────────────────────────────────── -->
-        <div class="hiw-branch b-creator">
-          <div class="hiw-branch-drop"></div>
-          <div class="hiw-branch-head">
-            <svg data-lucide="clapperboard"></svg> Creator
-          </div>
-          <div class="hiw-steps-wrap">
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="search"></svg><span class="hiw-step-name">Browse
-                  Competitions</span></div>
-              <div class="hiw-step-desc">Find a theme that excites your creative vision</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="sparkles"></svg><span class="hiw-step-name">Make Your AI
-                  Video</span></div>
-              <div class="hiw-step-desc">Use Runway, Sora, Pika, Kling, or any AI tool</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="upload"></svg><span class="hiw-step-name">Submit Entry</span>
-              </div>
-              <div class="hiw-step-desc">Paste your YouTube/Vimeo link before deadline</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="star"></svg><span class="hiw-step-name">Get Judged &
-                  Voted</span></div>
-              <div class="hiw-step-desc">Host scores + public votes contribute to results</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-outcome">
-              <svg data-lucide="trophy"></svg> Win prizes & rank up globally
-            </div>
-          </div>
-        </div>
-
-        <!-- ── VIEWER ──────────────────────────────────── -->
-        <div class="hiw-branch b-viewer">
-          <div class="hiw-branch-drop"></div>
-          <div class="hiw-branch-head">
-            <svg data-lucide="eye"></svg> Viewer
-          </div>
-          <div class="hiw-steps-wrap">
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="layout-grid"></svg><span class="hiw-step-name">Browse
-                  Competitions</span></div>
-              <div class="hiw-step-desc">Find active competitions open for public voting</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="play-circle"></svg><span class="hiw-step-name">Watch
-                  Entries</span></div>
-              <div class="hiw-step-desc">View all submitted AI films for a competition</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="thumbs-up"></svg><span class="hiw-step-name">Vote for
-                  Favorites</span></div>
-              <div class="hiw-step-desc">One vote per entry — no account needed to vote</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-step">
-              <div class="hiw-step-top"><svg data-lucide="activity"></svg><span class="hiw-step-name">Votes Help
-                  Judges</span></div>
-              <div class="hiw-step-desc">Public vote counts are visible in the judge panel</div>
-            </div>
-            <div class="hiw-step-line"></div>
-            <div class="hiw-outcome">
-              <svg data-lucide="zap"></svg> Your vote shapes results
-            </div>
-          </div>
-        </div>
-
-      </div><!-- end branches -->
-
-    </div>
-  </section>
-
-
-  <!-- ── BRAND ADARENA ──────────────────────────────────────── -->
-  <section style="border-top:1px solid var(--glass-border);padding:72px 0;background:rgba(0,0,0,0.1);">
-    <div class="container">
-      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:32px;flex-wrap:wrap;gap:12px;">
-        <div>
-          <span class="badge badge-purple" style="margin-bottom:8px;">Featured briefs</span>
-          <h2 style="font-size:1.8rem;font-weight:800;color:#fff;margin:0;">🔥 Brand AdArena</h2>
-          <p style="color:var(--text-3);margin-top:6px;font-size:0.9rem;">Compete in sponsored video challenges and get paid by verified brands.</p>
-        </div>
-        <a href="adarena.html" class="btn btn-outline btn-sm">Explore AdArena <svg data-lucide="arrow-right" style="width:13px;height:13px;display:inline-block;vertical-align:middle;"></svg></a>
-      </div>
-      <div class="grid-auto" id="brand-briefs-home">
-        <div class="empty-state"><div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div><p>Loading brand briefs...</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── CTA ────────────────────────────────────────────────── -->
-  <section
-    style="border-top:1px solid var(--glass-border);padding:72px 0;text-align:center;position:relative;overflow:hidden;">
-    <div
-      style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(139,92,246,0.06),transparent 65%);pointer-events:none;">
-    </div>
-    <div class="container" style="position:relative;">
-      <h2 style="font-size:2rem;font-weight:800;letter-spacing:-0.04em;color:#fff;margin-bottom:12px;">Ready to join the
-        festival?</h2>
-      <p style="color:var(--text-3);margin-bottom:32px;font-size:0.95rem;">One free account — host, compete, or vote.
-        Your call.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <a href="register.html" class="btn btn-primary btn-lg"><svg data-lucide="user-plus"></svg> Create Free
-          Account</a>
-        <a href="browse.html" class="btn btn-ghost btn-lg"><svg data-lucide="compass"></svg> Browse Competitions</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <!-- FOOTER -->
   <footer class="footer">
-    <div class="container"
-      style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-      <div>
-        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span
-            style="color:var(--purple-light);">Play</span></div>
-        <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform &nbsp;·&nbsp; Version 3</p>
-      </div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
-        <a href="browse.html">Browse</a>
-        <a href="create-competition.html">Host</a>
-        <a href="leaderboard.html">Leaderboard</a>
-        <a href="about.html">About</a>
-        <a href="login.html">Sign In</a>
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <div style="font-weight: 800; font-size:1.2rem; color: #fff; letter-spacing:-0.03em;">Flixora<span style="color:var(--text-3);">Play</span></div>
+          <div style="font-size: 0.8rem; color: var(--text-4); margin-top:4px;">© 2026 FlixoraPlay. Professional AI Film Infrastructure.</div>
+        </div>
+        <div style="display:flex; gap:24px; font-size:0.85rem; font-weight:500;">
+          <a href="browse.html" style="color:var(--text-2);">Browse</a>
+          <a href="create-competition.html" style="color:var(--text-2);">Host</a>
+          <a href="leaderboard.html" style="color:var(--text-2);">Leaderboard</a>
+        </div>
       </div>
     </div>
   </footer>
 
-  <div id="toast-container"></div>
-
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/app.js"></script>
   <script>
-    lucide.createIcons();
-
-    function renderCompCard(comp, entryCount) {
-      const days = daysRemaining(comp.deadline);
-      const pct  = deadlinePercent(comp.createdAt, comp.deadline);
-      return `
-      <div class="comp-card">
-        <div class="comp-card-thumb">
-          <svg data-lucide="film" style="width:52px;height:52px;"></svg>
-        </div>
-        <div class="comp-card-body">
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
-            <span class="badge badge-green"><svg data-lucide="circle-dot"></svg> Open</span>
-            ${comp.prize ? `<span class="badge badge-gold"><svg data-lucide="dollar-sign"></svg> ${comp.prize}</span>` : ''}
-            <span class="badge badge-blue"><svg data-lucide="clock"></svg> ${comp.maxDuration || 15}s max</span>
-          </div>
-          <div class="comp-card-title">${comp.title}</div>
-          <div class="comp-card-desc">${comp.description}</div>
-          <div style="font-size:0.75rem;color:var(--text-4);margin-bottom:10px;display:flex;align-items:center;gap:5px;">
-            <svg data-lucide="target" style="width:11px;height:11px;"></svg> ${comp.theme}
-          </div>
-          <div class="deadline-wrap">
-            <div class="deadline-bar"><div class="deadline-fill" style="width:${pct}%"></div></div>
-            <div class="deadline-label"><svg data-lucide="calendar"></svg> ${days > 0 ? days + ' days left' : 'Deadline passed'} · ${formatDate(comp.deadline)}</div>
-          </div>
-        </div>
-        <div class="comp-card-footer">
-          <span style="display:flex;align-items:center;gap:5px;">
-            <svg data-lucide="user" style="width:11px;height:11px;"></svg>
-            ${comp.hostName} · ${entryCount} entr${entryCount !== 1 ? 'ies' : 'y'}
-          </span>
-          <a href="competition.html?id=${comp.id}" class="btn btn-primary btn-sm"><svg data-lucide="arrow-right"></svg> Enter</a>
-        </div>
-      </div>`;
-    }
-
-    function renderRankRow(c, pos) {
-      const cls  = pos === 1 ? 'gold' : pos === 2 ? 'silver' : pos === 3 ? 'bronze' : '';
-      const icon = pos <= 3 ? 'medal' : 'hash';
-      return `
-      <div class="ranking-row">
-        <div class="ranking-pos ${cls}"><svg data-lucide="${icon}"></svg></div>
-        <div class="ranking-info">
-          <div class="ranking-name">${c.creatorName}</div>
-          <div class="ranking-sub">${c.wins} gold · ${c.p2} silver · ${c.p3} bronze</div>
-        </div>
-        <div>
-          <div class="ranking-pts">${c.pts}</div>
-          <div class="ranking-pts-l">pts</div>
-        </div>
-      </div>`;
-    }
-
     document.addEventListener('DOMContentLoaded', async () => {
-      const compEl  = document.getElementById('home-competitions');
-      const rankEl  = document.getElementById('global-ranking-list');
-      const champEl = document.getElementById('recent-champions-list');
-
+      // 1. Load active competitions into cinematic cards
       try {
-        // ── Load competitions & entries in parallel ──────
-        const [competitions, allEntries, leaderboard] = await Promise.all([
-          API.getCompetitions(),
-          API.getEntries(),
-          API.getLeaderboard()
-        ]);
-
-        // Active competitions (exclude brand briefs)
-        const openComps = competitions.filter(c => c.status === 'open' && !c.is_brand_brief);
-        if (openComps.length === 0) {
-          compEl.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="inbox"></svg></div><h3>No active competitions</h3><p>Be the first to host one!</p><a href="create-competition.html" class="btn btn-primary btn-sm" style="margin-top:8px;"><svg data-lucide="plus"></svg> Host Now</a></div>`;
-        } else {
-          compEl.innerHTML = openComps.slice(0, 3).map(comp => {
-            const cnt = allEntries.filter(e => e.competitionId === comp.id).length;
-            return renderCompCard(comp, cnt);
-          }).join('');
-        }
-
-        // Brand briefs
-        const brandBriefs = competitions.filter(c => c.is_brand_brief === 1 && c.status === 'open');
-        const briefEl = document.getElementById('brand-briefs-home');
-        if (brandBriefs.length === 0) {
-          briefEl.innerHTML = `<div class="empty-state" style="grid-column:1/-1;padding:24px;"><div class="icon"><svg data-lucide="folder-open"></svg></div><p>No active briefs at the moment.</p></div>`;
-        } else {
-          const categoryLogos = {
-            'Beauty': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&auto=format&fit=crop',
-            'Technology': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&auto=format&fit=crop',
-            'Food & Beverage': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=100&auto=format&fit=crop',
-            'Fashion': 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=100&auto=format&fit=crop'
-          };
-          briefEl.innerHTML = brandBriefs.slice(0, 3).map(brief => {
-            const logo = categoryLogos[brief.theme] || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&auto=format&fit=crop';
-            return `
-            <div class="comp-card" style="margin:0; display:flex; flex-direction:column; justify-content:space-between; height:100%;">
-              <div>
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-                  <img src="${logo}" style="width:32px; height:32px; border-radius:6px; object-fit:cover; border:1px solid var(--glass-border);" />
-                  <div>
-                    <h4 style="font-size:0.75rem; color:var(--text-3); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin:0;">${brief.hostName}</h4>
-                    <span style="font-size:0.7rem; color:var(--purple-light);">${brief.theme}</span>
+        const res = await fetch('/api/competitions');
+        if (res.ok) {
+          const comps = await res.json();
+          const activeComps = comps.filter(c => c.status === 'open').slice(0, 3);
+          const compContainer = document.getElementById('home-competitions');
+          
+          if (activeComps.length === 0) {
+            compContainer.innerHTML = `<div class="empty-state"><p>No active briefs at the moment.</p></div>`;
+          } else {
+            compContainer.innerHTML = activeComps.map(c => `
+              <a href="competition.html?id=${c.id}" class="cine-card">
+                <div class="cine-thumb">
+                  <svg data-lucide="${c.is_brand_brief ? 'briefcase' : 'film'}" style="width:32px;height:32px;color:var(--glass-border-2);"></svg>
+                  ${c.is_brand_brief ? `<div style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.1);">BRAND BRIEF</div>` : ''}
+                </div>
+                <div class="cine-body">
+                  <h3 style="font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:8px;">${c.title}</h3>
+                  <p style="font-size:0.85rem; color:var(--text-3); line-height:1.5; margin-bottom:16px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${c.description}</p>
+                  <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; font-weight:600; color:var(--text-2);">
+                    <span><svg data-lucide="clock" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"></svg>${new Date(c.deadline).toLocaleDateString()}</span>
+                    <span style="color:#fff;">${c.prize || 'No Prize'}</span>
                   </div>
                 </div>
-                <h3 style="font-size:1.05rem; font-weight:700; color:#fff; margin:0 0 8px 0;">${brief.title}</h3>
-                <p style="font-size:0.8rem; color:var(--text-3); line-height:1.4; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin:0;">${brief.description}</p>
-              </div>
-              <div style="border-top:1px solid rgba(255,255,255,0.04); padding-top:12px; margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                  <div style="font-size:0.7rem; color:var(--text-4); text-transform:uppercase;">Prize Pool</div>
-                  <div style="font-size:1.1rem; font-weight:800; color:#fff;">${brief.prize || 'No prize'}</div>
-                </div>
-                <a href="brief.html?id=${brief.id}" class="btn btn-primary btn-sm">View Brief</a>
-              </div>
-            </div>`;
-          }).join('');
+              </a>
+            `).join('');
+            lucide.createIcons();
+          }
         }
-
-        // Global ranking from leaderboard API
-        if (leaderboard.length === 0) {
-          rankEl.innerHTML = `<div class="empty-state" style="padding:28px;"><div class="icon"><svg data-lucide="globe"></svg></div><p>No ranked creators yet.</p></div>`;
-        } else {
-          rankEl.innerHTML = leaderboard.slice(0, 8).map((c, i) => renderRankRow(c, i + 1)).join('');
-        }
-
-        // Recent champions
-        const champions = allEntries.filter(e => e.rank === 1).slice(0, 5);
-        if (champions.length === 0) {
-          champEl.innerHTML = `<div class="empty-state" style="padding:24px;"><div class="icon"><svg data-lucide="award"></svg></div><p>No champions yet.</p></div>`;
-        } else {
-          champEl.innerHTML = champions.map(e => {
-            const comp = competitions.find(c => c.id === e.competitionId);
-            return `
-            <div style="display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--glass-border);">
-              <div style="width:28px;height:28px;border-radius:50%;background:var(--gold-dim);border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gold-light);">
-                <svg data-lucide="trophy" style="width:13px;height:13px;"></svg>
-              </div>
-              <div style="flex:1;min-width:0;">
-                <div style="font-weight:600;font-size:0.85rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.title}</div>
-                <div style="font-size:0.72rem;color:var(--text-3);">by ${e.creatorName} · <a href="competition.html?id=${e.competitionId}">${comp ? comp.title : '—'}</a></div>
-              </div>
-              <div style="font-weight:800;color:var(--purple-light);font-size:0.95rem;flex-shrink:0;">${e.score}</div>
-            </div>`;
-          }).join('');
-        }
-
-      } catch (err) {
-        console.error('API error:', err);
-        compEl.innerHTML = `<div class="empty-state"><div class="icon"><svg data-lucide="wifi-off"></svg></div><h3>Could not load data</h3><p>${err.message}</p></div>`;
+      } catch(e) {
+        console.error(e);
       }
-
-      lucide.createIcons();
     });
   </script>
 </body>
-
 </html>
