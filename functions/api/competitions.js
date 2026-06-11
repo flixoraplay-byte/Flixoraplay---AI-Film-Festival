@@ -68,13 +68,14 @@ export async function onRequestPost({ request, env }) {
     const prizeFunded = body.prize_funded || 0;
 
     await getDB(env).prepare(
-      `INSERT INTO competitions (id,title,description,theme,prize,prize_pool_cents,prize_funded,is_brand_brief,brand_id,featured,maxDuration,deadline,status,hostId,hostName,judging,createdAt)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+      `INSERT INTO competitions (id,title,description,theme,thumbnail,prize,prize_pool_cents,prize_funded,is_brand_brief,brand_id,featured,maxDuration,deadline,status,hostId,hostName,judging,createdAt,brand_kit_url)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
     ).bind(
       id,
       body.title || '',
       body.description || '',
       body.theme || '',
+      body.thumbnail || null,
       body.prize || null,
       prizePoolCents,
       prizeFunded,
@@ -87,7 +88,8 @@ export async function onRequestPost({ request, env }) {
       body.hostId || 'guest',
       body.hostName || 'Anonymous',
       body.judging || 'manual',
-      now
+      now,
+      body.brand_kit_url || null
     ).run();
 
     const comp = await getDB(env).prepare(`SELECT * FROM competitions WHERE id=?`).bind(id).first();

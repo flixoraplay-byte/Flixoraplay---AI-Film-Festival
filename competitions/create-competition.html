@@ -3,29 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Competition — FlixoraPlay</title>
-  <link rel="stylesheet" href="css/main.css" />
+  <title>Host Competition — FlixoraPlay</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    /* ── V6 Page Header Aesthetics ──────────────────────── */
+    .page-header h1 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-top: 8px;
+    }
+    
+    /* ── V6 Glassmorphic Editor Card ────────────────────── */
+    .v6-editor-card {
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    .v6-editor-card .card-header {
+      padding: 24px 32px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(0,0,0,0.2);
+    }
+    .v6-editor-card .card-body {
+      padding: 32px;
+    }
+
+    /* ── V6 Form Inputs & Typography ────────────────────── */
+    .form-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-4);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 0.95rem;
+      color: #fff;
+      transition: all 0.2s ease;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--purple-light);
+      background: rgba(139,92,246,0.05);
+      box-shadow: 0 0 0 4px rgba(139,92,246,0.1);
+    }
+    .form-hint {
+      font-size: 0.8rem;
+      color: var(--text-4);
+      margin-top: 8px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin: 32px 0;
+    }
+
+    /* ── V6 Preview Card (Override) ─────────────────────── */
+    .v6-preview-card {
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .v6-preview-card .comp-card-thumb {
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      height: 180px;
+    }
+    .v6-preview-card .comp-card-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .v6-preview-card .comp-card-footer {
+      background: rgba(0,0,0,0.2);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* ── V6 Info Box (Fixing Layout Bug) ────────────────── */
+    .v6-info-box {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      backdrop-filter: blur(10px);
+    }
+    .v6-info-box-icon {
+      color: var(--blue-light);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .v6-info-box-text {
+      color: var(--blue-light);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .v6-info-box-text strong {
+      font-weight: 800;
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
 
-    <nav>
+    <nav id="main-nav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">Flixora<span>Play</span></a>
+      <a href="/index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link"><svg data-lucide="home"></svg> Home</a>
-        <a href="browse.html" class="nav-link"><svg data-lucide="compass"></svg> Browse</a>
-        <a href="leaderboard.html" class="nav-link"><svg data-lucide="bar-chart-2"></svg> Leaderboard</a>
-        <a href="about.html" class="nav-link"><svg data-lucide="info"></svg> About</a>      </div>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/pages/browse.html" class="nav-link">Contests</a>
+        <a href="/pages/leaderboard.html" class="nav-link">Leaderboard</a>
+      </div>
       <div class="nav-actions">
-        <a href="create-competition.html" class="btn btn-outline btn-sm"><svg data-lucide="plus-circle"></svg> Host</a>
-        <a href="login.html" class="btn btn-primary btn-sm"><svg data-lucide="log-in"></svg> Sign In</a>
+        <a href="/auth/login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header">
     <div class="container">
-      <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> Create Competition</div>
+      <div class="breadcrumb"><a href="/index.html">Home</a> <span>›</span> Create Competition</div>
       <h1>Create a Competition</h1>
       <p>Set up an AI video competition for creators worldwide.</p>
     </div>
@@ -37,9 +155,9 @@
         
         <!-- LEFT: Preview Card -->
         <div style="position: sticky; top: calc(var(--nav-h) + 24px);">
-          <div class="section-title" style="margin-bottom: 16px;">Live Preview</div>
-          <div class="comp-card">
-            <div class="comp-card-thumb">
+          <div class="section-title" style="margin-bottom: 16px; font-weight: 800; letter-spacing: -0.02em;">Live Preview</div>
+          <div class="comp-card v6-preview-card">
+            <div class="comp-card-thumb" id="prev-thumb" style="background-size: cover; background-position: center;">
               <svg data-lucide="film" style="width:52px;height:52px;"></svg>
             </div>
             <div class="comp-card-body">
@@ -63,11 +181,14 @@
 
         <!-- RIGHT: Editor -->
         <div>
-          <div class="alert alert-info">
-            After creating your competition, you'll get a link to share with creators. Use the <strong>Judge Panel</strong> to score entries and announce winners.
+          <div class="v6-info-box">
+            <svg class="v6-info-box-icon" data-lucide="info" style="width:20px;height:20px;"></svg>
+            <div class="v6-info-box-text">
+              After creating your competition, you'll get a link to share with creators. Use the <strong>Judge Panel</strong> to score entries and announce winners.
+            </div>
           </div>
 
-          <div class="card">
+          <div class="card v6-editor-card">
             <div class="card-header"><svg data-lucide="clapperboard"></svg> Competition Details</div>
             <div class="card-body">
               <form id="comp-form" onsubmit="return false;">
@@ -101,8 +222,8 @@
                     <label for="c-judging">Judging Type <span class="req">*</span></label>
                     <select id="c-judging">
                       <option value="manual">Manual (Host judges)</option>
-                      <option value="public" disabled>Public Voting (V2)</option>
-                      <option value="hybrid" disabled>Hybrid (V2)</option>
+                      <option value="public">Public Voting (V2)</option>
+                      <option value="hybrid">Hybrid (V2)</option>
                     </select>
                   </div>
                 </div>
@@ -114,9 +235,14 @@
                     <div class="form-hint">Leave blank if no monetary prize.</div>
                   </div>
                   <div class="form-group">
-                    <label for="c-host">Your Name / Studio <span class="req">*</span></label>
+                    <label for="c-host">Displayed Name / Studio <span class="req">*</span></label>
                     <input type="text" id="c-host" placeholder="e.g. Neon Studios" />
                   </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="c-image">Competition Card Image URL (optional)</label>
+                  <input type="text" id="c-image" placeholder="https://example.com/image.jpg" />
                 </div>
 
                 <!-- Max Video Duration -->
@@ -148,11 +274,11 @@
                   <input type="number" id="c-max" placeholder="Leave blank for unlimited" min="1" style="max-width:200px;" />
                 </div>
 
-                <div style="margin-top:24px;display:flex;gap:12px;">
-                  <button class="btn btn-primary" onclick="createCompetition()">
-                    <svg data-lucide="plus-circle"></svg> Create Competition
+                <div style="margin-top:40px;display:flex;gap:16px;">
+                  <button class="btn btn-primary" onclick="createCompetition()" style="padding: 14px 32px; font-size: 1rem;">
+                    <svg data-lucide="plus-circle"></svg> Launch Competition
                   </button>
-                  <a href="browse.html" class="btn btn-secondary">Cancel</a>
+                  <a href="/pages/browse.html" class="btn btn-outline" style="padding: 14px 32px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.1);">Cancel</a>
                 </div>
 
               </form>
@@ -165,11 +291,11 @@
 
   <div id="toast-container"></div>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
     // Live preview
-    ['c-title','c-desc','c-theme','c-host','c-deadline','c-prize','c-duration'].forEach(id => {
+    ['c-title','c-desc','c-theme','c-host','c-deadline','c-prize','c-duration', 'c-image'].forEach(id => {
       document.getElementById(id).addEventListener('input', updatePreview);
     });
 
@@ -186,6 +312,7 @@
       const deadline = document.getElementById('c-deadline').value;
       const prize    = document.getElementById('c-prize').value;
       const duration = document.getElementById('c-duration').value || '15';
+      const image    = document.getElementById('c-image').value;
 
       document.getElementById('prev-title').textContent = title;
       document.getElementById('prev-desc').textContent  = desc;
@@ -195,24 +322,67 @@
       document.getElementById('prev-deadline').textContent = 'Deadline: ' + (deadline ? formatDate(deadline) : '—');
       document.getElementById('prev-duration-badge').innerHTML = '<svg data-lucide="clock" style="width:9px;height:9px;"></svg> Max ' + duration + 's';
       lucide.createIcons();
+      
       const pb = document.getElementById('prev-prize-badge');
       if (prize) { pb.innerHTML = '<svg data-lucide="dollar-sign" style="width:9px;height:9px;"></svg> ' + prize; pb.style.display = 'inline-flex'; lucide.createIcons(); }
       else        { pb.style.display = 'none'; }
+
+      const thumb = document.getElementById('prev-thumb');
+      if (image) {
+        thumb.style.backgroundImage = `url('${image}')`;
+        thumb.innerHTML = '';
+      } else {
+        thumb.style.backgroundImage = 'none';
+        thumb.innerHTML = '<svg data-lucide="film" style="width:52px;height:52px;"></svg>';
+        lucide.createIcons();
+      }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    let editModeId = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
       const session = getSession();
       if (!session) {
-        showToast('Please sign in to host a competition.', 'info');
-        setTimeout(() => navigate('login.html'), 1500);
+        showToast('Please sign in to host or edit a competition.', 'info');
+        setTimeout(() => navigate('/auth/login.html'), 1500);
         return;
       }
-      document.getElementById('c-host').value = session.username || session.name || '';
-      document.getElementById('c-host').readOnly = true;
-
+      
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('c-deadline').min = today;
+      
+      document.getElementById('c-host').value = session.username || session.name || '';
+
+      editModeId = getParam('edit');
+      if (editModeId) {
+        document.querySelector('.page-header h1').textContent = 'Edit Competition';
+        document.querySelector('title').textContent = 'Edit Competition — FlixoraPlay';
+        document.querySelector('#comp-form button.btn-primary').innerHTML = '<svg data-lucide="save"></svg> Save Changes';
+        
+        try {
+          const comp = await API.getCompetition(editModeId);
+          if (comp.hostId !== session.id && session.role !== 'admin') {
+            showToast('You do not have permission to edit this competition.', 'error');
+            setTimeout(() => navigate('/pages/browse.html'), 1500);
+            return;
+          }
+          
+          document.getElementById('c-title').value = comp.title || '';
+          document.getElementById('c-theme').value = comp.theme || '';
+          document.getElementById('c-desc').value = comp.description || '';
+          document.getElementById('c-deadline').value = comp.deadline || '';
+          document.getElementById('c-judging').value = comp.judging || 'manual';
+          document.getElementById('c-prize').value = comp.prize || '';
+          document.getElementById('c-host').value = comp.hostName || '';
+          document.getElementById('c-duration').value = comp.maxDuration || 15;
+          document.getElementById('c-image').value = comp.thumbnail || '';
+          
+          updatePreview();
+        } catch (err) {
+          showToast('Failed to load competition details.', 'error');
+        }
+      }
     });
 
     function updatePrizeDisplay() {
@@ -247,18 +417,31 @@
       }
 
       try {
-        const comp = await API.createCompetition({
-          title, theme, description: desc,
-          deadline, judging,
-          prize: prize || null,
-          maxDuration: duration,
-          hostId: session.id,
-          hostName: document.getElementById('c-host').value.trim() || session.username || session.name
-        });
-        showToast('Competition created! Redirecting...', 'success');
-        setTimeout(() => navigate(`competition.html?id=${comp.id}`), 1200);
+        if (editModeId) {
+          await API.updateCompetition(editModeId, {
+            title, theme, description: desc,
+            deadline, judging,
+            prize: prize || null,
+            maxDuration: duration,
+            thumbnail: document.getElementById('c-image').value.trim() || null
+          });
+          showToast('Competition updated successfully! Redirecting...', 'success');
+          setTimeout(() => navigate(`/competitions/competition.html?id=${editModeId}`), 1200);
+        } else {
+          const comp = await API.createCompetition({
+            title, theme, description: desc,
+            deadline, judging,
+            prize: prize || null,
+            maxDuration: duration,
+            hostId: session.id,
+            hostName: document.getElementById('c-host').value.trim() || session.username || session.name,
+            thumbnail: document.getElementById('c-image').value.trim() || null
+          });
+          showToast('Competition created! Redirecting...', 'success');
+          setTimeout(() => navigate(`/competitions/competition.html?id=${comp.id}`), 1200);
+        }
       } catch (err) {
-        showToast('Failed to create: ' + err.message, 'error');
+        showToast((editModeId ? 'Failed to update: ' : 'Failed to create: ') + err.message, 'error');
       }
     }
   </script>

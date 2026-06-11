@@ -4,28 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Notifications — FlixoraPlay</title>
-  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="/css/main.css" />
 </head>
 <body>
 
-  <nav>
+  <nav id="main-nav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
+      <a href="/index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="browse.html" class="nav-link">Browse</a>
-        <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/pages/browse.html" class="nav-link">Contests</a>
+        <a href="/pages/leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
+        <a href="/auth/login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header">
     <div class="container">
-      <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> Notifications</div>
+      <div class="breadcrumb"><a href="/index.html">Home</a> <span>›</span> Notifications</div>
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
         <div>
           <h1>Notifications</h1>
@@ -59,24 +59,24 @@
         <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
-        <a href="browse.html">Browse</a>
-        <a href="create-competition.html">Host</a>
-        <a href="leaderboard.html">Leaderboard</a>
-        <a href="about.html">About</a>
+        <a href="/pages/browse.html">Contests</a>
+        <a href="/competitions/create-competition.html">Host</a>
+        <a href="/pages/leaderboard.html">Leaderboard</a>
+        <a href="/pages/about.html">About</a>
       </div>
     </div>
   </footer>
 
   <div id="toast-container"></div>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Direct unauthorized users back to login
       const session = getSession();
       if (!session || !session.id) {
         showToast('Please sign in to view notifications.', 'error');
-        setTimeout(() => navigate('login.html'), 1500);
+        setTimeout(() => navigate('/auth/login.html'), 1500);
         return;
       }
 

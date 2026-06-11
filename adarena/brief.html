@@ -4,21 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brand Brief Details — FlixoraPlay</title>
-  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="/css/main.css" />
 </head>
 <body>
 
-  <nav>
+  <nav id="main-nav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
+      <a href="/index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="browse.html" class="nav-link">Browse</a>
-        <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/pages/browse.html" class="nav-link">Contests</a>
+        <a href="/pages/leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
+        <a href="/auth/login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
@@ -26,7 +26,7 @@
   <!-- Brief Header -->
   <div class="page-header" id="brief-header">
     <div class="container">
-      <div class="breadcrumb"><a href="adarena.html">AdArena</a> <span>›</span> <span id="header-title">Brief Details</span></div>
+      <div class="breadcrumb"><a href="/adarena/adarena.html">Brand</a> <span>›</span> <span id="header-title">Brief Details</span></div>
       <div class="header-row">
         <div>
           <span class="badge badge-purple" style="margin-bottom:8px;" id="brief-category">Category</span>
@@ -60,6 +60,12 @@
                 <h3>Brief Requirements</h3>
                 <p id="brief-desc" style="white-space:pre-wrap; line-height:1.6; color:var(--text-3); margin-bottom:24px;"></p>
                 
+                <div id="brief-asset-kit-container" style="display:none; margin-bottom:24px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--purple-light); border-radius: 8px;">
+                  <h3 style="margin-bottom: 10px; color: var(--purple-light); display: flex; align-items: center; gap: 8px;"><svg data-lucide="briefcase" style="width:16px;height:16px;"></svg> Brand Asset Kit</h3>
+                  <p style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 12px;">Access official logos, fonts, product images, and style guidelines.</p>
+                  <a id="brief-asset-kit" href="#" target="_blank" class="btn btn-outline btn-sm" style="display:inline-flex; align-items:center; gap:8px;"><svg data-lucide="external-link" style="width:14px;height:14px;"></svg> Open Assets</a>
+                </div>
+
                 <hr class="divider" />
                 <h3 style="margin-top:20px;">Usage Rights Notice</h3>
                 <div class="alert alert-info">
@@ -163,17 +169,17 @@
         <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
-        <a href="browse.html">Browse</a>
-        <a href="create-competition.html">Host</a>
-        <a href="leaderboard.html">Leaderboard</a>
-        <a href="about.html">About</a>
+        <a href="/pages/browse.html">Contests</a>
+        <a href="/competitions/create-competition.html">Host</a>
+        <a href="/pages/leaderboard.html">Leaderboard</a>
+        <a href="/pages/about.html">About</a>
       </div>
     </div>
   </footer>
 
   <div id="toast-container"></div>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
   <script>
     const compId = getParam('id');
     let brief = null;
@@ -181,7 +187,7 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       if (!compId) {
-        navigate('adarena.html');
+        navigate('/adarena/adarena.html');
         return;
       }
 
@@ -193,7 +199,7 @@
         brief = await API.getCompetition(compId);
         if (!brief || !brief.is_brand_brief) {
           showToast('Brand brief not found', 'error');
-          setTimeout(() => navigate('adarena.html'), 1500);
+          setTimeout(() => navigate('/adarena/adarena.html'), 1500);
           return;
         }
 
@@ -203,6 +209,11 @@
         document.getElementById('brief-brand').innerHTML = `<svg data-lucide="building" style="width:13px;height:13px;"></svg> <span>${brief.hostName}</span>`;
         document.getElementById('brief-category').textContent = brief.theme || 'Commercial';
         document.getElementById('brief-desc').textContent = brief.description;
+
+        if (brief.brand_kit_url) {
+          document.getElementById('brief-asset-kit-container').style.display = 'block';
+          document.getElementById('brief-asset-kit').href = brief.brand_kit_url;
+        }
 
         // Sidebar Info
         const statusMap = {
@@ -331,7 +342,7 @@
       const session = getSession();
       if (!session) {
         showToast('Please sign in to submit.', 'error');
-        setTimeout(() => navigate('login.html'), 1500);
+        setTimeout(() => navigate('/auth/login.html'), 1500);
         return;
       }
       document.getElementById('submit-modal').classList.remove('hidden');

@@ -6,7 +6,7 @@
   <title>Account Settings — FlixoraPlay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="/css/main.css" />
   <style>
     .settings-grid {
       display: grid;
@@ -81,24 +81,24 @@
 </head>
 <body>
 
-  <nav>
+  <nav id="main-nav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
+      <a href="/index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="browse.html" class="nav-link">Browse</a>
-        <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/pages/browse.html" class="nav-link">Contests</a>
+        <a href="/pages/leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
+        <a href="/auth/login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header">
     <div class="container">
-      <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <a href="#" id="profile-link">Profile</a> <span>›</span> Settings</div>
+      <div class="breadcrumb"><a href="/index.html">Home</a> <span>›</span> <a href="#" id="profile-link">Profile</a> <span>›</span> Settings</div>
       <h1><svg data-lucide="settings" style="width:24px;height:24px;display:inline;vertical-align:middle;margin-right:8px;color:var(--text-3);"></svg>Account Settings</h1>
       <p>Manage your profile, avatar, and password.</p>
     </div>
@@ -253,7 +253,7 @@
 
   <div id="toast-container"></div>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
   <script>
     function switchSection(name, btn) {
       document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
@@ -268,7 +268,7 @@
       const session = getSession();
       if (!session || !session.id) {
         showToast('Please sign in to access settings.', 'info');
-        setTimeout(() => navigate('login.html'), 1200);
+        setTimeout(() => navigate('/auth/login.html'), 1200);
         return;
       }
 

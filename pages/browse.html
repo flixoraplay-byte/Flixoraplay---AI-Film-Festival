@@ -6,95 +6,8 @@
   <title>Browse Competitions — FlixoraPlay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="/css/main.css" />
   <style>
-    /* Cinematic Mini Hero */
-    .hero-browse {
-      position: relative;
-      padding: 140px 0 80px;
-      margin-bottom: 40px;
-      overflow: hidden;
-    }
-    .hero-browse-bg {
-      position: absolute;
-      inset: 0;
-      background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2800&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center 20%;
-      z-index: -2;
-    }
-    .hero-browse-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, var(--bg) 100%);
-      z-index: -1;
-    }
-    .hero-browse-title {
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.04em;
-      margin-bottom: 16px;
-    }
-    .hero-browse-desc {
-      font-size: 1.1rem;
-      color: rgba(255,255,255,0.8);
-      max-width: 600px;
-      line-height: 1.6;
-    }
-    
-    /* Cinematic Briefs Grid */
-    .cinematic-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 24px;
-    }
-    .cine-card {
-      background: var(--bg-2);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: transform var(--t-slow), border-color var(--t), box-shadow var(--t);
-      display: flex;
-      flex-direction: column;
-      text-decoration: none;
-    }
-    .cine-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--glass-border-2);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    }
-    .cine-thumb {
-      aspect-ratio: 16/9;
-      background: var(--bg-3);
-      position: relative;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
-    }
-    .cine-thumb img {
-      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity var(--t);
-    }
-    .cine-card:hover .cine-thumb img { opacity: 0.9; }
-    .cine-body {
-      padding: 24px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    .cine-title {
-      font-size: 1.15rem; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing:-0.02em;
-    }
-    .cine-desc {
-      font-size: 0.85rem; color: var(--text-3); line-height: 1.5; margin-bottom: 16px; 
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-    .cine-meta {
-      margin-top: auto;
-      display: flex; justify-content: space-between; align-items: center; 
-      font-size: 0.8rem; font-weight: 600; color: var(--text-2);
-      padding-top: 16px; border-top: 1px solid var(--glass-border);
-    }
-
     /* Filters Toolbar */
     .filter-toolbar {
       background: rgba(255,255,255,0.01);
@@ -138,7 +51,6 @@
     }
     .cat-pill:hover { background: rgba(255,255,255,0.08); color: #fff; }
     .cat-pill.active { background: #fff; color: #000; border-color: #fff; }
-    
     /* Nav overriding */
     nav {
       background: rgba(0,0,0,0.8) !important;
@@ -151,33 +63,22 @@
 <body>
 
   <!-- NAV -->
-  <nav>
+  <nav id="main-nav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
+      <a href="/index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="browse.html" class="nav-link active">Browse</a>
-        <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/pages/browse.html" class="nav-link">Contests</a>
+        <a href="/pages/leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <!-- Injected via app.js -->
-        <a href="login.html" class="nav-link" style="color:#fff;">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
+        <a href="/auth/login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
 
-  <!-- CINEMATIC HERO -->
-  <header class="hero-browse">
-    <div class="hero-browse-bg"></div>
-    <div class="hero-browse-overlay"></div>
-    <div class="container">
-      <h1 class="hero-browse-title">Active Briefs</h1>
-      <p class="hero-browse-desc">Discover brand-funded AI filmmaking competitions, join open challenge events, or follow the global judging process.</p>
-    </div>
-  </header>
-
-  <div class="page-body" style="padding-bottom: 120px;">
+  <div class="page-body" style="padding-top: 120px; padding-bottom: 120px;">
     <div class="container">
 
       <!-- TOOLBAR -->
@@ -265,17 +166,17 @@
           <div style="font-size: 0.8rem; color: var(--text-4); margin-top:4px;">© 2026 FlixoraPlay. Professional AI Film Infrastructure.</div>
         </div>
         <div style="display:flex; gap:24px; font-size:0.85rem; font-weight:500;">
-          <a href="browse.html" style="color:var(--text-2);">Browse</a>
-          <a href="create-competition.html" style="color:var(--text-2);">Host</a>
-          <a href="leaderboard.html" style="color:var(--text-2);">Leaderboard</a>
+          <a href="/pages/browse.html" style="color:var(--text-2);">Contests</a>
+          <a href="/competitions/create-competition.html" style="color:var(--text-2);">Host</a>
+          <a href="/pages/leaderboard.html" style="color:var(--text-2);">Leaderboard</a>
         </div>
       </div>
     </div>
   </footer>
 
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="js/app.js"></script>
-  <script src="js/database.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/database.js"></script>
   <script>
     let activeCategory = 'all';
     let activeStatus = 'all';
@@ -399,14 +300,14 @@
         }[comp.status] || '';
 
         const entriesCount = allEntries.filter(e => e.competitionId === comp.id).length;
-        const img = placeholders[index % placeholders.length];
+        const img = comp.thumbnail || placeholders[index % placeholders.length];
 
         return `
-          <a href="competition.html?id=${comp.id}" class="cine-card">
+          <a href="/competitions/competition.html?id=${comp.id}" class="cine-card ${comp.is_brand_brief ? 'premium' : ''}">
             <div class="cine-thumb">
               <img src="${img}" alt="Brief thumbnail" />
               <svg data-lucide="${comp.is_brand_brief ? 'briefcase' : 'film'}" style="position:relative; z-index:1; width:36px;height:36px;color:#fff;opacity:0.8;"></svg>
-              ${comp.is_brand_brief ? `<div style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.1);z-index:2;">BRAND BRIEF</div>` : ''}
+              ${comp.is_brand_brief ? `<div class="premium-badge"><svg data-lucide="award" style="width:12px;height:12px;"></svg> AdArena Brief</div>` : ''}
               
               <!-- Floating status badge over image -->
               <div style="position:absolute;bottom:16px;left:16px;z-index:2;">
@@ -422,7 +323,7 @@
               
               <div class="cine-meta">
                 <span style="display:flex;align-items:center;gap:4px;"><svg data-lucide="clock" style="width:14px;height:14px;"></svg> ${days > 0 ? days + 'd left' : 'Ended'}</span>
-                <span style="display:flex;align-items:center;gap:4px;"><svg data-lucide="trophy" style="width:14px;height:14px;color:var(--gold-light);"></svg> ${comp.prize || 'Glory'}</span>
+                <span style="display:flex;align-items:center;gap:4px;color:var(--gold-light);"><svg data-lucide="trophy" style="width:14px;height:14px;"></svg> ${comp.prize || 'Glory'}</span>
                 <span style="display:flex;align-items:center;gap:4px;color:var(--text-3);"><svg data-lucide="users" style="width:14px;height:14px;"></svg> ${entriesCount}</span>
               </div>
             </div>

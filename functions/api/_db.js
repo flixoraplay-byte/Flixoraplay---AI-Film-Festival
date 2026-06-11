@@ -56,4 +56,5 @@ export function getDB(env) {
             return results.map(r => ({ results: r.rows, success: true, meta: { changes: r.rowsAffected } }));
         }
     };
+    return env._db;
 }

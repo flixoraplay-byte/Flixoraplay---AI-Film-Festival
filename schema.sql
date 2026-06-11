@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS competitions (
   title       TEXT NOT NULL,
   description TEXT,
   theme       TEXT,
+  thumbnail   TEXT,
   prize       TEXT,
   prize_pool_cents INTEGER DEFAULT 0,
   prize_funded INTEGER DEFAULT 0,
@@ -33,6 +34,7 @@ CREATE TABLE IF NOT EXISTS entries (
   score         REAL DEFAULT 0,
   rank          INTEGER,
   votes         INTEGER DEFAULT 0,
+  elo_rating    INTEGER DEFAULT 1200,
   submittedAt   TEXT NOT NULL,
   FOREIGN KEY (competitionId) REFERENCES competitions(id)
 );

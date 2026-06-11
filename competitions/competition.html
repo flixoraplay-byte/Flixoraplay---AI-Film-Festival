@@ -4,21 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Competition — FlixoraPlay</title>
-  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="/css/main.css" />
 </head>
 <body>
 
-  <nav>
+  <nav id="main-nav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
+      <a href="/index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="browse.html" class="nav-link active">Browse</a>
-        <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/pages/browse.html" class="nav-link">Contests</a>
+        <a href="/pages/leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
+        <a href="/auth/login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
@@ -26,14 +26,15 @@
   <!-- Page Header -->
   <div class="page-header" id="comp-header">
     <div class="container">
-      <div class="breadcrumb"><a href="browse.html">Browse</a> <span>›</span> <span id="header-title">Loading...</span></div>
+      <div class="breadcrumb"><a href="/pages/browse.html">Contests</a> <span>›</span> <span id="header-title">Loading...</span></div>
       <div class="header-row">
         <div>
           <h1 id="comp-title">Loading...</h1>
           <p id="comp-theme" class="text-muted text-small"></p>
         </div>
-        <div style="display:flex;gap:10px;">
+        <div style="display:flex;gap:10px;align-items:center;">
           <a href="#" id="submit-btn" class="btn btn-primary">Submit Your Video</a>
+          <a href="#" id="arena-btn" class="btn" style="background-color: #000; border: 1px solid var(--gold-light); color: var(--gold-light); display: flex; align-items: center; gap: 6px;"><svg data-lucide="swords" style="width:16px;height:16px;"></svg> Enter ELO Arena</a>
           <a href="#" id="judge-btn" class="btn btn-outline" style="display:none;"><svg data-lucide="gavel"></svg> Judge Entries</a>
         </div>
       </div>
@@ -145,7 +146,7 @@
 
   <div id="toast-container"></div>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
   <script>
     const compId = getParam('id');
     let competition = null;
@@ -155,7 +156,7 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
-      if (!compId) { window.location.href = 'browse.html'; return; }
+      if (!compId) { window.location.href = '/pages/browse.html.href'; return; }
 
       try { competition = await API.getCompetition(compId); }
       catch { document.getElementById('comp-title').textContent = 'Competition not found'; return; }
@@ -167,8 +168,18 @@
       lucide.createIcons();
       document.getElementById('comp-description').textContent = competition.description;
 
+      if (competition.thumbnail) {
+        const header = document.getElementById('comp-header');
+        header.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.95), rgba(0,0,0,0.7)), url('${competition.thumbnail}')`;
+        header.style.backgroundSize = 'cover';
+        header.style.backgroundPosition = 'center';
+      }
+
       const submitBtn = document.getElementById('submit-btn');
       const judgeBtn  = document.getElementById('judge-btn');
+      const arenaBtn  = document.getElementById('arena-btn');
+      
+      arenaBtn.setAttribute('href', `arena.html?id=${compId}`);
       submitBtn.setAttribute('href', '#');
       submitBtn.setAttribute('onclick', 'openModal(); return false;');
       if (competition.status !== 'open') {
@@ -177,13 +188,24 @@
         submitBtn.classList.remove('btn-primary');
         submitBtn.setAttribute('onclick', '');
       }
-      judgeBtn.style.display = 'inline-block';
-      judgeBtn.setAttribute('href', `judge.html?id=${compId}`);
+
+      const session = getSession();
+
+      if (session && (session.id === competition.hostId || session.role === 'admin')) {
+        judgeBtn.style.display = 'inline-block';
+        judgeBtn.setAttribute('href', `judge.html?id=${compId}`);
+        
+        // Add an Edit button for the host next to the Judge button
+        const editBtn = document.createElement('a');
+        editBtn.href = `create-competition.html?edit=${compId}`;
+        editBtn.className = 'btn btn-outline';
+        editBtn.innerHTML = '<svg data-lucide="edit"></svg> Edit Details';
+        judgeBtn.parentNode.insertBefore(editBtn, judgeBtn);
+      }
 
       const days = daysRemaining(competition.deadline);
       const statusLabel = { open: '<svg data-lucide="circle-dot" style="width:12px;height:12px;display:inline;vertical-align:middle;color:var(--green-light);"></svg> Open', judging: '<svg data-lucide="scale" style="width:12px;height:12px;display:inline;vertical-align:middle;color:var(--gold-light);"></svg> Judging', closed: '<svg data-lucide="lock" style="width:12px;height:12px;display:inline;vertical-align:middle;color:var(--text-3);"></svg> Closed' }[competition.status] || competition.status;
       
-      const session = getSession();
       const isFunded = competition.prize_funded === 1;
       const prizeBadge = isFunded 
         ? `<span class="badge badge-gold" style="margin-left:auto;font-size:0.7rem;"><svg data-lucide="check-circle" style="width:9px;height:9px;"></svg> Funded</span>` 
@@ -191,7 +213,7 @@
 
       let fundButton = '';
       if (competition.prize && !isFunded && session && session.id === competition.hostId) {
-        fundButton = `<div style="margin-top:10px;"><a href="checkout.html?id=${compId}" class="btn btn-primary w-full" style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg data-lucide="credit-card" style="width:13px;height:13px;"></svg> Fund Prize Pool</a></div>`;
+        fundButton = `<div style="margin-top:10px;"><a href="/user/checkout.html?id=${compId}" class="btn btn-primary w-full" style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg data-lucide="credit-card" style="width:13px;height:13px;"></svg> Fund Prize Pool</a></div>`;
       }
 
       document.getElementById('sidebar-info').innerHTML = `
@@ -203,7 +225,7 @@
         <div class="sidebar-info-row" style="display:flex;align-items:center;"><span class="label">Prize</span><span class="value">${competition.prize || 'No prize'}</span> ${competition.prize ? prizeBadge : ''}</div>
         <div class="sidebar-info-row"><span class="label">Judging</span><span class="value">Manual</span></div>
         ${fundButton}
-        <div style="margin-top:14px;"><a href="judge.html?id=${compId}" class="btn btn-outline w-full" style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg data-lucide="gavel" style="width:13px;height:13px;"></svg> Open Judge Panel</a></div>`;
+        <div style="margin-top:14px;"><a href="/competitions/judge.html?id=${compId}" class="btn btn-outline w-full" style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg data-lucide="gavel" style="width:13px;height:13px;"></svg> Open Judge Panel</a></div>`;
       lucide.createIcons();
 
       document.getElementById('comp-details-table').innerHTML = `
@@ -318,7 +340,7 @@
       const session = getSession();
       if (!session) {
         showToast('Please sign in to submit an entry.', 'info');
-        setTimeout(() => navigate('login.html'), 1500);
+        setTimeout(() => navigate('/auth/login.html'), 1500);
         return;
       }
       document.getElementById('e-creator').value = session.username || session.name || '';

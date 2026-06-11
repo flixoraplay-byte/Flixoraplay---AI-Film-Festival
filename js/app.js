@@ -328,7 +328,7 @@ function clearSession() {
 function signOut() {
   clearSession();
   showToast('Signed out successfully.', 'info');
-  setTimeout(() => navigate('index.html'), 600);
+  setTimeout(() => navigate('/index.html'), 600);
 }
 
 // ── Auth-aware nav ────────────────────────────────────────
@@ -343,7 +343,7 @@ function updateNavForAuth() {
 
       <div style="display:flex;align-items:center;gap:10px;">
         <!-- Dashboard Link -->
-        <a href="dashboard.html" class="nav-link" title="Dashboard">Dashboard</a>
+        <a href="/user/dashboard.html" class="nav-link" title="Dashboard">Dashboard</a>
 
         <!-- Notifications Bell -->
         <div class="notification-dropdown-container" style="position:relative;">
@@ -360,15 +360,15 @@ function updateNavForAuth() {
               <div style="text-align:center;padding:12px;color:var(--text-3);font-size:0.8rem;">No new notifications</div>
             </div>
             <div style="text-align:center;border-top:1px solid var(--glass-border);padding-top:8px;margin-top:8px;">
-              <a href="notifications.html" style="font-size:0.8rem;color:var(--text);font-weight:600;">View All Notifications</a>
+              <a href="/user/notifications.html" style="font-size:0.8rem;color:var(--text);font-weight:600;">View All Notifications</a>
             </div>
           </div>
         </div>
 
-        <a href="profile.html?id=${session.id}" style="display:flex;align-items:center;gap:8px;text-decoration:none;" title="View Profile">
+        <a href="/user/profile.html?id=${session.id}" style="display:flex;align-items:center;gap:8px;text-decoration:none;" title="View Profile">
           <div style="width:32px;height:32px;border-radius:50%;background:var(--bg-3);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:var(--text-2);flex-shrink:0;cursor:pointer;">${initial}</div>
         </a>
-        <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
+        <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>`;
 
     setupNotificationBell();
@@ -376,21 +376,21 @@ function updateNavForAuth() {
     // Quick fix for "Start Creating" button on homepage
     const startBtn = document.getElementById('start-creating-btn');
     if (startBtn) {
-      startBtn.href = 'dashboard.html';
+      startBtn.href = '/user/dashboard.html';
       startBtn.textContent = 'Go to Dashboard';
     }
   } else {
     // Keep default nav — ensure Host + Sign In are shown
     navActions.innerHTML = `
-      <a href="login.html" class="nav-link" style="color:#fff;">Sign In</a>
-      <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>`;
+      <a href="/auth/login.html" class="nav-link" style="color:#fff;">Sign In</a>
+      <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>`;
   }
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 // ── Profile link helper ───────────────────────────────────
 function profileLink(userId, displayName) {
-  return `<a href="profile.html?id=${userId}" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--purple-light)'" onmouseout="this.style.color='inherit'">${displayName}</a>`;
+  return `<a href="/user/profile.html?id=${userId}" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--purple-light)'" onmouseout="this.style.color='inherit'">${displayName}</a>`;
 }
 
 // ── Tab switcher ──────────────────────────────────────────
@@ -509,9 +509,9 @@ function toggleInlinePlayer(entryId, url) {
 document.addEventListener('DOMContentLoaded', () => {
   // Inject AdArena navigation link dynamically on all pages
   const navLinksContainer = document.querySelector('.nav-links');
-  if (navLinksContainer && !navLinksContainer.querySelector('a[href="adarena.html"]')) {
-    const browseLink = navLinksContainer.querySelector('a[href="browse.html"]');
-    const adarenaHTML = `<a href="adarena.html" class="nav-link"><svg data-lucide="briefcase"></svg> AdArena</a>`;
+  if (navLinksContainer && !navLinksContainer.querySelector('a[href="/adarena/adarena.html"]')) {
+    const browseLink = navLinksContainer.querySelector('a[href="/pages/browse.html"]');
+    const adarenaHTML = `<a href="/adarena/adarena.html" class="nav-link"><svg data-lucide="briefcase"></svg> Brand</a>`;
     if (browseLink) {
       browseLink.insertAdjacentHTML('afterend', adarenaHTML);
     } else {

@@ -6,7 +6,7 @@
   <title>FlixoraPlay — The AI Film Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="/css/main.css" />
   <style>
     /* ── SCROLL SNAPPING SETUP ─────────────────────── */
     html, body {
@@ -184,39 +184,6 @@
     .slide-briefs {
       background: var(--bg-2);
     }
-    .cinematic-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-    .cine-card {
-      background: var(--bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: transform var(--t-slow), border-color var(--t), box-shadow var(--t);
-      display: block;
-      text-decoration: none;
-    }
-    .cine-card:hover {
-      transform: scale(1.03);
-      border-color: var(--glass-border-2);
-      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-      z-index: 10;
-    }
-    .cine-thumb {
-      aspect-ratio: 16/9;
-      background: var(--bg-3);
-      position: relative;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
-    }
-    .cine-thumb img {
-      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: opacity var(--t);
-    }
-    .cine-card:hover .cine-thumb img { opacity: 0.9; }
-    .cine-body { padding: 24px; }
-
     /* ── SLIDE 4: LEADERBOARD & FOOTER ──────────────── */
     .slide-footer {
       background: #000;
@@ -295,15 +262,15 @@
   <!-- NAV -->
   <nav id="main-nav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
+      <a href="/index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link active">Home</a>
-        <a href="browse.html" class="nav-link">Browse</a>
-        <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/pages/browse.html" class="nav-link">Contests</a>
+        <a href="/pages/leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <a href="login.html" class="nav-link" style="color:#fff;">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
+        <a href="/auth/login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
@@ -328,8 +295,8 @@
             Join the premiere destination for AI filmmakers. Compete in brand-funded briefs, build your portfolio, and rank among the world's best generative creators.
           </p>
           <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
-            <a href="register.html" id="start-creating-btn" class="btn btn-primary btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; font-weight:700;">Start Creating</a>
-            <a href="browse.html" class="btn btn-outline btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; color:#fff; border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.05); backdrop-filter:blur(10px);">Explore Briefs</a>
+            <a href="/auth/register.html" id="start-creating-btn" class="btn btn-primary btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; font-weight:700;">Start Creating</a>
+            <a href="/pages/browse.html" class="btn btn-outline btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; color:#fff; border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.05); backdrop-filter:blur(10px);">Explore Briefs</a>
           </div>
         </div>
       </div>
@@ -337,6 +304,14 @@
       <div class="scroll-indicator">
         <span>Scroll</span>
         <svg data-lucide="chevron-down" style="width:20px;height:20px;"></svg>
+      </div>
+    </section>
+
+    <!-- NEW SECTION: Crazy Stuff -->
+    <section class="snap-section" id="crazy-stuff-section" style="background: var(--bg-2);">
+      <div class="container" style="text-align: center;">
+        <h2 class="section-title-large" style="color: var(--purple-light);"><svg data-lucide="zap" style="width:40px;height:40px;"></svg> Coming Soon</h2>
+        <p style="color: var(--text-3); font-size: 1.2rem;">We will be doing some crazy stuffs in this section.</p>
       </div>
     </section>
 
@@ -365,22 +340,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 3: ACTIVE BRIEFS -->
-    <section class="snap-section slide-briefs">
-      <div class="container" style="width:100%;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:48px;">
-          <h2 class="section-title-large" style="margin:0;">Active Briefs</h2>
-          <a href="browse.html" class="btn btn-outline" style="border-radius:8px;">View All</a>
-        </div>
-        
-        <div class="cinematic-grid" id="home-competitions">
-          <div class="empty-state" style="border: 1px dashed var(--glass-border); border-radius: 16px; padding: 60px;">
-            <div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div>
-            <p>Loading active briefs...</p>
-          </div>
-        </div>
-      </div>
-    </section>
+
 
     <!-- SLIDE 4: LEADERBOARD & FOOTER -->
     <section class="snap-section slide-footer">
@@ -389,7 +349,7 @@
           <div class="lb-text">
             <h2>The best creators in the world.</h2>
             <p>We are building the definitive ranking system for the generative film industry. Compete globally, win prizes, and solidify your legacy.</p>
-            <a href="leaderboard.html" class="btn btn-primary btn-lg" style="border-radius:8px;">View Full Standings</a>
+            <a href="/pages/leaderboard.html" class="btn btn-primary btn-lg" style="border-radius:8px;">View Full Standings</a>
           </div>
           
           <div class="lb-card">
@@ -412,9 +372,9 @@
               <div style="font-size: 0.8rem; color: var(--text-4); margin-top:4px;">© 2026 FlixoraPlay. Professional AI Film Infrastructure.</div>
             </div>
             <div style="display:flex; gap:24px; font-size:0.85rem; font-weight:500;">
-              <a href="browse.html" style="color:var(--text-2);">Browse</a>
-              <a href="create-competition.html" style="color:var(--text-2);">Host</a>
-              <a href="leaderboard.html" style="color:var(--text-2);">Leaderboard</a>
+              <a href="/pages/browse.html" style="color:var(--text-2);">Contests</a>
+              <a href="/competitions/create-competition.html" style="color:var(--text-2);">Host</a>
+              <a href="/pages/leaderboard.html" style="color:var(--text-2);">Leaderboard</a>
             </div>
           </div>
         </div>
@@ -424,7 +384,7 @@
   </div> <!-- End Snap Container -->
 
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       // Toggle Nav background when scrolling past Slide 1
@@ -439,46 +399,7 @@
         }
       });
 
-      // 1. Load active competitions
-      try {
-        const res = await fetch('/api/competitions');
-        if (res.ok) {
-          const comps = await res.json();
-          const activeComps = comps.filter(c => c.status === 'open').slice(0, 3);
-          const compContainer = document.getElementById('home-competitions');
-          
-          if (activeComps.length === 0) {
-            compContainer.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><p>No active briefs at the moment.</p></div>`;
-          } else {
-            const placeholders = [
-              'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop',
-              'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800&auto=format&fit=crop',
-              'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=800&auto=format&fit=crop'
-            ];
 
-            compContainer.innerHTML = activeComps.map((c, index) => `
-              <a href="competition.html?id=${c.id}" class="cine-card">
-                <div class="cine-thumb">
-                  <img src="${placeholders[index % placeholders.length]}" alt="Brief thumbnail" />
-                  <svg data-lucide="${c.is_brand_brief ? 'briefcase' : 'film'}" style="position:relative; z-index:1; width:36px;height:36px;color:#fff;opacity:0.9;"></svg>
-                  ${c.is_brand_brief ? `<div style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.1);z-index:2;">BRAND BRIEF</div>` : ''}
-                </div>
-                <div class="cine-body">
-                  <h3 style="font-size:1.15rem; font-weight:800; color:#fff; margin-bottom:8px;">${c.title}</h3>
-                  <p style="font-size:0.85rem; color:var(--text-3); line-height:1.5; margin-bottom:20px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${c.description}</p>
-                  <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; font-weight:600; color:var(--text-2);">
-                    <span><svg data-lucide="clock" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"></svg>${new Date(c.deadline).toLocaleDateString()}</span>
-                    <span style="color:#fff;">${c.prize || 'No Prize'}</span>
-                  </div>
-                </div>
-              </a>
-            `).join('');
-            lucide.createIcons();
-          }
-        }
-      } catch(e) {
-        console.error(e);
-      }
 
       // 2. Load Top 3 Leaderboard
       try {
@@ -502,7 +423,7 @@
                      <div class="lb-sub">${u.wins || 0} Wins</div>
                    </div>
                    <div class="lb-score">
-                     <div class="lb-pts">${u.total_points}</div>
+                     <div class="lb-pts">${u.pts}</div>
                      <div class="lb-lbl">PTS</div>
                    </div>
                  </div>

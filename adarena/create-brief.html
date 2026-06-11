@@ -4,28 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Post a Brand Brief — FlixoraPlay</title>
-  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="/css/main.css" />
 </head>
 <body>
 
-  <nav>
+  <nav id="main-nav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
+      <a href="/index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="browse.html" class="nav-link">Browse</a>
-        <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/pages/browse.html" class="nav-link">Contests</a>
+        <a href="/pages/leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
+        <a href="/auth/login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="/competitions/create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header">
     <div class="container" style="max-width: 700px;">
-      <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <a href="adarena.html">AdArena</a> <span>›</span> Post</div>
+      <div class="breadcrumb"><a href="/index.html">Home</a> <span>›</span> <a href="/adarena/adarena.html">Brand</a> <span>›</span> Post</div>
       <h1 id="page-title">Post a Brand Brief</h1>
       <p id="page-tagline">Launch a video campaign for creators to submit AI-generated commercial ads.</p>
     </div>
@@ -109,6 +109,11 @@
           <label for="br-deadline">Submission Deadline <span class="req">*</span></label>
           <input type="date" id="br-deadline" />
         </div>
+        <div class="form-group">
+          <label for="br-asset-kit">Brand Asset Kit URL</label>
+          <input type="url" id="br-asset-kit" placeholder="e.g. Google Drive, Figma, Notion URL" />
+          <div class="form-hint">Provide logos, fonts, style guides, and product shots for creators to use.</div>
+        </div>
         
         <div class="form-group" style="display:flex; align-items:center; gap:8px; margin: 16px 0;">
           <input type="checkbox" id="br-usage" checked style="width:auto; cursor:pointer;" />
@@ -130,23 +135,23 @@
         <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
-        <a href="browse.html">Browse</a>
-        <a href="create-competition.html">Host</a>
-        <a href="leaderboard.html">Leaderboard</a>
-        <a href="about.html">About</a>
+        <a href="/pages/browse.html">Contests</a>
+        <a href="/competitions/create-competition.html">Host</a>
+        <a href="/pages/leaderboard.html">Leaderboard</a>
+        <a href="/pages/about.html">About</a>
       </div>
     </div>
   </footer>
 
   <div id="toast-container"></div>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const session = getSession();
       if (!session) {
         showToast('Please sign in to post briefs.', 'error');
-        setTimeout(() => navigate('login.html'), 1500);
+        setTimeout(() => navigate('/auth/login.html'), 1500);
         return;
       }
 
@@ -200,6 +205,7 @@
       const prizeAmt = parseFloat(document.getElementById('br-prize').value);
       const deadline = document.getElementById('br-deadline').value;
       const usageGranted = document.getElementById('br-usage').checked;
+      const brandKitUrl = document.getElementById('br-asset-kit').value.trim();
 
       if (!title || !desc || !prizeAmt || !deadline) {
         showToast('Please fill in all required fields.', 'error');
@@ -230,11 +236,12 @@
           hostId: session.id,
           hostName: session.username || 'Brand Partner',
           is_brand_brief: 1,
-          prize_pool_cents: Math.round(prizeAmt * 100)
+          prize_pool_cents: Math.round(prizeAmt * 100),
+          brand_kit_url: brandKitUrl
         });
 
         showToast('Brief created! Redirecting to secure funding...', 'success');
-        setTimeout(() => navigate(`checkout.html?id=${comp.id}`), 1500);
+        setTimeout(() => navigate(`/user/checkout.html?id=${comp.id}`), 1500);
       } catch (err) {
         showToast(err.message, 'error');
       }

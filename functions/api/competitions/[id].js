@@ -34,8 +34,8 @@ export async function onRequestPut({ params, request, env }) {
     const fields = [];
     const values = [];
 
-    // Allow updating status, prize, deadline, title, description
-    const allowed = ['status', 'prize', 'deadline', 'title', 'description', 'theme', 'maxDuration', 'judging'];
+    // Allow updating status, prize, deadline, title, description, thumbnail
+    const allowed = ['status', 'prize', 'deadline', 'title', 'description', 'theme', 'maxDuration', 'judging', 'thumbnail'];
     for (const key of allowed) {
       if (body[key] !== undefined) {
         fields.push(`${key}=?`);
