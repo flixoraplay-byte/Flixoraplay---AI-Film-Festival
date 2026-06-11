@@ -331,7 +331,7 @@ function updateNavForAuth() {
 
       <div style="display:flex;align-items:center;gap:10px;">
         <!-- Dashboard Link -->
-        <a href="dashboard.html" class="btn btn-ghost btn-sm" title="Dashboard">Dashboard</a>
+        <a href="dashboard.html" class="nav-link" title="Dashboard">Dashboard</a>
 
         <!-- Notifications Bell -->
         <div class="notification-dropdown-container" style="position:relative;">
@@ -356,8 +356,8 @@ function updateNavForAuth() {
         <a href="profile.html?id=${session.id}" style="display:flex;align-items:center;gap:8px;text-decoration:none;" title="View Profile">
           <div style="width:32px;height:32px;border-radius:50%;background:var(--bg-3);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:var(--text-2);flex-shrink:0;cursor:pointer;">${initial}</div>
         </a>
-        <a href="settings.html" class="btn btn-ghost btn-sm" title="Settings">Settings</a>
-        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
+        <a href="settings.html" class="nav-link" title="Settings">Settings</a>
+        <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>`;
 
     setupNotificationBell();
@@ -371,8 +371,8 @@ function updateNavForAuth() {
   } else {
     // Keep default nav — ensure Host + Sign In are shown
     navActions.innerHTML = `
-      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-      <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>`;
+      <a href="login.html" class="nav-link" style="color:#fff;">Sign In</a>
+      <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>`;
   }
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }

@@ -7,6 +7,146 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* Cinematic Mini Hero */
+    .hero-browse {
+      position: relative;
+      padding: 140px 0 80px;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .hero-browse-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2800&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center 20%;
+      z-index: -2;
+    }
+    .hero-browse-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, var(--bg) 100%);
+      z-index: -1;
+    }
+    .hero-browse-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+    }
+    .hero-browse-desc {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.8);
+      max-width: 600px;
+      line-height: 1.6;
+    }
+    
+    /* Cinematic Briefs Grid */
+    .cinematic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    .cine-card {
+      background: var(--bg-2);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform var(--t-slow), border-color var(--t), box-shadow var(--t);
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+    }
+    .cine-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--glass-border-2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .cine-thumb {
+      aspect-ratio: 16/9;
+      background: var(--bg-3);
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .cine-thumb img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity var(--t);
+    }
+    .cine-card:hover .cine-thumb img { opacity: 0.9; }
+    .cine-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .cine-title {
+      font-size: 1.15rem; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing:-0.02em;
+    }
+    .cine-desc {
+      font-size: 0.85rem; color: var(--text-3); line-height: 1.5; margin-bottom: 16px; 
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .cine-meta {
+      margin-top: auto;
+      display: flex; justify-content: space-between; align-items: center; 
+      font-size: 0.8rem; font-weight: 600; color: var(--text-2);
+      padding-top: 16px; border-top: 1px solid var(--glass-border);
+    }
+
+    /* Filters Toolbar */
+    .filter-toolbar {
+      background: rgba(255,255,255,0.01);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .filter-row {
+      display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: space-between;
+    }
+    .search-input {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 10px 16px 10px 40px;
+      border-radius: 99px;
+      width: 100%;
+      font-family: inherit;
+    }
+    .search-input:focus { border-color: rgba(255,255,255,0.3); outline: none; }
+    .search-wrapper-v6 { position: relative; width: 100%; max-width: 320px; }
+    .search-wrapper-v6 svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-4); }
+
+    /* Pills Update */
+    .category-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cat-pill {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-3);
+      padding: 8px 16px;
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--t);
+    }
+    .cat-pill:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .cat-pill.active { background: #fff; color: #000; border-color: #fff; }
+    
+    /* Nav overriding */
+    nav {
+      background: rgba(0,0,0,0.8) !important;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border) !important;
+      position: fixed; top:0; left:0; right:0; z-index:1000;
+    }
+  </style>
 </head>
 <body>
 
@@ -20,82 +160,95 @@
         <a href="leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
+        <!-- Injected via app.js -->
+        <a href="login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
 
-  <div class="page-header">
+  <!-- CINEMATIC HERO -->
+  <header class="hero-browse">
+    <div class="hero-browse-bg"></div>
+    <div class="hero-browse-overlay"></div>
     <div class="container">
-      <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> Browse</div>
-      <h1>Browse Competitions</h1>
-      <p>Discover AI filmmaking competitions, join challenge events, or follow the judging process.</p>
+      <h1 class="hero-browse-title">Active Briefs</h1>
+      <p class="hero-browse-desc">Discover brand-funded AI filmmaking competitions, join open challenge events, or follow the global judging process.</p>
     </div>
-  </div>
+  </header>
 
-  <div class="page-body">
+  <div class="page-body" style="padding-bottom: 120px;">
     <div class="container">
 
-      <!-- Category Selector Pills -->
-      <div class="category-pills" id="category-pills">
-        <button class="category-pill active" data-category="all">All Themes</button>
-        <button class="category-pill" data-category="Sci-Fi">Sci-Fi</button>
-        <button class="category-pill" data-category="Horror">Horror</button>
-        <button class="category-pill" data-category="Fantasy">Fantasy</button>
-        <button class="category-pill" data-category="Cyberpunk">Cyberpunk</button>
-        <button class="category-pill" data-category="Drama">Drama</button>
-        <button class="category-pill" data-category="Comedy">Comedy</button>
-        <button class="category-pill" data-category="Animation">Animation</button>
-      </div>
-
-      <!-- Filters & Search Toolbar -->
-      <div style="display:flex;gap:12px;align-items:center;margin-bottom:24px;flex-wrap:wrap;">
-        <div class="search-wrapper">
-          <svg data-lucide="search" class="search-icon-inside"></svg>
-          <input type="text" id="search-input" placeholder="Search title, description, or host..." />
+      <!-- TOOLBAR -->
+      <div class="filter-toolbar">
+        
+        <div class="filter-row">
+          <div class="category-pills" id="category-pills">
+            <button class="cat-pill active" data-category="all">All Genres</button>
+            <button class="cat-pill" data-category="Sci-Fi">Sci-Fi</button>
+            <button class="cat-pill" data-category="Horror">Horror</button>
+            <button class="cat-pill" data-category="Fantasy">Fantasy</button>
+            <button class="cat-pill" data-category="Cyberpunk">Cyberpunk</button>
+            <button class="cat-pill" data-category="Drama">Drama</button>
+            <button class="cat-pill" data-category="Comedy">Comedy</button>
+            <button class="cat-pill" data-category="Animation">Animation</button>
+          </div>
         </div>
-        <select id="sort-select" style="max-width:180px;">
-          <option value="newest">Newest First</option>
-          <option value="deadline">Deadline Soon</option>
-          <option value="prize">Highest Prize</option>
-        </select>
-        <span id="result-count" class="text-muted text-small" style="margin-left:auto;">0 competitions</span>
+
+        <div class="filter-row" style="border-top: 1px solid var(--glass-border); padding-top: 20px;">
+          
+          <div class="tabs" id="status-tabs" style="margin:0;">
+            <button class="tab-btn active" data-tab="all"><svg data-lucide="layout-grid"></svg> All</button>
+            <button class="tab-btn" data-tab="open"><svg data-lucide="circle-dot"></svg> Open</button>
+            <button class="tab-btn" data-tab="judging"><svg data-lucide="scale"></svg> Judging</button>
+            <button class="tab-btn" data-tab="closed"><svg data-lucide="lock"></svg> Closed</button>
+          </div>
+
+          <div style="display:flex; gap:12px; align-items:center; flex:1; justify-content:flex-end;">
+            <div class="search-wrapper-v6">
+              <svg data-lucide="search"></svg>
+              <input type="text" id="search-input" class="search-input" placeholder="Search briefs..." />
+            </div>
+            <select id="sort-select" style="max-width:160px; background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px 14px;">
+              <option value="newest">Newest First</option>
+              <option value="deadline">Deadline Soon</option>
+              <option value="prize">Highest Prize</option>
+            </select>
+          </div>
+          
+        </div>
       </div>
 
-      <!-- Status Sub-tabs -->
-      <div class="tabs" id="status-tabs" style="margin-bottom: 24px;">
-        <button class="tab-btn active" data-tab="all"><svg data-lucide="layout-grid"></svg> All Statuses</button>
-        <button class="tab-btn" data-tab="open"><svg data-lucide="circle-dot"></svg> Open</button>
-        <button class="tab-btn" data-tab="judging"><svg data-lucide="scale"></svg> Judging</button>
-        <button class="tab-btn" data-tab="closed"><svg data-lucide="lock"></svg> Closed</button>
+      <div style="margin-bottom: 24px; font-size:0.9rem; font-weight:600; color:var(--text-4);">
+        <span id="result-count">0 competitions</span>
       </div>
 
-      <!-- Competitions Grid -->
-      <div class="grid-auto" id="comp-grid">
+      <!-- COMPETITIONS GRID -->
+      <div class="cinematic-grid" id="comp-grid">
         <!-- Loader Skeleton Slices -->
-        <div class="comp-card skeleton-card">
-          <div class="comp-card-thumb skeleton skeleton-thumb"></div>
-          <div class="comp-card-body">
+        <div class="cine-card">
+          <div class="cine-thumb skeleton skeleton-thumb"></div>
+          <div class="cine-body">
             <div class="skeleton skeleton-title"></div>
-            <div class="skeleton skeleton-text"></div>
-            <div class="skeleton skeleton-text" style="width:80%;"></div>
+            <div class="skeleton skeleton-text" style="width:90%;"></div>
+            <div class="skeleton skeleton-text" style="width:70%;"></div>
           </div>
         </div>
-        <div class="comp-card skeleton-card">
-          <div class="comp-card-thumb skeleton skeleton-thumb"></div>
-          <div class="comp-card-body">
+        <div class="cine-card">
+          <div class="cine-thumb skeleton skeleton-thumb"></div>
+          <div class="cine-body">
             <div class="skeleton skeleton-title"></div>
-            <div class="skeleton skeleton-text"></div>
-            <div class="skeleton skeleton-text" style="width:80%;"></div>
+            <div class="skeleton skeleton-text" style="width:90%;"></div>
+            <div class="skeleton skeleton-text" style="width:70%;"></div>
           </div>
         </div>
-        <div class="comp-card skeleton-card">
-          <div class="comp-card-thumb skeleton skeleton-thumb"></div>
-          <div class="comp-card-body">
+        <div class="cine-card">
+          <div class="cine-thumb skeleton skeleton-thumb"></div>
+          <div class="cine-body">
             <div class="skeleton skeleton-title"></div>
-            <div class="skeleton skeleton-text"></div>
-            <div class="skeleton skeleton-text" style="width:80%;"></div>
+            <div class="skeleton skeleton-text" style="width:90%;"></div>
+            <div class="skeleton skeleton-text" style="width:70%;"></div>
           </div>
         </div>
       </div>
@@ -103,24 +256,26 @@
     </div>
   </div>
 
-  <footer class="footer">
-    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-      <div>
-        <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:4px;">Flixora<span>Play</span></div>
-        <p style="font-size:0.78rem;color:var(--text-4);">AI Film Festival Platform</p>
-      </div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.82rem;">
-        <a href="browse.html">Browse</a>
-        <a href="create-competition.html">Host</a>
-        <a href="leaderboard.html">Leaderboard</a>
-        <a href="about.html">About</a>
+  <!-- FOOTER -->
+  <footer class="footer" style="border-top:1px solid var(--glass-border);">
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <div style="font-weight: 800; font-size:1.2rem; color: #fff; letter-spacing:-0.03em;">Flixora<span style="color:var(--text-3);">Play</span></div>
+          <div style="font-size: 0.8rem; color: var(--text-4); margin-top:4px;">© 2026 FlixoraPlay. Professional AI Film Infrastructure.</div>
+        </div>
+        <div style="display:flex; gap:24px; font-size:0.85rem; font-weight:500;">
+          <a href="browse.html" style="color:var(--text-2);">Browse</a>
+          <a href="create-competition.html" style="color:var(--text-2);">Host</a>
+          <a href="leaderboard.html" style="color:var(--text-2);">Leaderboard</a>
+        </div>
       </div>
     </div>
   </footer>
 
-  <div id="toast-container"></div>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/app.js"></script>
+  <script src="js/database.js"></script>
   <script>
     let activeCategory = 'all';
     let activeStatus = 'all';
@@ -128,23 +283,7 @@
     let allEntries = [];
 
     document.addEventListener('DOMContentLoaded', async () => {
-      lucide.createIcons();
-
-      // Parse query parameters
-      const urlCat = getParam('category');
-      if (urlCat) {
-        activeCategory = urlCat;
-        document.querySelectorAll('.category-pill').forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.category.toLowerCase() === urlCat.toLowerCase());
-        });
-      }
-
-      const urlSearch = getParam('search');
-      if (urlSearch) {
-        document.getElementById('search-input').value = urlSearch;
-      }
-
-      // Pre-load entries to count submission stats on cards
+      // Load entries globally to calculate entry counts
       try {
         allEntries = await API.getEntries();
       } catch (err) {
@@ -153,9 +292,9 @@
 
       // Wire Category Pills
       document.getElementById('category-pills').addEventListener('click', (e) => {
-        const pill = e.target.closest('.category-pill');
+        const pill = e.target.closest('.cat-pill');
         if (!pill) return;
-        document.querySelectorAll('.category-pill').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.cat-pill').forEach(btn => btn.classList.remove('active'));
         pill.classList.add('active');
         activeCategory = pill.dataset.category;
         loadCompetitions();
@@ -185,10 +324,10 @@
     function showSkeletons() {
       const grid = document.getElementById('comp-grid');
       grid.innerHTML = Array(3).fill(0).map(() => `
-        <div class="comp-card">
-          <div class="comp-card-thumb skeleton skeleton-thumb"></div>
-          <div class="comp-card-body">
-            <div class="skeleton skeleton-title"></div>
+        <div class="cine-card">
+          <div class="cine-thumb skeleton skeleton-thumb"></div>
+          <div class="cine-body">
+            <div class="skeleton skeleton-title" style="margin-bottom:12px;"></div>
             <div class="skeleton skeleton-text" style="width:90%;"></div>
             <div class="skeleton skeleton-text" style="width:70%;"></div>
           </div>
@@ -207,10 +346,10 @@
           search: searchVal || null,
           category: activeCategory || null,
           sort: sortVal || null,
-          is_brand_brief: 0
+          // Removed is_brand_brief filter to show everything on browse page
         });
 
-        // Filter status client-side since API returns full list
+        // Filter status client-side
         if (activeStatus !== 'all') {
           comps = comps.filter(c => c.status === activeStatus);
         }
@@ -218,23 +357,23 @@
         renderCompetitions(comps);
       } catch (err) {
         document.getElementById('comp-grid').innerHTML = `
-          <div class="empty-state">
+          <div class="empty-state" style="grid-column:1/-1;">
             <div class="icon"><svg data-lucide="wifi-off"></svg></div>
             <h3>Could not connect</h3>
             <p>${err.message}</p>
-            <button class="btn btn-outline btn-sm" onclick="loadCompetitions()" style="margin-top:10px;"><svg data-lucide="refresh-cw"></svg> Retry</button>
+            <button class="btn btn-outline" onclick="loadCompetitions()" style="margin-top:16px;"><svg data-lucide="refresh-cw"></svg> Retry</button>
           </div>`;
         lucide.createIcons();
       }
     }
 
     function renderCompetitions(comps) {
-      document.getElementById('result-count').textContent = `${comps.length} competition${comps.length !== 1 ? 's' : ''}`;
+      document.getElementById('result-count').textContent = `${comps.length} Brief${comps.length !== 1 ? 's' : ''}`;
       const grid = document.getElementById('comp-grid');
 
       if (comps.length === 0) {
         grid.innerHTML = `
-          <div class="empty-state" style="grid-column:1/-1; padding: 60px 20px;">
+          <div class="empty-state" style="grid-column:1/-1; padding: 80px 20px;">
             <div class="icon"><svg data-lucide="inbox"></svg></div>
             <h3>No matches found</h3>
             <p>We couldn't find any competitions matching your selected filters. Try broadening your query.</p>
@@ -243,46 +382,51 @@
         return;
       }
 
-      grid.innerHTML = comps.map(comp => {
+      const placeholders = [
+        'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?q=80&w=800&auto=format&fit=crop'
+      ];
+
+      grid.innerHTML = comps.map((comp, index) => {
         const days = daysRemaining(comp.deadline);
-        const pct = deadlinePercent(comp.createdAt, comp.deadline);
         const statusBadge = {
-          open: `<span class="badge badge-green"><svg data-lucide="circle-dot" style="width:9px;height:9px;"></svg> Open</span>`,
-          judging: `<span class="badge badge-gold"><svg data-lucide="scale" style="width:9px;height:9px;"></svg> Judging</span>`,
-          closed: `<span class="badge badge-neutral"><svg data-lucide="lock" style="width:9px;height:9px;"></svg> Closed</span>`,
+          open: `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(46,160,67,0.15);color:var(--green-light);border-radius:4px;font-size:0.7rem;font-weight:700;"><svg data-lucide="circle-dot" style="width:10px;height:10px;"></svg> OPEN</span>`,
+          judging: `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(229,165,10,0.15);color:var(--gold-light);border-radius:4px;font-size:0.7rem;font-weight:700;"><svg data-lucide="scale" style="width:10px;height:10px;"></svg> JUDGING</span>`,
+          closed: `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(255,255,255,0.05);color:var(--text-3);border-radius:4px;font-size:0.7rem;font-weight:700;"><svg data-lucide="lock" style="width:10px;height:10px;"></svg> CLOSED</span>`,
         }[comp.status] || '';
 
         const entriesCount = allEntries.filter(e => e.competitionId === comp.id).length;
+        const img = placeholders[index % placeholders.length];
 
         return `
-          <div class="comp-card">
-            <div class="comp-card-thumb">
-              <svg data-lucide="film" style="width:52px;height:52px;"></svg>
-            </div>
-            <div class="comp-card-body">
-              <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <a href="competition.html?id=${comp.id}" class="cine-card">
+            <div class="cine-thumb">
+              <img src="${img}" alt="Brief thumbnail" />
+              <svg data-lucide="${comp.is_brand_brief ? 'briefcase' : 'film'}" style="position:relative; z-index:1; width:36px;height:36px;color:#fff;opacity:0.8;"></svg>
+              ${comp.is_brand_brief ? `<div style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.1);z-index:2;">BRAND BRIEF</div>` : ''}
+              
+              <!-- Floating status badge over image -->
+              <div style="position:absolute;bottom:16px;left:16px;z-index:2;">
                 ${statusBadge}
-                ${comp.prize ? `<span class="badge badge-gold"><svg data-lucide="dollar-sign" style="width:9px;height:9px;"></svg> ${comp.prize}</span>` : ''}
-                ${comp.maxDuration ? `<span class="badge badge-blue"><svg data-lucide="clock" style="width:9px;height:9px;"></svg> ${comp.maxDuration}s</span>` : ''}
               </div>
-              <div class="comp-card-title">${comp.title}</div>
-              <div class="comp-card-desc">${comp.description || 'No description provided.'}</div>
-              <div style="font-size:0.75rem;color:var(--text-3);margin-bottom:12px;display:flex;align-items:center;gap:5px;">
-                <span class="badge badge-neutral"><svg data-lucide="target" style="width:9px;height:9px;"></svg> ${comp.theme || 'Open Topic'}</span>
+            </div>
+            
+            <div class="cine-body">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                <h3 class="cine-title">${comp.title}</h3>
               </div>
-              ${comp.status === 'open' ? `
-              <div class="deadline-wrap">
-                <div class="deadline-bar"><div class="deadline-fill" style="width:${pct}%"></div></div>
-                <div class="deadline-label"><svg data-lucide="calendar"></svg> ${days > 0 ? days + ' days left' : 'Deadline passed'} &middot; ${formatDate(comp.deadline)}</div>
-              </div>` : ''}
+              <p class="cine-desc">${comp.description || 'No description provided.'}</p>
+              
+              <div class="cine-meta">
+                <span style="display:flex;align-items:center;gap:4px;"><svg data-lucide="clock" style="width:14px;height:14px;"></svg> ${days > 0 ? days + 'd left' : 'Ended'}</span>
+                <span style="display:flex;align-items:center;gap:4px;"><svg data-lucide="trophy" style="width:14px;height:14px;color:var(--gold-light);"></svg> ${comp.prize || 'Glory'}</span>
+                <span style="display:flex;align-items:center;gap:4px;color:var(--text-3);"><svg data-lucide="users" style="width:14px;height:14px;"></svg> ${entriesCount}</span>
+              </div>
             </div>
-            <div class="comp-card-footer">
-              <span style="display:flex;align-items:center;gap:5px;color:var(--text-3);font-size:0.78rem;">
-                <svg data-lucide="user" style="width:11px;height:11px;"></svg>${comp.hostName || 'Anonymous'} &middot; ${entriesCount} entry${entriesCount !== 1 ? 's' : ''}
-              </span>
-              <a href="competition.html?id=${comp.id}" class="btn btn-sm btn-outline"><svg data-lucide="arrow-right"></svg> Open</a>
-            </div>
-          </div>`;
+          </a>`;
       }).join('');
 
       lucide.createIcons();

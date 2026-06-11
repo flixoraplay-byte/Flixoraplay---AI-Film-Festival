@@ -8,31 +8,52 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/main.css" />
   <style>
-    /* ── V6 Image Background Hero Redesign ─────────────────────── */
+    /* ── SCROLL SNAPPING SETUP ─────────────────────── */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden; /* Prevent default scrolling */
+    }
     
-    /* Global Nav Override for Image Hero */
+    .snap-container {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+    
+    .snap-section {
+      height: 100vh;
+      width: 100vw;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Global Nav Override for Fullscreen UI */
     nav {
       background: transparent !important;
       border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
     nav.scrolled {
       background: rgba(0,0,0,0.8) !important;
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--glass-border) !important;
     }
 
-    /* Hero Section */
-    .hero-v6 {
-      position: relative;
-      min-height: 95vh;
-      display: flex;
-      align-items: center;
-      padding-top: var(--nav-h);
-      margin-bottom: 60px;
-    }
+    /* ── SLIDE 1: HERO ──────────────────────────────── */
     .hero-bg {
       position: absolute;
       inset: 0;
-      /* High-quality cinematic/abstract sci-fi image */
       background-image: url('https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2800&auto=format&fit=crop');
       background-size: cover;
       background-position: center;
@@ -41,17 +62,13 @@
     .hero-overlay {
       position: absolute;
       inset: 0;
-      /* Left-heavy gradient for text readability, and bottom gradient to blend into the page */
-      background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.2) 100%),
-                  linear-gradient(0deg, var(--bg) 0%, rgba(0,0,0,0) 20%);
+      background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.1) 100%),
+                  linear-gradient(0deg, var(--bg) 0%, rgba(0,0,0,0) 30%);
       z-index: -1;
     }
-    
     .hero-content-left {
       max-width: 800px;
-      padding-right: 20px;
     }
-
     .hero-badge-v6 {
       display: inline-flex;
       align-items: center;
@@ -83,103 +100,97 @@
       font-weight: 400;
     }
 
-    /* Tools Marquee (Subtle version) */
-    .tools-marquee {
-      display: flex;
-      overflow: hidden;
-      white-space: nowrap;
-      padding: 30px 0;
-      border-bottom: 1px solid var(--glass-border);
-      background: transparent;
-      position: relative;
-    }
-    .tools-marquee::before, .tools-marquee::after {
-      content: '';
-      position: absolute; top: 0; bottom: 0;
-      width: 150px; z-index: 2;
-      pointer-events: none;
-    }
-    .tools-marquee::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
-    .tools-marquee::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
-    .marquee-content {
-      display: inline-flex;
-      gap: 60px;
-      animation: scroll 40s linear infinite;
-      padding-left: 60px;
-    }
-    @keyframes scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .tool-tag {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-4);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    /* Bento Grid */
-    .bento-section {
-      padding: 100px 0;
-    }
-    .bento-header {
-      margin-bottom: 40px;
-    }
-    .bento-header h2 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: #fff;
-    }
-    .bento-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: 300px 300px;
-      gap: 20px;
-    }
-    .bento-card {
-      background: var(--bg-2);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 32px;
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      transition: transform var(--t), border-color var(--t);
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: pulse 2s infinite;
     }
-    .bento-card:hover { 
-      border-color: var(--glass-border-2);
-      transform: translateY(-4px);
-    }
-    .bento-wide { grid-column: span 2; }
-    .bento-tall { grid-row: span 2; }
-    
-    .bento-icon {
-      width: 48px; height: 48px;
-      background: var(--bg-3);
-      border: 1px solid var(--glass-border-2);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: auto;
-      color: var(--text);
-    }
-    .bento-title {
-      font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-bottom: 10px;
-    }
-    .bento-desc {
-      font-size: 0.95rem; color: var(--text-3); line-height: 1.5;
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: translate(-50%, 0); }
+      50% { opacity: 1; transform: translate(-50%, 5px); }
     }
 
-    /* Cinematic Briefs */
+    /* ── SLIDE 2: FEATURES ──────────────────────────── */
+    .slide-features {
+      background: #000;
+    }
+    .slide-features::before {
+      content: '';
+      position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at center, rgba(110,86,207,0.08) 0%, transparent 60%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .features-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+    .section-title-large {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .glass-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .glass-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 48px 32px;
+      border-radius: 24px;
+      text-align: center;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255,255,255,0.04);
+    }
+    .gc-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+    }
+    .gc-icon svg { width: 28px; height: 28px; }
+    .gc-title { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 16px; }
+    .gc-desc { font-size: 0.95rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+    /* ── SLIDE 3: BRIEFS ────────────────────────────── */
+    .slide-briefs {
+      background: var(--bg-2);
+    }
     .cinematic-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
     }
     .cine-card {
-      background: var(--bg-2);
+      background: var(--bg);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
       overflow: hidden;
@@ -188,9 +199,10 @@
       text-decoration: none;
     }
     .cine-card:hover {
-      transform: translateY(-6px);
+      transform: scale(1.03);
       border-color: var(--glass-border-2);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+      z-index: 10;
     }
     .cine-thumb {
       aspect-ratio: 16/9;
@@ -200,31 +212,88 @@
       overflow: hidden;
     }
     .cine-thumb img {
-      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: opacity var(--t);
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: opacity var(--t);
     }
-    .cine-card:hover .cine-thumb img { opacity: 0.8; }
-    .cine-body {
-      padding: 20px;
+    .cine-card:hover .cine-thumb img { opacity: 0.9; }
+    .cine-body { padding: 24px; }
+
+    /* ── SLIDE 4: LEADERBOARD & FOOTER ──────────────── */
+    .slide-footer {
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .leaderboard-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lb-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      width: 100%;
+    }
+    .lb-text h2 {
+      font-size: 3.5rem; font-weight: 800; color: #fff; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 24px;
+    }
+    .lb-text p {
+      font-size: 1.1rem; color: var(--text-3); line-height: 1.6; margin-bottom: 32px; max-width: 400px;
+    }
+    .lb-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 24px;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+    }
+    .lb-card-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 700; font-size: 1.1rem; color: #fff;
+    }
+    .lb-row {
+      display: flex; align-items: center; padding: 20px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-pos { width: 48px; font-size: 1.5rem; font-weight: 800; color: rgba(255,255,255,0.2); }
+    .lb-pos.gold { color: var(--gold-light); text-shadow: 0 0 20px rgba(253,224,71,0.4); }
+    .lb-pos.silver { color: #cbd5e1; }
+    .lb-pos.bronze { color: #fbbf24; }
+    
+    .lb-info { flex: 1; }
+    .lb-name { font-size: 1.1rem; font-weight: 700; color: #fff; }
+    .lb-sub { font-size: 0.85rem; color: var(--text-3); margin-top: 2px; }
+    .lb-score { text-align: right; }
+    .lb-pts { font-size: 1.4rem; font-weight: 800; color: #fff; }
+    .lb-lbl { font-size: 0.65rem; color: var(--text-4); font-weight: 700; letter-spacing: 0.1em; }
+
+    .footer-minimal {
+      padding: 32px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
     }
 
     @media (max-width: 900px) {
-      .bento-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-      }
-      .bento-wide, .bento-tall { grid-column: span 1; grid-row: span 1; min-height: 280px; }
-      .hero-v6 { min-height: 80vh; }
-      .hero-overlay {
-        background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.9) 70%, var(--bg) 100%);
-      }
-      .hero-content-left { text-align: center; margin: 0 auto; padding: 0; }
+      .glass-cards-grid { grid-template-columns: 1fr; gap: 16px; }
+      .cinematic-grid { grid-template-columns: 1fr; gap: 16px; }
+      .lb-layout { grid-template-columns: 1fr; gap: 32px; text-align: center; }
+      .lb-text p { margin: 0 auto 32px; }
+      .hero-title-v6 { font-size: 3rem; }
+      .section-title-large { font-size: 2rem; margin-bottom: 32px; }
+      /* On mobile, full-height slides might compress content too much. Let them overflow if needed */
+      .snap-section { height: auto; min-height: 100vh; padding: 100px 0; justify-content: center; }
     }
   </style>
 </head>
 
 <body>
   <!-- NAV -->
-  <nav>
+  <nav id="main-nav">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">Flixora<span style="color:var(--text-3);">Play</span></a>
       <div class="nav-links">
@@ -233,141 +302,144 @@
         <a href="leaderboard.html" class="nav-link">Leaderboard</a>
       </div>
       <div class="nav-actions">
-        <!-- Injected via app.js -->
-        <a href="login.html" class="btn btn-ghost btn-sm" style="color:#fff;">Sign In</a>
-        <a href="create-competition.html" class="btn btn-primary btn-sm">Host Competition</a>
+        <a href="login.html" class="nav-link" style="color:#fff;">Sign In</a>
+        <a href="create-competition.html" class="btn btn-primary" style="font-weight:600;">Host Competition</a>
       </div>
     </div>
   </nav>
 
-  <!-- HERO V6 (IMAGE BACKGROUND) -->
-  <section class="hero-v6">
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
+  <div class="snap-container" id="snap-container">
     
-    <div class="container">
-      <div class="hero-content-left">
-        <div class="hero-badge-v6">
-          <svg data-lucide="play-circle" style="width:14px;height:14px;"></svg> 
-          The Gen-AI Cinema Platform
-        </div>
-        <h1 class="hero-title-v6">
-          Direct the next era of film.
-        </h1>
-        <p class="hero-subtitle-v6">
-          Join the premiere destination for AI filmmakers. Compete in brand-funded briefs, build your portfolio, and rank among the world's best generative creators.
-        </p>
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
-          <a href="register.html" id="start-creating-btn" class="btn btn-primary btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; font-weight:700;">Start Creating</a>
-          <a href="browse.html" class="btn btn-outline btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; color:#fff; border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.05); backdrop-filter:blur(10px);">Explore Briefs</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- MARQUEE -->
-  <div class="tools-marquee">
-    <div class="marquee-content">
-      <span class="tool-tag">Runway Gen-2</span>
-      <span class="tool-tag">Midjourney V6</span>
-      <span class="tool-tag">OpenAI Sora</span>
-      <span class="tool-tag">Pika Labs</span>
-      <span class="tool-tag">Luma Dream Machine</span>
-      <span class="tool-tag">ElevenLabs</span>
-      <!-- Duplicate for infinite scroll -->
-      <span class="tool-tag">Runway Gen-2</span>
-      <span class="tool-tag">Midjourney V6</span>
-      <span class="tool-tag">OpenAI Sora</span>
-      <span class="tool-tag">Pika Labs</span>
-      <span class="tool-tag">Luma Dream Machine</span>
-      <span class="tool-tag">ElevenLabs</span>
-    </div>
-  </div>
-
-  <!-- BENTO GRID -->
-  <section class="bento-section">
-    <div class="container">
-      <div class="bento-header">
-        <h2>Built for the pros.</h2>
-      </div>
-      <div class="bento-grid">
-        <!-- Wide Card -->
-        <div class="bento-card bento-wide">
-          <div class="bento-icon"><svg data-lucide="briefcase" style="width:24px;height:24px;"></svg></div>
-          <div class="bento-title">Funded Brand Briefs</div>
-          <div class="bento-desc">Access high-quality competitions hosted by verified industry brands looking for cutting-edge generative video content. Escrow-backed prize pools ensure you get paid.</div>
-        </div>
-        <!-- Normal Card -->
-        <div class="bento-card">
-          <div class="bento-icon"><svg data-lucide="bar-chart-2" style="width:24px;height:24px;"></svg></div>
-          <div class="bento-title">Global Ranking</div>
-          <div class="bento-desc">Earn points for every win. Climb the global leaderboard to showcase your proficiency across multiple AI tools.</div>
-        </div>
-        <!-- Normal Card -->
-        <div class="bento-card">
-          <div class="bento-icon"><svg data-lucide="cpu" style="width:24px;height:24px;"></svg></div>
-          <div class="bento-title">Tool Agnostic</div>
-          <div class="bento-desc">Tag your tech stack on every entry. Focus on the final cut, not the software.</div>
-        </div>
-        <!-- Wide Card -->
-        <div class="bento-card bento-wide" style="background:var(--bg-3);">
-          <div class="bento-icon" style="background:var(--bg-2);"><svg data-lucide="shield-check" style="width:24px;height:24px;color:var(--green-light);"></svg></div>
-          <div class="bento-title">Fair Judging System</div>
-          <div class="bento-desc">Blind submissions, multi-stage voting, and community-driven curation ensure the best films always win.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- LIVE COMPETITIONS (Cinematic) -->
-  <section style="padding: 0 0 120px;">
-    <div class="container">
-      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:40px;">
-        <h2 style="font-size:2.2rem; font-weight:800; letter-spacing:-0.03em; color:#fff;">Active Briefs</h2>
-        <a href="browse.html" class="btn btn-outline" style="border-radius:8px;">View All</a>
-      </div>
+    <!-- SLIDE 1: HERO -->
+    <section class="snap-section">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
       
-      <div class="cinematic-grid" id="home-competitions">
-        <div class="empty-state" style="border: 1px dashed var(--glass-border); border-radius: 16px; padding: 60px;">
-          <div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div>
-          <p>Loading active briefs...</p>
+      <div class="container" style="position:relative; z-index:10;">
+        <div class="hero-content-left">
+          <div class="hero-badge-v6">
+            <svg data-lucide="play-circle" style="width:14px;height:14px;"></svg> 
+            The Gen-AI Cinema Platform
+          </div>
+          <h1 class="hero-title-v6">
+            Direct the next era of film.
+          </h1>
+          <p class="hero-subtitle-v6">
+            Join the premiere destination for AI filmmakers. Compete in brand-funded briefs, build your portfolio, and rank among the world's best generative creators.
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+            <a href="register.html" id="start-creating-btn" class="btn btn-primary btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; font-weight:700;">Start Creating</a>
+            <a href="browse.html" class="btn btn-outline btn-lg" style="border-radius: 8px; padding: 14px 32px; font-size:1rem; color:#fff; border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.05); backdrop-filter:blur(10px);">Explore Briefs</a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-        <div>
-          <div style="font-weight: 800; font-size:1.2rem; color: #fff; letter-spacing:-0.03em;">Flixora<span style="color:var(--text-3);">Play</span></div>
-          <div style="font-size: 0.8rem; color: var(--text-4); margin-top:4px;">© 2026 FlixoraPlay. Professional AI Film Infrastructure.</div>
-        </div>
-        <div style="display:flex; gap:24px; font-size:0.85rem; font-weight:500;">
-          <a href="browse.html" style="color:var(--text-2);">Browse</a>
-          <a href="create-competition.html" style="color:var(--text-2);">Host</a>
-          <a href="leaderboard.html" style="color:var(--text-2);">Leaderboard</a>
+      <div class="scroll-indicator">
+        <span>Scroll</span>
+        <svg data-lucide="chevron-down" style="width:20px;height:20px;"></svg>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: FEATURES -->
+    <section class="snap-section slide-features">
+      <div class="container features-wrapper">
+        <h2 class="section-title-large">Professional Infrastructure.</h2>
+        
+        <div class="glass-cards-grid">
+          <div class="glass-card">
+            <div class="gc-icon"><svg data-lucide="briefcase"></svg></div>
+            <h3 class="gc-title">Funded Brand Briefs</h3>
+            <p class="gc-desc">Access high-quality competitions hosted by verified industry brands. Escrow-backed prize pools ensure you get paid securely.</p>
+          </div>
+          <div class="glass-card">
+            <div class="gc-icon"><svg data-lucide="bar-chart-2"></svg></div>
+            <h3 class="gc-title">Global Ranking</h3>
+            <p class="gc-desc">Earn points for every win and placement. Climb the leaderboard to showcase your proficiency across multiple generative tools.</p>
+          </div>
+          <div class="glass-card">
+            <div class="gc-icon"><svg data-lucide="cpu"></svg></div>
+            <h3 class="gc-title">Tool Agnostic</h3>
+            <p class="gc-desc">Runway, Midjourney, Sora, or Pika. Tag your tech stack on every entry. Focus entirely on the final cut, not the software.</p>
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
+    </section>
+
+    <!-- SLIDE 3: ACTIVE BRIEFS -->
+    <section class="snap-section slide-briefs">
+      <div class="container" style="width:100%;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:48px;">
+          <h2 class="section-title-large" style="margin:0;">Active Briefs</h2>
+          <a href="browse.html" class="btn btn-outline" style="border-radius:8px;">View All</a>
+        </div>
+        
+        <div class="cinematic-grid" id="home-competitions">
+          <div class="empty-state" style="border: 1px dashed var(--glass-border); border-radius: 16px; padding: 60px;">
+            <div class="icon"><svg data-lucide="loader" class="animate-spin"></svg></div>
+            <p>Loading active briefs...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: LEADERBOARD & FOOTER -->
+    <section class="snap-section slide-footer">
+      <div class="leaderboard-wrapper">
+        <div class="container lb-layout">
+          <div class="lb-text">
+            <h2>The best creators in the world.</h2>
+            <p>We are building the definitive ranking system for the generative film industry. Compete globally, win prizes, and solidify your legacy.</p>
+            <a href="leaderboard.html" class="btn btn-primary btn-lg" style="border-radius:8px;">View Full Standings</a>
+          </div>
+          
+          <div class="lb-card">
+            <div class="lb-card-header">
+              <svg data-lucide="trophy" style="color:var(--gold-light);"></svg> Global Standings
+            </div>
+            <div id="global-ranking-list">
+              <div class="empty-state" style="padding: 40px;"><svg data-lucide="loader" class="animate-spin" style="width:24px;height:24px;color:rgba(255,255,255,0.3);"></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="footer-minimal">
+        <div class="container">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+            <div>
+              <div style="font-weight: 800; font-size:1.2rem; color: #fff; letter-spacing:-0.03em;">Flixora<span style="color:var(--text-3);">Play</span></div>
+              <div style="font-size: 0.8rem; color: var(--text-4); margin-top:4px;">© 2026 FlixoraPlay. Professional AI Film Infrastructure.</div>
+            </div>
+            <div style="display:flex; gap:24px; font-size:0.85rem; font-weight:500;">
+              <a href="browse.html" style="color:var(--text-2);">Browse</a>
+              <a href="create-competition.html" style="color:var(--text-2);">Host</a>
+              <a href="leaderboard.html" style="color:var(--text-2);">Leaderboard</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </section>
+
+  </div> <!-- End Snap Container -->
 
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      // Nav scroll effect override for image background
-      window.addEventListener('scroll', () => {
-        const nav = document.querySelector('nav');
-        if (window.scrollY > 50) {
+      // Toggle Nav background when scrolling past Slide 1
+      const snapContainer = document.getElementById('snap-container');
+      const nav = document.getElementById('main-nav');
+      
+      snapContainer.addEventListener('scroll', () => {
+        if (snapContainer.scrollTop > 100) {
           nav.classList.add('scrolled');
         } else {
           nav.classList.remove('scrolled');
         }
       });
 
-      // 1. Load active competitions into cinematic cards
+      // 1. Load active competitions
       try {
         const res = await fetch('/api/competitions');
         if (res.ok) {
@@ -376,9 +448,8 @@
           const compContainer = document.getElementById('home-competitions');
           
           if (activeComps.length === 0) {
-            compContainer.innerHTML = `<div class="empty-state"><p>No active briefs at the moment.</p></div>`;
+            compContainer.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><p>No active briefs at the moment.</p></div>`;
           } else {
-            // Assign some placeholder cinematic images to the briefs
             const placeholders = [
               'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop',
               'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800&auto=format&fit=crop',
@@ -389,12 +460,12 @@
               <a href="competition.html?id=${c.id}" class="cine-card">
                 <div class="cine-thumb">
                   <img src="${placeholders[index % placeholders.length]}" alt="Brief thumbnail" />
-                  <svg data-lucide="${c.is_brand_brief ? 'briefcase' : 'film'}" style="position:relative; z-index:1; width:32px;height:32px;color:#fff;opacity:0.8;"></svg>
+                  <svg data-lucide="${c.is_brand_brief ? 'briefcase' : 'film'}" style="position:relative; z-index:1; width:36px;height:36px;color:#fff;opacity:0.9;"></svg>
                   ${c.is_brand_brief ? `<div style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:0.65rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.1);z-index:2;">BRAND BRIEF</div>` : ''}
                 </div>
                 <div class="cine-body">
-                  <h3 style="font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:8px;">${c.title}</h3>
-                  <p style="font-size:0.85rem; color:var(--text-3); line-height:1.5; margin-bottom:16px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${c.description}</p>
+                  <h3 style="font-size:1.15rem; font-weight:800; color:#fff; margin-bottom:8px;">${c.title}</h3>
+                  <p style="font-size:0.85rem; color:var(--text-3); line-height:1.5; margin-bottom:20px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${c.description}</p>
                   <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; font-weight:600; color:var(--text-2);">
                     <span><svg data-lucide="clock" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"></svg>${new Date(c.deadline).toLocaleDateString()}</span>
                     <span style="color:#fff;">${c.prize || 'No Prize'}</span>
@@ -403,6 +474,40 @@
               </a>
             `).join('');
             lucide.createIcons();
+          }
+        }
+      } catch(e) {
+        console.error(e);
+      }
+
+      // 2. Load Top 3 Leaderboard
+      try {
+        const res = await fetch('/api/leaderboard');
+        if (res.ok) {
+          const lb = await res.json();
+          const top3 = lb.slice(0, 3);
+          const lbContainer = document.getElementById('global-ranking-list');
+          
+          if (top3.length === 0) {
+             lbContainer.innerHTML = `<div style="padding:24px;text-align:center;color:rgba(255,255,255,0.3);font-size:0.85rem;">No ranking data yet.</div>`;
+          } else {
+             lbContainer.innerHTML = top3.map((u, i) => {
+               const medals = ['gold', 'silver', 'bronze'];
+               const medalClass = medals[i] || '';
+               return `
+                 <div class="lb-row">
+                   <div class="lb-pos ${medalClass}">${i+1}</div>
+                   <div class="lb-info">
+                     <div class="lb-name">${u.username}</div>
+                     <div class="lb-sub">${u.wins || 0} Wins</div>
+                   </div>
+                   <div class="lb-score">
+                     <div class="lb-pts">${u.total_points}</div>
+                     <div class="lb-lbl">PTS</div>
+                   </div>
+                 </div>
+               `;
+             }).join('');
           }
         }
       } catch(e) {
