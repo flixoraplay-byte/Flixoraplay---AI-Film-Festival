@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "FlixoraPlay - Premium AI-Generated Video Competition Platform",
   "scripts": {
-    "dev": "wrangler pages dev . --local --compatibility-date=2024-09-23"
+    "dev": "wrangler pages dev . --local --compatibility-date=2024-09-23",
+    "db:init": "wrangler d1 execute flixoraplay-db --local --file=./schema.sql"
   },
   "devDependencies": {
     "wrangler": "^4.96.0"

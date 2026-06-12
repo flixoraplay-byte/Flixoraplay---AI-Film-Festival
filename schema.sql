@@ -68,10 +68,10 @@ INSERT OR IGNORE INTO competitions (id, title, description, theme, prize, maxDur
   ('c2','Nature Reimagined','Show nature like never seen before using AI video generation tools. Forests, oceans, mountains — reimagined.','AI-rendered nature scenes','$300',30,'2026-08-15','open','u_host2','EarthFrame Co.','manual','2026-04-05'),
   ('c3','Human Emotion Reel','Tell an emotional story using AI-generated visuals. No dialogue needed. Express through imagery.','Emotion storytelling under 90s',NULL,90,'2026-03-20','judging','u_host1','Neon Studios','manual','2026-03-01');
 
-INSERT OR IGNORE INTO entries VALUES
-  ('e1','c3','The Last Teardrop','An AI film depicting the final moments of memory fading away.','https://www.youtube.com/watch?v=dQw4w9WgXcQ','u_c1','Arya Mehta','["Runway ML","Midjourney"]',92,1,47,'2026-03-10'),
-  ('e2','c3','Echoes of Childhood','Nostalgic memories visualized through dreamy AI landscapes.','https://www.youtube.com/watch?v=dQw4w9WgXcQ','u_c2','Dev Patel','["Pika Labs","Stable Video"]',85,2,32,'2026-03-11'),
-  ('e3','c3','Joy in the Rain','Pure happiness rendered through AI-generated rain scenes.','https://www.youtube.com/watch?v=dQw4w9WgXcQ','u_c3','Priya Singh','["Sora","Kling AI"]',78,3,26,'2026-03-12');
+INSERT OR IGNORE INTO entries (id, competitionId, title, description, videoUrl, creatorId, creatorName, tools, score, rank, votes, elo_rating, submittedAt) VALUES
+  ('e1','c3','The Last Teardrop','An AI film depicting the final moments of memory fading away.','https://www.youtube.com/watch?v=dQw4w9WgXcQ','u_c1','Arya Mehta','["Runway ML","Midjourney"]',92,1,47,1200,'2026-03-10'),
+  ('e2','c3','Echoes of Childhood','Nostalgic memories visualized through dreamy AI landscapes.','https://www.youtube.com/watch?v=dQw4w9WgXcQ','u_c2','Dev Patel','["Pika Labs","Stable Video"]',85,2,32,1200,'2026-03-11'),
+  ('e3','c3','Joy in the Rain','Pure happiness rendered through AI-generated rain scenes.','https://www.youtube.com/watch?v=dQw4w9WgXcQ','u_c3','Priya Singh','["Sora","Kling AI"]',78,3,26,1200,'2026-03-12');
 
 CREATE TABLE IF NOT EXISTS notifications (
   id TEXT PRIMARY KEY,
