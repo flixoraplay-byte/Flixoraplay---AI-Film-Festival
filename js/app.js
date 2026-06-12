@@ -161,6 +161,16 @@ const API = {
     if (!r.ok) throw new Error(data.error || 'Checkout session failed');
     return data;
   },
+  async verifyPayment(data) {
+    const r = await fetch(`${API_BASE}/payments/verify`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    const res = await r.json();
+    if (!r.ok) throw new Error(res.error || 'Verification failed');
+    return res;
+  },
   async getPaymentHistory() {
     const r = await fetch(`${API_BASE}/payments/history`, {
       headers: this.getHeaders()

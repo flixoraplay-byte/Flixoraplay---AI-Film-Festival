@@ -1,6 +1,4 @@
 import { getDB } from '../_db.js';
-// functions/api/payments/checkout.js
-import Stripe from 'stripe';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -24,62 +22,48 @@ export async function onRequestPost({ request, env, data }) {
       return Response.json({ error: 'competitionId and valid amountCents are required' }, { status: 400, headers: corsHeaders });
     }
 
-    const stripeKey = env.STRIPE_SECRET_KEY;
-    const origin = new URL(request.url).origin;
-
-    // Fetch competition to make sure it exists
     const comp = await getDB(env).prepare(`SELECT * FROM competitions WHERE id = ?`).bind(competitionId).first();
     if (!comp) {
       return Response.json({ error: 'Competition not found' }, { status: 404, headers: corsHeaders });
     }
 
-    const totalAmountCents = Math.round(amountCents * 1.15); // 15% platform fee added
+    const totalAmountCents = Math.round(amountCents * 1.15); // 15% platform fee
 
-    let checkoutUrl = '';
-    let sessionId = 'mock_session_' + Date.now();
+    const keyId = env.RAZORPAY_KEY_ID || 'rzp_test_placeholder';
+    const keySecret = env.RAZORPAY_KEY_SECRET || 'placeholder_secret';
 
-    if (!stripeKey || stripeKey === 'PLACEHOLDER' || stripeKey.startsWith('mock_')) {
-      console.warn('[Stripe Warning] STRIPE_SECRET_KEY is not set. Simulating checkout URL.');
-      // Mock flow redirect back to success immediately
-      checkoutUrl = `${origin}/api/payments/success?session_id=${sessionId}`;
-    } else {
-      const stripe = new Stripe(stripeKey, { apiVersion: '2023-10-16' });
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [{
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Prize Pool Funding: ${comp.title}`,
-              description: `Includes prize amount ($${(amountCents / 100).toFixed(2)}) + 15% platform fee`,
-            },
-            unit_amount: totalAmountCents,
-          },
-          quantity: 1,
-        }],
-        mode: 'payment',
-        success_url: `${origin}/api/payments/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/competition.html?id=${competitionId}&payment=cancelled`,
-        metadata: {
-          competitionId,
-          payerId: user.id,
-          amountCents: amountCents.toString()
-        }
+    let orderId = 'mock_order_' + Date.now();
+
+    if (!keyId.startsWith('rzp_test_placeholder') && !keySecret.startsWith('placeholder_secret')) {
+      const basicAuth = btoa(`${keyId}:${keySecret}`);
+      const rzpRes = await fetch('https://api.razorpay.com/v1/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${basicAuth}`
+        },
+        body: JSON.stringify({
+          amount: totalAmountCents,
+          currency: 'USD',
+          receipt: `receipt_${competitionId}_${Date.now()}`.substring(0, 40)
+        })
       });
-
-      checkoutUrl = session.url;
-      sessionId = session.id;
+      
+      const rzpData = await rzpRes.json();
+      if (!rzpRes.ok) {
+        throw new Error(rzpData.error?.description || 'Failed to create Razorpay order');
+      }
+      orderId = rzpData.id;
     }
 
-    // Insert pending payment record
     const paymentId = 'pay_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const now = new Date().toISOString();
     await getDB(env).prepare(
       `INSERT INTO payments (id, competition_id, payer_id, amount_cents, currency, type, status, stripe_session_id, created_at)
        VALUES (?, ?, ?, ?, 'usd', 'funding', 'pending', ?, ?)`
-    ).bind(paymentId, competitionId, user.id, amountCents, sessionId, now).run();
+    ).bind(paymentId, competitionId, user.id, amountCents, orderId, now).run();
 
-    return Response.json({ checkoutUrl }, { headers: corsHeaders });
+    return Response.json({ orderId, amount: totalAmountCents, keyId }, { headers: corsHeaders });
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500, headers: corsHeaders });
   }
