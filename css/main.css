@@ -148,6 +148,9 @@ nav {
 .nav-link:hover { color: #fff; background: var(--bg-2); }
 .nav-link.active { color: #fff; background: transparent; }
 .nav-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+@media (max-width: 768px) {
+  .nav-actions { display: none; }
+}
 
 /* After nav spacer */
 
@@ -1183,4 +1186,53 @@ tbody tr:last-child td { border-bottom: none; }
   margin-bottom: 40px;
   line-height: 1.6;
   font-weight: 400;
+}
+
+/* ── INTERACTIVE GUIDE ─────────────────────────────────── */
+.interactive-guide {
+  background: var(--bg-2);
+  position: relative;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 40px;
+  padding: 0 5vw;
+  scrollbar-width: none; /* Firefox */
+}
+.interactive-guide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+.guide-slide {
+  scroll-snap-align: center;
+  min-width: 60vw;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 48px;
+  flex-shrink: 0;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.4s ease, border-color 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+}
+.guide-slide:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(139, 92, 246, 0.05);
+}
+
+@media (max-width: 768px) {
+  .interactive-guide {
+    padding: 0 20px;
+    gap: 20px;
+  }
+  .guide-slide {
+    min-width: 85vw;
+    padding: 32px;
+  }
 }
