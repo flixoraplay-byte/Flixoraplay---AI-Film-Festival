@@ -199,7 +199,14 @@ const API = {
     const r = await fetch(`${API_BASE}/dashboard`, {
       headers: this.getHeaders()
     });
-    if (!r.ok) throw new Error('Failed to load dashboard data');
+    if (r.status === 401 || r.status === 404) {
+      if (typeof logout === 'function') logout();
+      throw new Error('Session expired or user not found. Redirecting to login...');
+    }
+    if (!r.ok) {
+      const err = await r.json().catch(()=>({}));
+      throw new Error(err.error || 'Failed to load dashboard data');
+    }
     return r.json();
   },
   async updateProfile(data) {
