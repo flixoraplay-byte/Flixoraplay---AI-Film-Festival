@@ -4,7 +4,7 @@ export function getTursoClient(env) {
     if (!env.TURSO_DATABASE_URL || !env.TURSO_AUTH_TOKEN) {
         // Fallback to D1 for local dev if Turso vars are not set
         if (env.DB) return null; 
-        throw new Error("Missing Turso configuration: TURSO_DATABASE_URL and TURSO_AUTH_TOKEN are required.");
+        return null;
     }
     return createClient({
         url: env.TURSO_DATABASE_URL,
@@ -21,6 +21,10 @@ export function getDB(env) {
     if (!turso && env.DB) {
         env._db = env.DB;
         return env._db;
+    }
+
+    if (!turso) {
+        throw new Error("No database configured (no Turso nor env.DB)");
     }
 
     env._db = {
